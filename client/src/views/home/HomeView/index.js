@@ -13,7 +13,7 @@ const HomeView = () => {
   return (
     <Page
       className={classes.root}
-      title="Chain Games Dashboard"
+      title="Chain Games Battleboard"
     >
       <Hero />
     </Page>
