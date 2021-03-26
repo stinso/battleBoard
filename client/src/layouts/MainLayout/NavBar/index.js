@@ -218,7 +218,7 @@ const NavBar = ({ onOpen }) => {
               <Typography
                 display="inline"
                 variant="body1"
-                color="textPromary"
+                color="primary"
               >
                 $
                 <NumberFormat 
@@ -256,7 +256,7 @@ const NavBar = ({ onOpen }) => {
             <Typography
               display="inline"
               variant="body1"
-              color="textPromary"
+              color="primary"
             >
               <NumberFormat 
                 value={2200} 
@@ -292,7 +292,7 @@ const NavBar = ({ onOpen }) => {
               <Typography
                 display="inline"
                 variant="body1"
-                color="textPromary"
+                color="primary"
               >
                 <NumberFormat 
                   value={1000} 

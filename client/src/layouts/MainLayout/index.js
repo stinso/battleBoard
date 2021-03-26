@@ -17,10 +17,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flex: '1 1 auto',
     overflow: 'hidden',
-    paddingTop: 64,
+    paddingTop: 64/* ,
     [theme.breakpoints.up('lg')]: {
-      paddingLeft: 256
-    }
+      paddingRight: 256
+    } */
   },
   contentContainer: {
     display: 'flex',
