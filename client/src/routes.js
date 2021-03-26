@@ -52,6 +52,11 @@ const routes = [
     routes: [
       {
         exact: true,
+        path: '/actionGamePage/cod',
+        component: lazy(() => import('src/views/cod'))
+      },
+      {
+        exact: true,
         path: '/',
         component: HomeView
       },

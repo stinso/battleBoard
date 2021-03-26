@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
       content: '" "',
       height: 62,
       width: 6,
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: theme.palette.secondary.main,
       marginRight: '20px'
     }
   }
