@@ -1,5 +1,4 @@
 const apiKey = require('../secret/apiKey')
-const calc = require('../calcScore')
 const coingecko = require('../coingecko')
 const etherscan = require('../etherscan')
 const express = require('express')

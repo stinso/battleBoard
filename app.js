@@ -1,14 +1,10 @@
 const express = require('express')
-const calc = require('./calcScore')
 const cors = require('cors')
 const logger = require('./log/logger')
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-
-
-calc.calcScore();
 
 app.use(cors());
 app.use(express.json());

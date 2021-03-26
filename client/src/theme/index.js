@@ -31,42 +31,6 @@ const baseOptions = {
 
 const themesOptions = [
   {
-    name: THEMES.LIGHT,
-    overrides: {
-      MuiInputBase: {
-        input: {
-          '&::placeholder': {
-            opacity: 1,
-            color: colors.blueGrey[600]
-          }
-        }
-      }
-    },
-    palette: {
-      type: 'light',
-      action: {
-        active: colors.blueGrey[600]
-      },
-      background: {
-        default: '#383c45',
-        dark: '#f4f6f8',
-        paper: colors.common.white
-      },
-      divider: 'rgba(0, 0, 0, 0.12)',
-      primary: {
-        main: '#383c45'
-      },
-      secondary: {
-        main: '#f5542a'
-      },
-      text: {
-        primary: colors.blueGrey[900],
-        secondary: colors.blueGrey[600]
-      }
-    },
-    shadows: softShadows
-  },
-  {
     name: THEMES.DARK,
     palette: {
       type: 'dark',

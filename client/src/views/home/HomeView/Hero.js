@@ -51,6 +51,19 @@ const useStyles = makeStyles((theme) => ({
   image: {
     height: 320,
     backgroundColor: theme.palette.background.dark
+  },
+  title: {
+    position: 'relative',
+    '&:before': {
+      position: 'absolute',
+      bottom: -2,
+      left: -16,
+      content: '" "',
+      height: 62,
+      width: 6,
+      backgroundColor: theme.palette.primary.main,
+      marginRight: '20px'
+    }
   }
 }));
 
@@ -90,70 +103,22 @@ const Hero = ({ className, ...rest }) => {
       {...rest}
     >
       <Container maxWidth="lg">
-          <Example/>
-          {/* <Carousel>
-            {
-                items.map( (item, i) => <Item key={i} item={item} /> )
-            }
-          </Carousel> */}
-          {/* <Carousel>
-            <Card className={classes.card}>
-              <CardMedia
-                className={classes.image}
-                component="img"
-                image="static/images/panda.png"
-              />
-            </Card>
-            <Card className={classes.card}>
-              <CardMedia
-                className={classes.image}
-                component="img"
-                image="static/images/superCryptoKart.jpg"
-              />
-            </Card>
-            <Card className={classes.card}>
-              <CardMedia
-                className={classes.image}
-                component="img"
-                image="static/images/nba.png"
-              />
-            </Card>
-            <Card className={classes.card}>
-              <CardMedia
-                className={classes.image}
-                component="img"
-                image="static/images/madden.jpg"
-              />
-            </Card>
-            <Card className={classes.card}>
-              <CardMedia
-                className={classes.image}
-                component="img"
-                image="static/images/fortnite.png"
-              />
-            </Card>
-            <Card className={classes.card}>
-              <CardMedia
-                className={classes.image}
-                component="img"
-                image="static/images/fifa21.jpg"
-              />
-            </Card>
-            <Card className={classes.card}>
-              <CardMedia
-                className={classes.image}
-                component="img"
-                image="static/images/fallGuys.jpg"
-              />
-            </Card>
-            <Card className={classes.card}>
-              <CardMedia
-                className={classes.image}
-                component="img"
-                image="static/images/apex.jpg"
-              />
-            </Card>
-          </Carousel> */}
+        <Box mb={3} ml={2}>
+          <Typography
+            variant="h1"
+            color="textPrimary"
+          >
+            GAMES
+          </Typography>
+          <Typography
+            className={classes.title}
+            variant="h5"
+            color="textPrimary"
+          >
+            Select a game and choose how you want to play.
+          </Typography>
+        </Box>
+        <Example/>
       </Container>
     </div>
   );
