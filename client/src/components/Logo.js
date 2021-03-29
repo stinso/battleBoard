@@ -5,7 +5,7 @@ const Logo = (props) => {
     <img
       alt="Logo"
       src="/static/chaingames.png"
-      width="240vw"
+      width="220vw"
       {...props}
     />
   );

@@ -67,17 +67,6 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     justifyContent: "center"
   },
-  link: {
-    fontWeight: theme.typography.fontWeightMedium,
-    '& + &': {
-      marginLeft: theme.spacing(2)
-    },
-    ...theme.name === THEMES.LIGHT ? {
-      color: theme.palette.background.paper
-    } : {
-      color: theme.palette.text.primary
-    }
-  },
   divider: {
     width: 1,
     height: 32,

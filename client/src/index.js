@@ -8,6 +8,7 @@ import 'prismjs/components/prism-jsx';
 import 'nprogress/nprogress.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'src/assets/css/prism.css';
+import 'src/assets/css/font.css';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
