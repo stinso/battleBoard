@@ -23,15 +23,15 @@ import {
 
 const items = [
     {
-        Name: "Apex",
+        Name: "APEX",
         Image: "/static/images/apex.jpg"
     },
     {
-        Name: "Fifa",
+        Name: "FIFA21",
         Image: "/static/images/fifa21.jpg"
     },
     {
-        Name: "Fortnite",
+        Name: "FORTNITE",
         Image: "/static/images/fortnite.png"
     }
 ]

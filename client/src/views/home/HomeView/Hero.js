@@ -43,7 +43,8 @@ const events = [
     startTime: "27th Mar 21:00 CET",
     entry: "Free",
     duration: "60 Min.",
-    prizePool: "$28.50"
+    prizePool: "$28.50",
+    image: "/static/images/gameIcons/cod.jpg"
   },
   {
     id: "MW Warzone Kill Race FREE",
@@ -52,34 +53,38 @@ const events = [
     startTime: "27th Mar 19:00 CET",
     entry: "$1.00",
     duration: "120 Min.",
-    prizePool: "$28.50"
+    prizePool: "$28.50",
+    image: "/static/images/gameIcons/cod.jpg"
   },
   {
     id: "MW Warzone Headshots",
-    format: "Warzone - Most Headshots",
+    format: "Apex - Most Headshots",
     participants: "7 of 30",
     startTime: "27th Mar 20:00 CET",
     entry: "$1.00",
     duration: "60 Min.",
-    prizePool: "$28.50"
+    prizePool: "$28.50",
+    image: "/static/images/gameIcons/apex.jpg"
   },
   {
     id: "MW Warzone Kill Race FREE",
-    format: "Warzone - Max Kills",
+    format: "Fortnite - Max Kills",
     participants: "22 of 30",
     startTime: "27th Mar 21:00 CET",
     entry: "Free",
     duration: "60 Min.",
-    prizePool: "$28.50"
+    prizePool: "$28.50",
+    image: "/static/images/gameIcons/fortnite.jpg"
   },
   {
     id: "MW Warzone Kill Race FREE",
-    format: "Warzone - Max Kills",
-    participants: "13 of 30",
+    format: "Fifa - Winner",
+    participants: "1 of 2",
     startTime: "28th Mar 21:00 CET",
-    entry: "Free",
-    duration: "120 Min.",
-    prizePool: "$28.50"
+    entry: "$10.00",
+    duration: "15 Min.",
+    prizePool: "$20",
+    image: "/static/images/gameIcons/fifa.jpg"
   },
   {
     id: "MW Warzone Headshots",
@@ -88,25 +93,28 @@ const events = [
     startTime: "28th Mar 21:00 CET",
     entry: "$1.00",
     duration: "60 Min.",
-    prizePool: "$28.50"
+    prizePool: "$28.50",
+    image: "/static/images/gameIcons/cod.jpg"
   },
   {
     id: "MW Warzone Kill Race FREE",
-    format: "Warzone - Max Kills",
-    participants: "10 of 30",
+    format: "Fifa - Winner",
+    participants: "1 of 2",
     startTime: "28th Mar 21:00 CET",
     entry: "Free",
-    duration: "60 Min.",
-    prizePool: "$28.50"
+    duration: "15 Min.",
+    prizePool: "$20",
+    image: "/static/images/gameIcons/fifa.jpg"
   },
   {
     id: "MW Warzone Kill Race FREE",
-    format: "Warzone - Max Kills",
+    format: "Apex - Max Kills",
     participants: "1 of 30",
     startTime: "29th Mar 21:00 CET",
     entry: "$1.00",
     duration: "60 Min.",
-    prizePool: "$28.50"
+    prizePool: "$28.50",
+    image: "/static/images/gameIcons/apex.jpg"
   },
   {
     id: "MW Warzone Kill Race FREE",
@@ -115,16 +123,18 @@ const events = [
     startTime: "29th Mar 19:00 CET",
     entry: "$1.00",
     duration: "120 Min.",
-    prizePool: "$28.50"
+    prizePool: "$28.50",
+    image: "/static/images/gameIcons/cod.jpg"
   },
   {
     id: "MW Warzone Kill Race FREE",
-    format: "Warzone - Max Kills",
+    format: "Fortnite - Most Headshots",
     participants: "11 of 30",
     startTime: "30th Mar 21:00 CET",
     entry: "Free",
     duration: "60 Min.",
-    prizePool: "$28.50"
+    prizePool: "$28.50",
+    image: "/static/images/gameIcons/fortnite.jpg"
   }
 ]
 
@@ -309,6 +319,11 @@ const useStyles = makeStyles((theme) => ({
   tableRow: {
     height: '60px',
     padding: 0
+  },
+  entry: {
+    fontFamily: font,
+    fontSize: 20,
+    color: theme.palette.secondary.main
   }
 }));
 
@@ -650,7 +665,7 @@ const Hero = ({ className, ...rest }) => {
         <Example/>
       </Container>
       <Container maxWidth="lg">
-        <Box ml={2} mt={5} mb={3}>
+        <Box ml={2} mt={10} mb={3}>
           <Typography
             display="inline"
             variant="h2"
@@ -708,8 +723,11 @@ const Hero = ({ className, ...rest }) => {
                     <TableCell>
                       Duration
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell>
                       Prize Pool
+                    </TableCell>
+                    <TableCell align="center">
+                      Join
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -723,7 +741,7 @@ const Hero = ({ className, ...rest }) => {
                       >
                         <TableCell className={classes.imageCell} align='center' padding='none'>
                             <img className={classes.rowImage}
-                              src={'static/images/apex.jpg'}
+                              src={entry.image}
                             />
                         </TableCell>
                         <TableCell>
@@ -735,14 +753,23 @@ const Hero = ({ className, ...rest }) => {
                         <TableCell>
                           {entry.startTime}
                         </TableCell>
-                        <TableCell className={entry.entry == 'Free' ? classes.free : ''}>
+                        <TableCell className={classes.entry}>
                           {entry.entry}
                         </TableCell>
                         <TableCell>
                           {entry.duration}
                         </TableCell>
-                        <TableCell className={classes.priceCell} align="right">
+                        <TableCell className={classes.priceCell}>
                           {entry.prizePool}
+                        </TableCell>
+                        <TableCell className={classes.priceCell} align="center">
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            color="secondary"
+                          >
+                            JOIN
+                          </Button>
                         </TableCell>
                       </TableRow>
                     );
