@@ -4,14 +4,24 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { THEMES } from 'src/constants';
 import {
+  Avatar,
   Box,
   Button,
   Card,
   CardMedia,
   Container,
+  Divider,
   Grid,
   Typography,
   Paper,
+  Tab,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Tabs,
   useTheme,
   useMediaQuery,
   makeStyles
@@ -24,6 +34,99 @@ import Example from 'src/components/Example'
 import { findLastIndex } from 'lodash';
 
 const font = "'Saira', sans-serif";
+
+const events = [
+  {
+    id: "MW Warzone Kill Race FREE",
+    format: "Warzone - Max Kills",
+    participants: "16 of 30",
+    startTime: "27th Mar 21:00 CET",
+    entry: "Free",
+    duration: "60 Min.",
+    prizePool: "$28.50"
+  },
+  {
+    id: "MW Warzone Kill Race FREE",
+    format: "Warzone - Max Kills",
+    participants: "11 of 30",
+    startTime: "27th Mar 19:00 CET",
+    entry: "$1.00",
+    duration: "120 Min.",
+    prizePool: "$28.50"
+  },
+  {
+    id: "MW Warzone Headshots",
+    format: "Warzone - Most Headshots",
+    participants: "7 of 30",
+    startTime: "27th Mar 20:00 CET",
+    entry: "$1.00",
+    duration: "60 Min.",
+    prizePool: "$28.50"
+  },
+  {
+    id: "MW Warzone Kill Race FREE",
+    format: "Warzone - Max Kills",
+    participants: "22 of 30",
+    startTime: "27th Mar 21:00 CET",
+    entry: "Free",
+    duration: "60 Min.",
+    prizePool: "$28.50"
+  },
+  {
+    id: "MW Warzone Kill Race FREE",
+    format: "Warzone - Max Kills",
+    participants: "13 of 30",
+    startTime: "28th Mar 21:00 CET",
+    entry: "Free",
+    duration: "120 Min.",
+    prizePool: "$28.50"
+  },
+  {
+    id: "MW Warzone Headshots",
+    format: "Warzone - Most Headshots",
+    participants: "0 of 30",
+    startTime: "28th Mar 21:00 CET",
+    entry: "$1.00",
+    duration: "60 Min.",
+    prizePool: "$28.50"
+  },
+  {
+    id: "MW Warzone Kill Race FREE",
+    format: "Warzone - Max Kills",
+    participants: "10 of 30",
+    startTime: "28th Mar 21:00 CET",
+    entry: "Free",
+    duration: "60 Min.",
+    prizePool: "$28.50"
+  },
+  {
+    id: "MW Warzone Kill Race FREE",
+    format: "Warzone - Max Kills",
+    participants: "1 of 30",
+    startTime: "29th Mar 21:00 CET",
+    entry: "$1.00",
+    duration: "60 Min.",
+    prizePool: "$28.50"
+  },
+  {
+    id: "MW Warzone Kill Race FREE",
+    format: "Warzone - Max Kills",
+    participants: "5 of 30",
+    startTime: "29th Mar 19:00 CET",
+    entry: "$1.00",
+    duration: "120 Min.",
+    prizePool: "$28.50"
+  },
+  {
+    id: "MW Warzone Kill Race FREE",
+    format: "Warzone - Max Kills",
+    participants: "11 of 30",
+    startTime: "30th Mar 21:00 CET",
+    entry: "Free",
+    duration: "60 Min.",
+    prizePool: "$28.50"
+  }
+]
 
 
 const useStyles = makeStyles((theme) => ({
@@ -184,6 +287,28 @@ const useStyles = makeStyles((theme) => ({
   gamesTitle: {
     fontFamily: font,
     fontSize: 40
+  },
+  priceCell: {
+    color: theme.palette.success.main
+  },
+  avatar: {
+    height: 100,
+    width: 100
+  },
+  rowImage: {
+    height: '60px',
+    width: '60px',
+    margin: 0,
+    padding: 0
+  },
+  imageCell: {
+    height: '60px',
+    width: '60px',
+    padding: 0
+  },
+  tableRow: {
+    height: '60px',
+    padding: 0
   }
 }));
 
@@ -205,17 +330,17 @@ const Hero = ({ className, ...rest }) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  const [currentTab, setCurrentTab] = useState('all');
 
-  var items = [
-    {
-        name: "Random Name #1",
-        description: "Probably the most random thing you have ever seen!"
-    },
-    {
-        name: "Random Name #2",
-        description: "Hello World!"
-    }
-]
+  const tabs = [
+    { value: 'all', label: 'All' },
+    { value: 'free', label: 'Free' },
+    { value: 'paid', label: 'Paid' }
+  ];
+
+  const handleTabsChange = (event, value) => {
+    setCurrentTab(value);
+  };
 
   return (
     <div
@@ -523,6 +648,120 @@ const Hero = ({ className, ...rest }) => {
           </Typography>
         </Box>
         <Example/>
+      </Container>
+      <Container maxWidth="lg">
+        <Box ml={2} mt={5} mb={3}>
+          <Typography
+            display="inline"
+            variant="h2"
+            color="textPrimary"
+            className={classes.gamesTitle}
+          >
+            Tournaments
+          </Typography>
+          <Typography
+            className={classes.title}
+            variant="h5"
+            color="textPrimary"
+          >
+            Here you can find all upcoming tournaments.
+          </Typography>
+        </Box>
+        <Box mt={1} mb={3}>
+          <Tabs
+            onChange={handleTabsChange}
+            scrollButtons="auto"
+            textColor="secondary"
+            value={currentTab}
+            variant="scrollable"
+          >
+            {tabs.map((tab) => (
+              <Tab
+                key={tab.value}
+                label={tab.label}
+                value={tab.value}
+              />
+            ))}
+          </Tabs>
+          <Divider />
+        </Box>
+        <Card>
+            <Box minWidth={300} >
+              <Table>
+                <TableHead>
+                  <TableRow >
+                    <TableCell>
+                      Game
+                    </TableCell>
+                    <TableCell>
+                      Game Format
+                    </TableCell>
+                    <TableCell>
+                      Participants
+                    </TableCell>
+                    <TableCell>
+                      Start Time
+                    </TableCell>
+                    <TableCell>
+                      Entry
+                    </TableCell>
+                    <TableCell>
+                      Duration
+                    </TableCell>
+                    <TableCell align="right">
+                      Prize Pool
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {events.map((entry) => {
+                    return (
+                      <TableRow
+                        spacing={0}
+                        hover
+                        key={entry.id}
+                      >
+                        <TableCell className={classes.imageCell} align='center' padding='none'>
+                            <img className={classes.rowImage}
+                              src={'static/images/apex.jpg'}
+                            />
+                        </TableCell>
+                        <TableCell>
+                          {entry.format}
+                        </TableCell>
+                        <TableCell>
+                          {entry.participants}
+                        </TableCell>
+                        <TableCell>
+                          {entry.startTime}
+                        </TableCell>
+                        <TableCell className={entry.entry == 'Free' ? classes.free : ''}>
+                          {entry.entry}
+                        </TableCell>
+                        <TableCell>
+                          {entry.duration}
+                        </TableCell>
+                        <TableCell className={classes.priceCell} align="right">
+                          {entry.prizePool}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                component="div"
+                count={12}
+                labelRowsPerPage={'Rows per page'}
+                /* onChangePage={handlePageChange}
+                onChangeRowsPerPage={handleLimitChange} */
+                page={0}
+                rowsPerPage={10}
+                rowsPerPageOptions={[5, 10, 25]}
+              />
+            </Box>
+          
+        </Card>
       </Container>
     </div>
   );
