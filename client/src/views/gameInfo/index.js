@@ -23,6 +23,10 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
+import Info from './Info';
+import HowToPlay from './HowToPlay';
+import Rules from './Rules';
+import Teams from './Teams';
 
 const font = "'Saira', sans-serif";
 
@@ -93,9 +97,6 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 8,
     paddingRight: 8,
     borderColor: theme.palette.primary.main
-  },
-  price: {
-    height: '280px'
   }
 }));
 
@@ -300,37 +301,10 @@ const BattleView = () => {
           </Tabs>
           <Divider />
         </Box>
-        <Grid
-          container
-          spacing={2}
-        >
-          <Grid
-            item
-            xs={4}
-          >
-            <Paper className={classes.price}>
-
-            </Paper>
-          </Grid>
-          <Grid
-            item
-            xs={4}
-          >
-            <Paper className={classes.price}>
-              
-            </Paper>
-          </Grid>
-          <Grid
-            item
-            xs={4}
-          >
-            <Paper className={classes.price}>
-              
-            </Paper>
-          </Grid>
-          
-          
-        </Grid>
+        {currentTab === 'info' && <Info />}
+        {currentTab === 'howToPlay' && <HowToPlay />}
+        {currentTab === 'rules' && <Rules />}
+        {currentTab === 'teams' && <Teams />}
       </Container>
     </Page>
   );
