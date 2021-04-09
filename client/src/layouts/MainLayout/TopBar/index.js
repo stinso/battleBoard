@@ -12,6 +12,8 @@ import {
   IconButton,
   Hidden,
   Grid,
+  Menu,
+  MenuItem,
   Typography,
   Link,
   SvgIcon,
@@ -80,6 +82,40 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
   const anchorRef = useRef(null);
   const [openMenu, setOpenMenu] = useState(false);
 
+  // dropdowns
+  const [anchorElShooter, setAnchorElShooter] = useState(null);
+  const openShooter = Boolean(anchorElShooter);
+  const [anchorElSports, setAnchorElSports] = useState(null);
+  const openSports = Boolean(anchorElSports);
+  const [anchorElCasual, setAnchorElCasual] = useState(null);
+  const openCasual = Boolean(anchorElCasual);
+
+  // dropdown shooter
+  const handleMenuShooter = (event) => {
+    setAnchorElShooter(event.currentTarget);
+  };
+
+  const handleCloseShooter = () => {
+    setAnchorElShooter(null);
+  };
+  // dropdown sports
+  const handleMenuSports = (event) => {
+    setAnchorElSports(event.currentTarget);
+  };
+
+  const handleCloseSports = () => {
+    setAnchorElSports(null);
+  };
+  // dropdown casual
+  const handleMenuCasual = (event) => {
+    setAnchorElCasual(event.currentTarget);
+  };
+
+  const handleCloseCasual = () => {
+    setAnchorElCasual(null);
+  };
+
+  // nav bar
   const handleMenuOpen = () => {
     setOpenMenu(true);
   };
@@ -106,26 +142,69 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                   </Button>
                 </Box>
                 <Button
-                  onClick={handleMenuOpen}
-                  ref={anchorRef}
+                  aria-controls="menu-shooter"
+                  aria-haspopup="true"
+                  onClick={handleMenuShooter}
                 >
                   Shooter
                   <ArrowDropDownIcon />
                 </Button>
+                <Menu
+                  id="menu-shooter"
+                  anchorEl={anchorElShooter}
+                  getContentAnchorEl={null}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                  transformOrigin={{ vertical: "top", horizontal: "center" }}
+                  keepMounted
+                  open={openShooter}
+                  onClose={handleCloseShooter}
+                >
+                  <MenuItem onClick={handleCloseShooter}>Call of Duty</MenuItem>
+                  <MenuItem onClick={handleCloseShooter}>Counter-Strike</MenuItem>
+                </Menu>
+                
                 <Button
-                  onClick={handleMenuOpen}
-                  ref={anchorRef}
+                  aria-controls="menu-sports"
+                  aria-haspopup="true"
+                  onClick={handleMenuSports}
                 >
                   Sports
                   <ArrowDropDownIcon />
                 </Button>
+                <Menu
+                  id="menu-sports"
+                  anchorEl={anchorElSports}
+                  getContentAnchorEl={null}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                  transformOrigin={{ vertical: "top", horizontal: "center" }}
+                  keepMounted
+                  open={openSports}
+                  onClose={handleCloseSports}
+                >
+                  <MenuItem onClick={handleCloseSports}>Fifa</MenuItem>
+                  <MenuItem onClick={handleCloseSports}>Madden</MenuItem>
+                </Menu>
                 <Button
-                  onClick={handleMenuOpen}
-                  ref={anchorRef}
+                  aria-controls="menu-casual"
+                  aria-haspopup="true"
+                  onClick={handleMenuCasual}
                 >
                   Casual
                   <ArrowDropDownIcon />
                 </Button>
+                <Menu
+                  id="menu-casual"
+                  anchorEl={anchorElCasual}
+                  getContentAnchorEl={null}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                  transformOrigin={{ vertical: "top", horizontal: "center" }}
+                  keepMounted
+                  open={openCasual}
+                  onClose={handleCloseCasual}
+                >
+                  <MenuItem onClick={handleCloseCasual}>Chaino</MenuItem>
+                  <MenuItem onClick={handleCloseCasual}>Crypto Kart</MenuItem>
+                </Menu>
               </Box>
             </Grid>
           </Grid>
