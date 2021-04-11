@@ -38,12 +38,12 @@ const mySections = [
       {
         title: 'My Events',
         icon: CalendarIcon,
-        href: '/app/'
+        href: '/upcomingEvents'
       },
       {
         title: 'My Challanges',
         icon: AwardIcon,
-        href: '/app/'
+        href: '/challenges'
       }
     ]
   }
@@ -56,22 +56,22 @@ const sections = [
       {
         title: 'Profile',
         icon: UserIcon,
-        href: '/app/'
+        href: '/profile'
       },
       {
         title: 'My Wallet',
         icon: CreditcardIcon,
-        href: '/app/'
+        href: 'https://wallet.chaingames.io/home'
       },
       {
         title: 'Transaction History',
         icon: ListIcon,
-        href: '/app/'
+        href: 'https://wallet.chaingames.io/transaction-history'
       },
       {
         title: 'Withdraw',
         icon: WithdrawIcon,
-        href: '/app/'
+        href: 'https://wallet.chaingames.io/withdraw-initiate'
       },
       {
         title: 'Report Issue',
@@ -81,7 +81,7 @@ const sections = [
       {
         title: 'Account Settings',
         icon: ToolIcon,
-        href: '/app/'
+        href: '/userAccountSettings'
       },
       {
         title: 'Logout',

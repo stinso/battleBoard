@@ -1,24 +1,14 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
-  Avatar,
   Box,
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
   Container,
   Divider,
   Grid,
-  Link,
   Paper,
   Tab,
   Tabs,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
   Typography,
   makeStyles
 } from '@material-ui/core';

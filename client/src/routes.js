@@ -72,6 +72,26 @@ const routes = [
       },
       {
         exact: true,
+        path: '/upcomingEvents',
+        component: lazy(() => import('src/views/upcomingEvents'))
+      },
+      {
+        exact: true,
+        path: '/challenges',
+        component: lazy(() => import('src/views/challenges'))
+      },
+      {
+        exact: true,
+        path: '/profile',
+        component: lazy(() => import('src/views/profile'))
+      },
+      {
+        exact: true,
+        path: '/userAccountSettings',
+        component: lazy(() => import('src/views/userAccountSettings'))
+      },
+      {
+        exact: true,
         path: '/',
         component: HomeView
       },
