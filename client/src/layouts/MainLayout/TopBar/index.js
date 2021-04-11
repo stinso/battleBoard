@@ -10,12 +10,12 @@ import {
   Button,
   Toolbar,
   IconButton,
+  Link,
   Hidden,
   Grid,
   Menu,
   MenuItem,
   Typography,
-  Link,
   SvgIcon,
   makeStyles
 } from '@material-ui/core';
@@ -133,10 +133,9 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
               <Box display="flex">
                 <Box mr={2}>
                   <Button
-                    onClick={handleMenuOpen}
                     color="secondary"
+                    href="https://app.uniswap.org/#/swap?outputCurrency=0xC4C2614E694cF534D407Ee49F8E44D125E4681c4"
                     variant="outlined"
-                    ref={anchorRef}
                   >
                     Buy Tokens
                   </Button>
@@ -159,8 +158,7 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                   open={openShooter}
                   onClose={handleCloseShooter}
                 >
-                  <MenuItem onClick={handleCloseShooter}>Call of Duty</MenuItem>
-                  <MenuItem onClick={handleCloseShooter}>Counter-Strike</MenuItem>
+                  <MenuItem onClick={handleCloseShooter} color="#fff" component={RouterLink} to="/actionGamePage/cod">Call of Duty</MenuItem>
                 </Menu>
                 
                 <Button
@@ -181,8 +179,8 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                   open={openSports}
                   onClose={handleCloseSports}
                 >
-                  <MenuItem onClick={handleCloseSports}>Fifa</MenuItem>
-                  <MenuItem onClick={handleCloseSports}>Madden</MenuItem>
+                  <MenuItem onClick={handleCloseSports} color="#fff" component={RouterLink} to="/actionGamePage/fifa">Fifa</MenuItem>
+                  <MenuItem onClick={handleCloseSports} color="#fff" component={RouterLink} to="/actionGamePage/madden">Madden</MenuItem>
                 </Menu>
                 <Button
                   aria-controls="menu-casual"
@@ -202,8 +200,8 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                   open={openCasual}
                   onClose={handleCloseCasual}
                 >
-                  <MenuItem onClick={handleCloseCasual}>Chaino</MenuItem>
-                  <MenuItem onClick={handleCloseCasual}>Crypto Kart</MenuItem>
+                  <MenuItem onClick={handleCloseCasual} color="#fff" component="a" href="https://chaino.chaingames.io/">Chaino</MenuItem>
+                  <MenuItem onClick={handleCloseCasual} color="#fff" component="a" href="https://chaingames.io/#sck">Super Crypto Kart</MenuItem>
                 </Menu>
               </Box>
             </Grid>

@@ -47,6 +47,16 @@ const routes = [
     component: lazy(() => import('src/views/errors/NotFoundView'))
   },
   {
+    exact: true,
+    path: '/login',
+    component: lazy(() => import('src/views/auth/LoginView'))
+  },
+  {
+    exact: true,
+    path: '/register',
+    component: lazy(() => import('src/views/auth/RegisterView'))
+  },
+  {
     path: '*',
     layout: MainLayout,
     routes: [
