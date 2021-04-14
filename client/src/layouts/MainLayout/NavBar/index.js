@@ -205,7 +205,7 @@ const NavBar = ({ onOpen }) => {
             display='flex'
             justifyContent='center'
           >
-            <Avatar className={classes.cityAvatar} src="/static/images/panda.png">
+            <Avatar className={classes.avatar} src="/static/images/panda.png">
             </Avatar>
           </Box>
         </Box>
