@@ -309,7 +309,8 @@ const useStyles = makeStyles((theme) => ({
     height: '60px',
     width: '60px',
     margin: 0,
-    padding: 0
+    padding: 0,
+    verticalAlign: 'top'
   },
   imageCell: {
     height: '60px',

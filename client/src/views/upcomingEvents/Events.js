@@ -12,6 +12,12 @@ import {
   Container,
   Divider,
   Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TablePagination,
+  TableRow,
   Typography,
   Paper,
   useTheme,
@@ -21,12 +27,47 @@ import {
 
 const font = "'Saira', sans-serif";
 
+const events = [
+  {
+    id: "1",
+    game: "COD - MW",
+    eventName: "Free MW",
+    format: "Warzone - Max Kills",
+    entry: "Free",
+    status: "Waiting",
+    participants: "12",
+    startTime: "00:00:04:23"
+  },
+  {
+    id: "2",
+    game: "COD - MW",
+    eventName: "Free MW",
+    format: "Warzone - Max Kills",
+    entry: "Free",
+    status: "Waiting",
+    participants: "12",
+    startTime: "00:00:05:23"
+  },
+  {
+    id: "3",
+    game: "COD - MW",
+    eventName: "Free MW",
+    format: "Warzone - Max Kills",
+    entry: "Free",
+    status: "Waiting",
+    participants: "12",
+    startTime: "00:01:04:23"
+  },
+]
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     paddingBottom: 200,
     minHeight: '100%',
+    paddingTop: theme.spacing(3),
     [theme.breakpoints.down('md')]: {
       paddingTop: 0,
       paddingBottom: 60
@@ -39,17 +80,100 @@ const Events = ({ className, ...rest }) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  
 
   return (
     <div
       className={clsx(classes.root, className)}
       {...rest}
-    > 
-      <Paper>
-        <Typography>
-          events
+    >
+      <Container maxWidth="lg">
+        <Typography
+          variant="h1"
+          color="textPrimary"
+        >
+          Upcoming Events
         </Typography>
-      </Paper>
+        <Box mt={3}>
+          <Paper>
+        <Card>
+            <Box minWidth={300} >
+              <Table>
+                <TableHead>
+                  <TableRow >
+                    <TableCell>
+                      Game
+                    </TableCell>
+                    <TableCell>
+                      Event Name
+                    </TableCell>
+                    <TableCell>
+                      Game Format
+                    </TableCell>
+                    <TableCell>
+                      Entry
+                    </TableCell>
+                    <TableCell>
+                      Status
+                    </TableCell>
+                    <TableCell>
+                      Participants
+                    </TableCell>
+                    <TableCell>
+                      Start Time
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {events.map((entry) => {
+                    return (
+                      <TableRow
+                        spacing={0}
+                        hover
+                        key={entry.id}
+                      >
+                        <TableCell>
+                          {entry.game}
+                        </TableCell>
+                        <TableCell>
+                          {entry.eventName}
+                        </TableCell>
+                        <TableCell>
+                          {entry.format}
+                        </TableCell>
+                        <TableCell>
+                          {entry.entry}
+                        </TableCell>
+                        <TableCell>
+                          {entry.status}
+                        </TableCell>
+                        <TableCell>
+                          {entry.participants}
+                        </TableCell>
+                        <TableCell>
+                          {entry.startTime}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                component="div"
+                count={12}
+                labelRowsPerPage={'Rows per page'}
+                /* onChangePage={handlePageChange}
+                onChangeRowsPerPage={handleLimitChange} */
+                page={0}
+                rowsPerPage={10}
+                rowsPerPageOptions={[5, 10, 25]}
+              />
+            </Box>
+          
+        </Card>
+          </Paper>
+        </Box>
+      </Container>
     </div>
   );
 };
