@@ -72,7 +72,11 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: 0,
       paddingBottom: 60
     },
-    margin: 0
+    margin: 0,
+    
+  },
+  waiting: {
+    color: '#388e3c'
   }
 }));
 
@@ -142,10 +146,20 @@ const Events = ({ className, ...rest }) => {
                           {entry.format}
                         </TableCell>
                         <TableCell>
-                          {entry.entry}
+                          <Typography
+                            color={entry.entry == 'Free' && 'secondary'}
+                            variant="body2"
+                          >
+                            {entry.entry}
+                          </Typography>
                         </TableCell>
                         <TableCell>
-                          {entry.status}
+                          <Typography
+                            className={entry.status == 'Waiting' && classes.waiting}
+                            variant="body2"
+                          >
+                            {entry.status}
+                          </Typography>
                         </TableCell>
                         <TableCell>
                           {entry.participants}
@@ -160,7 +174,7 @@ const Events = ({ className, ...rest }) => {
               </Table>
               <TablePagination
                 component="div"
-                count={12}
+                count={3}
                 labelRowsPerPage={'Rows per page'}
                 /* onChangePage={handlePageChange}
                 onChangeRowsPerPage={handleLimitChange} */

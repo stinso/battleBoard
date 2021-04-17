@@ -6,6 +6,7 @@ import {
 import { THEMES } from '../constants';
 import { softShadows, strongShadows } from './shadows';
 import typography from './typography';
+import green from "@material-ui/core/colors/green";
 
 const baseOptions = {
   typography,
@@ -57,6 +58,10 @@ const themesOptions = [
       text: {
         primary: '#e6e5e8',
         secondary: '#adb0bb'
+      },
+      success: {
+        main: green[500],
+        contrastText: "#fff"
       }
     },
     shadows: strongShadows
