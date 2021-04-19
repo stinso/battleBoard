@@ -77,6 +77,10 @@ const useStyles = makeStyles((theme) => ({
   },
   waiting: {
     color: '#388e3c'
+  },
+  title: {
+    fontFamily: font,
+    fontSize: 40
   }
 }));
 
@@ -93,6 +97,7 @@ const Events = ({ className, ...rest }) => {
     >
       <Container maxWidth="lg">
         <Typography
+          className={classes.title}
           variant="h1"
           color="textPrimary"
         >

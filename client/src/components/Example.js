@@ -31,8 +31,8 @@ const items = [
         Image: "/static/images/fifa21.jpg"
     },
     {
-        Name: "FORTNITE",
-        Image: "/static/images/fortnite.png"
+        Name: "MADDEN21",
+        Image: "/static/images/madden.jpg"
     }
 ]
 

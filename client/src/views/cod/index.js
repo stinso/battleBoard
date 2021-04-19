@@ -20,6 +20,8 @@ import {
 import Page from 'src/components/Page';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
+const font = "'Saira', sans-serif";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -41,10 +43,12 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.success.main
   },
   title: {
+    fontFamily: font,
+    fontSize: 40,
     position: 'relative',
     '&:before': {
       position: 'absolute',
-      bottom: -2,
+      bottom: 8,
       left: -16,
       content: '" "',
       height: 40,

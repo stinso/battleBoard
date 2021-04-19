@@ -103,6 +103,10 @@ const useStyles = makeStyles((theme) => ({
   },
   statusesButton: {
     margin: theme.spacing(2)
+  },
+  title: {
+    fontFamily: font,
+    fontSize: 40
   }
 }));
 
@@ -135,6 +139,7 @@ const Challenges = ({ className, ...rest }) => {
           >
             <Grid item>
               <Typography
+                className={classes.title}
                 variant="h1"
                 color="textPrimary"
               >

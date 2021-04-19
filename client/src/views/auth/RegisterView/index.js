@@ -52,6 +52,9 @@ const useStyles = makeStyles((theme) => ({
       width: 'auto',
       maxHeight: '100%'
     }
+  },
+  logo: {
+    width: '400px'
   }
 }));
 
@@ -74,7 +77,7 @@ const RegisterView = () => {
           justifyContent="center"
         >
           <RouterLink to="/">
-            <Logo />
+            <Logo className={classes.logo} />
           </RouterLink>
         </Box>
         <Card>

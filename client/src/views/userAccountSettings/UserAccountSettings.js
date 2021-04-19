@@ -89,7 +89,21 @@ const useStyles = makeStyles((theme) => ({
   },
   accordion: {
     marginTop: theme.spacing(4)
-  } 
+  },
+  title: {
+    fontFamily: font,
+    fontSize: 32,
+    position: 'relative',
+    '&:after': {
+      position: 'absolute',
+      bottom: -8,
+      left: 0,
+      content: '" "',
+      height: 3,
+      width: 48,
+      backgroundColor: theme.palette.primary.main
+    }
+  }
 }));
 
 const UserAccountSettings = ({ className, ...rest }) => {
@@ -121,7 +135,7 @@ const UserAccountSettings = ({ className, ...rest }) => {
                 >
                   <Button
                     className={classes.button}
-                    size="medium"
+                    size="small"
                     color="secondary"
                     variant="contained"
                   >
@@ -168,6 +182,7 @@ const UserAccountSettings = ({ className, ...rest }) => {
           <Grid item xs={12} lg={8}>
             <Paper className={classes.paper}>
               <Typography
+                className={classes.title}
                 variant="h2"
                 color="sextPrimary"
               >

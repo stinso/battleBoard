@@ -68,13 +68,13 @@ const events = [
   },
   {
     id: "MW Warzone Kill Race FREE",
-    format: "Fortnite - Max Kills",
-    participants: "22 of 30",
-    startTime: "27th Mar 21:00 CET",
+    format: "Fifa - Winner",
+    participants: "1 of 2",
+    startTime: "28th Mar 21:00 CET",
     entry: "Free",
-    duration: "60 Min.",
-    prizePool: "$28.50",
-    image: "/static/images/gameIcons/fortnite.jpg"
+    duration: "15 Min.",
+    prizePool: "$20",
+    image: "/static/images/gameIcons/fifa.jpg"
   },
   {
     id: "MW Warzone Kill Race FREE",
@@ -128,13 +128,13 @@ const events = [
   },
   {
     id: "MW Warzone Kill Race FREE",
-    format: "Fortnite - Most Headshots",
-    participants: "11 of 30",
-    startTime: "30th Mar 21:00 CET",
+    format: "Fifa - Winner",
+    participants: "1 of 2",
+    startTime: "28th Mar 21:00 CET",
     entry: "Free",
-    duration: "60 Min.",
-    prizePool: "$28.50",
-    image: "/static/images/gameIcons/fortnite.jpg"
+    duration: "15 Min.",
+    prizePool: "$20",
+    image: "/static/images/gameIcons/fifa.jpg"
   }
 ]
 
@@ -434,7 +434,7 @@ const Hero = ({ className, ...rest }) => {
                 </Typography>
                   <CardMedia
                     className={classes.mediaRight}
-                    image="/static/images/games/fortnite.jpg"
+                    image="/static/images/games/cod_coldWar.jpg"
                     title="title"
                   >
                     <Box className={classes.MediaCaption}>

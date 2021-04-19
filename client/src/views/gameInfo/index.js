@@ -116,10 +116,10 @@ const BattleView = () => {
           <Paper className={classes.topPaper}>
             <Box className={classes.info} borderBottom={1}>
               <Grid container>
-                <Grid item xs={3}>
-                  <img className={classes.image} src="/static/images/gameIcons/fortnite.jpg"/>
+                <Grid item xs={4}>
+                  <img className={classes.image} src="/static/images/games/cod_coldWar.jpg"/>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={8}>
                   <Box className={classes.caption}
                     display='flex'
                     flexDirection='column'
@@ -137,7 +137,7 @@ const BattleView = () => {
                             color="textPrimary"
                             variant="body2"
                           >
-                            Fortnite
+                            Call of Duty
                           </Typography>
                           <Typography
                             color="secondary"

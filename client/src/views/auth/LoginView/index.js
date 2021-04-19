@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     minHeight: '100vh'
   },
+  logo: {
+    width: '400px'
+  },
   banner: {
     backgroundColor: theme.palette.background.paper,
     paddingBottom: theme.spacing(2),
@@ -80,7 +83,7 @@ const LoginView = () => {
           justifyContent="center"
         >
           <RouterLink to="/">
-            <Logo />
+            <Logo className={classes.logo} />
           </RouterLink>
         </Box>
         <Card>
@@ -124,6 +127,16 @@ const LoginView = () => {
             >
               Create new account
             </Link>
+            <Box marginTop={1}>
+              <Link
+                component={RouterLink}
+                to="/register"
+                variant="body2"
+                color="textSecondary"
+              >
+                Forgot Password?
+              </Link>
+            </Box>
           </CardContent>
         </Card>
       </Container>
