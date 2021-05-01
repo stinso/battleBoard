@@ -14,6 +14,15 @@ import { Alert } from '@material-ui/lab';
 import useAuth from 'src/hooks/useAuth';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
 
+// new
+import ReCAPTCHA from 'react-google-recaptcha';
+import { useEffect, useState, useContext } from 'react';
+//import { useRouter } from 'next/router'
+import { loginService } from '../../../service/node.service.js';
+import { SignUpRedirectURL, ForgotPasswordRedirectURL, RecaptchaSiteKey } from '../../../config/constants';
+import { AuthContext } from '../../../context/AuthContext';
+import { LOGIN_REQUEST } from '../../../actions/actions';
+
 const useStyles = makeStyles(() => ({
   root: {}
 }));
@@ -22,6 +31,81 @@ const JWTLogin = ({ className, ...rest }) => {
   const classes = useStyles();
   const { login } = useAuth();
   const isMountedRef = useIsMountedRef();
+
+  // new
+  const {dispatch} = useContext(AuthContext);
+  const [userNameFocus, setUserNameFocus] = useState()
+  const [passwordFocus, setPasswordFocus] = useState()
+  const [userName, setUserName] = useState('')
+  const [password, setPassword] = useState('')
+  const [errMsg, setErrMsg] = useState()
+  const recaptchaRef = React.useRef();
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState()
+
+  const onCaptchaChange = (value) => {
+    setCaptchaVerified(value ? true: false);
+    setCaptchaToken(value);
+  }
+
+  useEffect(() =>{
+    document.documentElement.scrollTop = 0;
+    document.scrollingElement.scrollTop = 0;
+    document.body.classList.add("login-page");
+  }, [])
+
+  async function onLoginButtonClick(e){
+    setErrMsg('');
+    e.preventDefault()
+    if(userName && password && captchaVerified){
+      try{
+        let formData = {
+          username: userName,
+          reCaptchaToken: captchaToken,
+          password
+        };
+        
+        const response = await loginService(formData);
+        
+        const data = response.data;
+        if(data.success === true){
+          dispatch({
+            type: LOGIN_REQUEST,
+            payload: {
+              ...data,
+            }
+          })
+          if (redirect) {
+            router.push(redirect)
+          }
+          else {
+            router.push('/dashboard')
+          }
+        }
+        else{
+          setErrMsg('Something went wrong. Please try again');
+        }
+      }
+      catch(error){
+        console.log("onLoginButtonClick -> error", error)
+        recaptchaRef.current.reset();
+
+        if(error.response){
+          setErrMsg(error.response.data.error);
+        }
+        
+      }
+    }
+    else if(!userName){
+      setErrMsg('Please enter User Name');
+    }
+    else if(!password){
+      setErrMsg('Please enter Password');
+    }
+    else if(!captchaVerified){
+      setErrMsg('Please complete Captcha');
+    }
+  }
 
   return (
     <Formik
@@ -39,20 +123,55 @@ const JWTLogin = ({ className, ...rest }) => {
         setStatus,
         setSubmitting
       }) => {
-        try {
-          await login(values.email, values.password);
+        try{
+          let formData = {
+            username: values.email,
+            reCaptchaToken: captchaToken,
+            password: values.password
+          };
+          
+          const response = await loginService(formData);
 
           if (isMountedRef.current) {
             setStatus({ success: true });
             setSubmitting(false);
           }
-        } catch (err) {
+          
+          const data = response.data;
+          if(data.success === true){
+            dispatch({
+              type: LOGIN_REQUEST,
+              payload: {
+                ...data,
+              }
+            })
+            /* if (redirect) {
+              router.push(redirect)
+            }
+            else {
+              router.push('/dashboard')
+            } */
+            console.log('######## LOGIN SUCCESS! ########')
+          }
+          else{
+            setErrMsg('Something went wrong. Please try again');
+          }
+        }
+        catch(error){
           console.error(err);
           if (isMountedRef.current) {
             setStatus({ success: false });
             setErrors({ submit: err.message });
             setSubmitting(false);
           }
+          
+          console.log("onLoginButtonClick -> error", error)
+          recaptchaRef.current.reset();
+  
+          if(error.response){
+            setErrMsg(error.response.data.error);
+          }
+          
         }
       }}
     >

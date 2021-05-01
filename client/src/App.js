@@ -15,9 +15,16 @@ import ScrollReset from './components/ScrollReset';
 import useSettings from './hooks/useSettings';
 import { createTheme } from './theme';
 import routes, { renderRoutes } from './routes';
-import {StakingContractProvider} from "./context/StakingContract/index";
+//import {StakingContractProvider} from "./context/StakingContract/index";
 import { Web3Provider } from '@ethersproject/providers'
 import { Web3ReactProvider } from '@web3-react/core'
+
+import cookie from "cookie";
+import { AuthContextProvider } from "./context/AuthContext.js";
+import { checkIsPrivatePath, checkIsPublicPath } from "./utils/helpers";
+import { CookieName } from './config/constants';
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
 
 const jss = create({ plugins: [...jssPreset().plugins] });
 const history = createBrowserHistory();
@@ -36,6 +43,29 @@ const App = () => {
   });
 
   return (
+    <AuthContextProvider>
+      <Web3ReactProvider getLibrary={getLibrary}>
+          <ThemeProvider theme={theme}>
+            <StylesProvider jss={jss}>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <SnackbarProvider
+                  dense
+                  maxSnack={3}
+                >
+                  <Router history={history}>
+                    <GlobalStyles />
+                    <ScrollReset />
+                    {renderRoutes(routes)}
+                  </Router>
+                </SnackbarProvider>
+              </MuiPickersUtilsProvider>
+            </StylesProvider>
+          </ThemeProvider>
+      </Web3ReactProvider>
+    </AuthContextProvider>
+  );
+};
+  /* return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <StakingContractProvider>
         <ThemeProvider theme={theme}>
@@ -57,6 +87,6 @@ const App = () => {
       </StakingContractProvider>
     </Web3ReactProvider>
   );
-};
+}; */
 
 export default App;

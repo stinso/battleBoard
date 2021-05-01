@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
@@ -19,6 +19,13 @@ import {
 } from '@material-ui/core';
 import Page from 'src/components/Page';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+
+// new
+import * as Sentry from "@sentry/react";
+import { getEventsService } from '../../service/node.service';
+import {
+  getGameFormatFromIndex
+} from "../../utils/helpers.js";
 
 const font = "'Saira', sans-serif";
 
@@ -156,6 +163,16 @@ const CodView = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = useState('all');
 
+  // new
+  const [lobbyData, setLobbyData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [allBetAmounts, setAllBetAmounts] = useState([]);
+  const [betAmounts, setBetAmounts] = useState([]);
+  const [selectedBetAmount, setSelectedBetAmount] = useState([]);
+  const [allDates, setAllDates] = useState([]);
+  const [dates, setDates] = useState([]);
+  const [selectedDate, setSelectedDate] = useState([]);
+
   const tabs = [
     { value: 'all', label: 'All' },
     { value: 'free', label: 'Free' },
@@ -165,6 +182,107 @@ const CodView = () => {
   const handleTabsChange = (event, value) => {
     setCurrentTab(value);
   };
+
+  async function getLobbyData(){
+    try{
+      let gameID = 1;
+      //TODO remove gameID hard coded below and send gameID of appropriate game like GameID for COD is 1
+      /* switch (game) {
+        case 'cod':
+          gameID = 1;
+          break;
+        case 'madden2021':
+          gameID = 2;
+          break;
+        case 'fifa':
+          gameID = 3;
+          break;
+        default:
+          gameID = 1;
+          break;
+      } */
+      const {data} = await getEventsService({gameID})
+      if (data.success === true && data.events?.length > 0) {
+        const editedData = data.events.map((row, index) => {
+          return {
+            ...row,
+            date: getDateFromEpoch(row.startTime),
+            time: getTimeFromEpoch(row.startTime),
+            noOfUsersEnrolled: row.noOfUsersEnrolled > row.maxUsers ? row.maxUsers : row.noOfUsersEnrolled, 
+            duration: getDuration(row.startTime, row.endTime),
+            betAmount: row.sponsored ? 'Free' : `$${(row.betAmount).toFixed(2)}`,
+            prizePool: `$${(calculateTotalPrizePool(row.betAmount,
+              row.maxUsers))}`,
+          };
+        })
+        editedData.sort((firstRow, secondRow) => {
+          if (firstRow.date === secondRow.date
+            && firstRow.time === secondRow.time) {
+              if (firstRow.betAmount === 'Free') {
+                return -1
+              }
+              else if (secondRow.betAmount === 'Free') {
+                return 1;
+              }
+              else {
+                return parseInt(firstRow.betAmount.substring(1), 10) - parseInt(secondRow.betAmount.substring(1), 10)
+              }
+            }
+          return 0;
+        })
+        setLobbyData(editedData)
+        setSelectedBetAmount(AllBetAmount)
+        setSelectedDate(AllDates)
+        const allPossibleBetAmount = editedData.map((row) => row.betAmount)
+        allPossibleBetAmount.sort(function (a, b) {
+          if (a === 'Free') {
+            return -1
+          }
+          else if (b === 'Free') {
+            return 1;
+          }
+          else {
+            return parseInt(a.substring(1), 10) - parseInt(b.substring(1), 10)
+          }
+        })
+        setAllBetAmounts([AllBetAmount, ...new Set(allPossibleBetAmount)])
+        setBetAmounts([AllBetAmount, ...new Set(allPossibleBetAmount)]);
+        const allPossibleDates = editedData.map((row) => row.date)
+        setAllDates([AllDates, ...new Set(allPossibleDates)])
+        setDates([AllDates, ...new Set(allPossibleDates)]);
+      } 
+      setIsLoading(false);
+    }
+    catch (error) {
+      console.log("🚀 ~ file: GameLobby.jsx ~ line 111 ~ getLobbyData ~ error", error)
+      // new
+      /* Sentry.captureException(error, {
+        tags: {
+            page: router.asPath,
+        },
+      }); */
+    }
+  }
+  const onBetAmountDropdownClick = (row) => {
+    setSelectedBetAmount(row.label);
+    if (row.label === AllBetAmount) {
+      setBetAmounts([...allBetAmounts]);
+    } else {
+      setBetAmounts([row.label]);
+    }
+  };
+  const onDateDropdownClick = (row) => {
+    setSelectedDate(row.label);
+    if (row.label === AllDates) {
+      setDates([...allDates]);
+    } else {
+      setDates([row.label]);
+    }
+  };
+
+  useEffect(() => {
+    getLobbyData();
+  }, []);
 
   return (
     <PerfectScrollbar>

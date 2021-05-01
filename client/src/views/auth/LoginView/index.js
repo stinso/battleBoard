@@ -17,9 +17,14 @@ import Logo from 'src/components/Logo';
 import useAuth from 'src/hooks/useAuth';
 import JWTLogin from './JWTLogin';
 
-const methodIcons = {
-  'JWT': '/static/images/jwt.svg'
-};
+// new
+import ReCAPTCHA from "react-google-recaptcha";
+import { useEffect, useState, useContext } from "react";
+//import { useRouter } from 'next/router'
+import { loginService } from '../../../service/node.service.js';
+import { SignUpRedirectURL, ForgotPasswordRedirectURL, RecaptchaSiteKey } from "../../../config/constants";
+import { AuthContext } from '../../../context/AuthContext';
+import { LOGIN_REQUEST } from "../../../actions/actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,6 +72,93 @@ const useStyles = makeStyles((theme) => ({
 const LoginView = () => {
   const classes = useStyles();
   const { method } = useAuth();
+
+  // new
+  const {dispatch} = useContext(AuthContext);
+  const [userNameFocus, setUserNameFocus] = useState()
+  const [passwordFocus, setPasswordFocus] = useState()
+  const [userName, setUserName] = useState('')
+  const [password, setPassword] = useState('')
+  const [errMsg, setErrMsg] = useState()
+  const recaptchaRef = React.useRef();
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState()
+
+  const onCaptchaChange = (value) => {
+    setCaptchaVerified(value ? true: false);
+    setCaptchaToken(value);
+  }
+
+  useEffect(() =>{
+    document.documentElement.scrollTop = 0;
+    document.scrollingElement.scrollTop = 0;
+    document.body.classList.add("login-page");
+  }, [])
+
+  function onUserNameChange(e){
+    if(e.target.value){
+      setUserName(e.target.value);
+    }
+  }
+  
+  function onPasswordChange(e){
+    if(e.target.value){
+      setPassword(e.target.value);
+    }
+  }
+
+  async function onLoginButtonClick(e){
+    setErrMsg('');
+    e.preventDefault()
+    if(userName && password && captchaVerified){
+      try{
+        let formData = {
+          username: userName,
+          reCaptchaToken: captchaToken,
+          password
+        };
+        
+        const response = await loginService(formData);
+        
+        const data = response.data;
+        if(data.success === true){
+          dispatch({
+            type: LOGIN_REQUEST,
+            payload: {
+              ...data,
+            }
+          })
+          if (redirect) {
+            router.push(redirect)
+          }
+          else {
+            router.push('/dashboard')
+          }
+        }
+        else{
+          setErrMsg('Something went wrong. Please try again');
+        }
+      }
+      catch(error){
+        console.log("onLoginButtonClick -> error", error)
+        recaptchaRef.current.reset();
+
+        if(error.response){
+          setErrMsg(error.response.data.error);
+        }
+        
+      }
+    }
+    else if(!userName){
+      setErrMsg('Please enter User Name');
+    }
+    else if(!password){
+      setErrMsg('Please enter Password');
+    }
+    else if(!captchaVerified){
+      setErrMsg('Please complete Captcha');
+    }
+  }
 
   return (
     <Page
