@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { 
+  Link as RouterLink,
+  useLocation
+} from 'react-router-dom';
 import {
   Box,
   Card,
@@ -67,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const events = [
-  {
+  /* {
     id: "MW Warzone Kill Race FREE",
     format: "Warzone - Max Kills",
     participants: "16 of 30",
@@ -156,7 +159,7 @@ const events = [
     entry: "Free",
     duration: "60 Min.",
     prizePool: "$28.50"
-  }
+  } */
 ]
 
 const CodView = () => {
@@ -173,6 +176,9 @@ const CodView = () => {
   const [dates, setDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState([]);
 
+  const location = useLocation();
+  const game = location.pathname.substring(location.pathname.lastIndexOf('/') + 1)
+
   const tabs = [
     { value: 'all', label: 'All' },
     { value: 'free', label: 'Free' },
@@ -185,9 +191,9 @@ const CodView = () => {
 
   async function getLobbyData(){
     try{
-      let gameID = 1;
+      let gameID = 0;
       //TODO remove gameID hard coded below and send gameID of appropriate game like GameID for COD is 1
-      /* switch (game) {
+      switch (game) {
         case 'cod':
           gameID = 1;
           break;
@@ -200,7 +206,8 @@ const CodView = () => {
         default:
           gameID = 1;
           break;
-      } */
+      }
+
       const {data} = await getEventsService({gameID})
       if (data.success === true && data.events?.length > 0) {
         const editedData = data.events.map((row, index) => {
@@ -255,12 +262,11 @@ const CodView = () => {
     }
     catch (error) {
       console.log("🚀 ~ file: GameLobby.jsx ~ line 111 ~ getLobbyData ~ error", error)
-      // new
-      /* Sentry.captureException(error, {
+      Sentry.captureException(error, {
         tags: {
-            page: router.asPath,
+            page: location.pathname,
         },
-      }); */
+      });
     }
   }
   const onBetAmountDropdownClick = (row) => {
@@ -288,7 +294,7 @@ const CodView = () => {
     <PerfectScrollbar>
     <Page
       className={classes.root}
-      title="Call of Duty"
+      title="Action Game Page"
     >
       
       <Paper className={classes.paper} >

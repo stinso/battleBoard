@@ -63,7 +63,17 @@ const routes = [
       {
         exact: true,
         path: '/actionGamePage/cod',
-        component: lazy(() => import('src/views/cod'))
+        component: lazy(() => import('src/views/actionGameView'))
+      },
+      {
+        exact: true,
+        path: '/actionGamePage/fifa',
+        component: lazy(() => import('src/views/actionGameView'))
+      },
+      {
+        exact: true,
+        path: '/actionGamePage/madden2021',
+        component: lazy(() => import('src/views/actionGameView'))
       },
       {
         exact: true,
