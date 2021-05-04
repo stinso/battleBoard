@@ -60,7 +60,8 @@ let networkName = "",
     appId: "1:74450210365:web:a1a23a859e12d665f6a454",
 };
 
-const ENV = process.env.REACT_APP_ETH_PROVIDER;
+//const ENV = process.env.REACT_APP_ETH_PROVIDER;
+const ENV = 'goerli';
 switch (ENV) {
   case "kovan":
     networkName = "kovan";
@@ -121,8 +122,12 @@ switch (ENV) {
     maticNetwork = "testnet";
     rootChainProxy = "0x2890bA17EfE978480615e330ecB65333b880928e";
     captchaSiteKey = "6LdEPt8ZAAAAAJjKZNsmiHFPewM53OowRotwL-HL";
-    baseApiURLBS = `https://battle.testnet.chaingames.io:8080/v1/`;
-    baseApiURLCS = `https://wallet.testnet.chaingames.io:8000/v1/`;
+    baseApiURLBS = `http://127.0.0.1:8080/v1/`;
+    baseApiURLCS = `http://127.0.0.1:8000/v1/`;
+    /* baseApiURLBS = `http://139.59.35.142:8080/v1/`;
+    baseApiURLCS = `http://139.59.35.142:8000/v1/`; */
+    /* baseApiURLBS = `https://battle.testnet.chaingames.io:8080/v1/`;
+    baseApiURLCS = `https://wallet.testnet.chaingames.io:8000/v1/`; */
     break;
   default:
     etherscan = "https://etherscan.io/tx/";

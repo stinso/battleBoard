@@ -154,7 +154,7 @@ export const getMyInfoService = async (body) => {
 //Single event APIs
 export const getEventsService = async (body) => {
   return await nodeAxiosWithCredentials.post(
-    `public/get-upcoming-events`,
+    `authenticated/get-upcoming-events`,
     body
   );
 };

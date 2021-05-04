@@ -1,5 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
@@ -11,13 +12,11 @@ import {
   makeStyles
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import useAuth from 'src/hooks/useAuth';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
 
 // new
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useEffect, useState, useContext } from 'react';
-//import { useRouter } from 'next/router'
 import { loginService } from '../../../service/node.service.js';
 import { SignUpRedirectURL, ForgotPasswordRedirectURL, RecaptchaSiteKey } from '../../../config/constants';
 import { AuthContext } from '../../../context/AuthContext';
@@ -29,24 +28,12 @@ const useStyles = makeStyles(() => ({
 
 const JWTLogin = ({ className, ...rest }) => {
   const classes = useStyles();
-  const { login } = useAuth();
   const isMountedRef = useIsMountedRef();
 
   // new
+  const history = useHistory();
   const {dispatch} = useContext(AuthContext);
-  const [userNameFocus, setUserNameFocus] = useState()
-  const [passwordFocus, setPasswordFocus] = useState()
-  const [userName, setUserName] = useState('')
-  const [password, setPassword] = useState('')
   const [errMsg, setErrMsg] = useState()
-  const recaptchaRef = React.useRef();
-  const [captchaVerified, setCaptchaVerified] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState()
-
-  const onCaptchaChange = (value) => {
-    setCaptchaVerified(value ? true: false);
-    setCaptchaToken(value);
-  }
 
   useEffect(() =>{
     document.documentElement.scrollTop = 0;
@@ -64,6 +51,8 @@ const JWTLogin = ({ className, ...rest }) => {
           reCaptchaToken: captchaToken,
           password
         };
+
+        
         
         const response = await loginService(formData);
         
@@ -110,12 +99,12 @@ const JWTLogin = ({ className, ...rest }) => {
   return (
     <Formik
       initialValues={{
-        email: 'mukki@chaingames.io',
-        password: 'Password123',
+        email: 'mukki',
+        password: 'Proevo08!',
         submit: null
       }}
       validationSchema={Yup.object().shape({
-        email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+        //email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
         password: Yup.string().max(255).required('Password is required')
       })}
       onSubmit={async (values, {
@@ -126,11 +115,13 @@ const JWTLogin = ({ className, ...rest }) => {
         try{
           let formData = {
             username: values.email,
-            reCaptchaToken: captchaToken,
+            reCaptchaToken: ' ',
             password: values.password
           };
-          
+                    
           const response = await loginService(formData);
+
+          console.log(response)
 
           if (isMountedRef.current) {
             setStatus({ success: true });
@@ -145,23 +136,21 @@ const JWTLogin = ({ className, ...rest }) => {
                 ...data,
               }
             })
-            /* if (redirect) {
-              router.push(redirect)
-            }
-            else {
-              router.push('/dashboard')
-            } */
+            history.push('/dashboard')
+
             console.log('######## LOGIN SUCCESS! ########')
           }
           else{
             setErrMsg('Something went wrong. Please try again');
+            console.log('######## LOGIN ERROR! ########')
           }
         }
         catch(error){
-          console.error(err);
+          console.log('++++++++')
+          console.error(error);
           if (isMountedRef.current) {
             setStatus({ success: false });
-            setErrors({ submit: err.message });
+            setErrors({ submit: error.message });
             setSubmitting(false);
           }
           

@@ -16,6 +16,9 @@ import {
 import useAuth from 'src/hooks/useAuth';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
 
+// new
+import { registerUser } from '../../../service/node.service';
+
 const useStyles = makeStyles(() => ({
   root: {}
 }));
@@ -47,6 +50,20 @@ const JWTRegister = ({ className, ...rest }) => {
       }) => {
         try {
           await register(values.email, values.name, values.password);
+
+          console.log(values.name)
+          console.log(values.email)
+          console.log(values.password)
+
+          const { data } = await registerUser({
+            username: values.name,
+            email: values.email,
+            password: values.password,
+            reCaptchaToken: ' ',
+            name: values.name
+          });
+
+          console.log(data)
 
           if (isMountedRef.current) {
             setStatus({ success: true });

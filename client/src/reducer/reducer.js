@@ -8,6 +8,7 @@ import {
   } from '../actions/actions.js';
 import Cookies from "js-cookie";
 import { CookieName } from '../config/constants';
+import { ContactsOutlined } from '@material-ui/icons';
 
 
 export let SessionID =  Cookies.get(CookieName);
@@ -24,7 +25,11 @@ export let SessionID =  Cookies.get(CookieName);
               },
             };
       case LOGIN_REQUEST:
+        console.log(CookieName)
         SessionID = Cookies.get(CookieName)
+        console.log('session id:')
+        console.log(SessionID)
+        console.log(Cookies.get)
         return {
           ...state,
           user: {

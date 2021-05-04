@@ -102,7 +102,7 @@ const routes = [
       },
       {
         exact: true,
-        path: '/',
+        path: '/dashboard',
         component: HomeView
       },
       {
