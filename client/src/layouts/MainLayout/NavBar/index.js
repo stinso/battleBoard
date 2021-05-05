@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, matchPath } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -30,6 +30,27 @@ import {
 import NavItem  from './NavItem';
 import NumberFormat from 'react-number-format';
 import { useSelector } from 'src/store';
+
+//import Notification from './EthAddressNotLinkedNotification'
+import * as Sentry from "@sentry/react";
+import { AuthContext } from "../../../context/AuthContext";
+import {
+  ApproveRedirectLink,
+  DepositRedirectLink,
+  RedirectURL,
+  RegisterEthAddressRedirectURL,
+} from "../../../config/constants";
+import { getBalance, formatInCHAIN } from '../../../utils/helpers.js';
+import {getTotalEventsService, getTotalWinningsService, getBalanceFromCS} from '../../../service/node.service'
+import { MAX_APPROVED_BALANCE } from '../../../config/constants';
+//import Wizard from '../initialStepsWizard/index';
+
+const WizardEnums = {
+  AccountLink: 1,
+  Approve: 2,
+  Deposit: 3,
+  ConsoleLink: 4,
+}
 
 
 const mySections = [
@@ -191,6 +212,84 @@ const NavBar = ({ onOpen }) => {
   const location = useLocation();
   const acc = useSelector((state) => state.account);
 
+  const { user } = useContext(AuthContext);
+
+  const  account = user.user?.session?.ethAddress;
+  
+  const [showNotification, setShowNotification] = useState(false);
+  const [showWizardModal, setShowWizardModal] = useState(false);
+  const [chainNetworkBalance, setChainNetworkBalance] = useState(0);
+  const [approveBalance, setApprovedBalance] = useState(0);
+  const [fiatBalance, setFiatBalance] = useState(0);
+  const [totalWinnings, setTotalWinnings] = useState(0);
+  const [totalEvents, setTotalEvents] = useState(0);
+  const [currentStep, setCurrentStep] = useState(WizardEnums.AccountLink);
+
+  useEffect(() => {
+    if (!user.user.session?.ethAddress) {
+      setShowNotification(true);
+    } else {
+      setShowNotification(false);
+    }
+  }, [user.user.session]);
+
+  const getInfoFromAPI = async () => {
+    try {
+      const [winnings, events, balanceInfo] = await Promise.all(
+        [getTotalWinningsService({}),
+          getTotalEventsService({}),
+          getBalanceFromCS({}),
+        ])
+      if (winnings.data?.success) {
+        setTotalWinnings(winnings.data.winnings);
+      }
+      if (events.data?.success) {
+        setTotalEvents(events.data.totalEvents);
+      }
+      if (balanceInfo.data.success) {
+        setFiatBalance(balanceInfo.data.fiat);
+        const allowanceFormatInChain = formatInCHAIN(balanceInfo.data.token.allowance);
+        const networkFormatInChain = formatInCHAIN(balanceInfo.data.token.total);
+
+        setApprovedBalance(allowanceFormatInChain);
+        setChainNetworkBalance(networkFormatInChain);
+        if (account) {
+          if (MAX_APPROVED_BALANCE > allowanceFormatInChain) {
+            setCurrentStep(WizardEnums.Approve);
+            setShowWizardModal(true);
+          }
+          else if (networkFormatInChain <= 0) {
+            setCurrentStep(WizardEnums.Deposit);
+            setShowWizardModal(true);
+          }
+          else {
+            setCurrentStep(WizardEnums.ConsoleLink);
+            setShowWizardModal(true);
+          }
+        }
+        else {
+          setCurrentStep(WizardEnums.AccountLink)
+          setShowWizardModal(true);
+        }
+      }
+      
+    }
+    catch (error) {
+      console.log("🚀 ~ file: DashboardSectionOne.js ~ line 102 ~ getInfoFromAPI ~ error", error)
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname,
+        },
+    });
+    }
+  };
+
+  useEffect(() => {
+    setTotalEvents(0);
+    setTotalWinnings(0);
+    getInfoFromAPI();
+  }, []);
+
 
   const content = (
     <Box
@@ -222,7 +321,7 @@ const NavBar = ({ onOpen }) => {
               >
                 $
                 <NumberFormat 
-                  value={1000} 
+                  value={fiatBalance.toFixed(2)} 
                   displayType={'text'} 
                   thousandSeparator={true} 
                 />
@@ -239,7 +338,7 @@ const NavBar = ({ onOpen }) => {
                 color="secondary"
                 variant="outlined"
                 component={RouterLink}
-                to="/app/stake"
+                to="#"
                 fullWidth
               >
                 +Add Cash
@@ -259,7 +358,7 @@ const NavBar = ({ onOpen }) => {
               color="textPrimary"
             >
               <NumberFormat 
-                value={2200} 
+                value={chainNetworkBalance ? chainNetworkBalance : 0} 
                 displayType={'text'} 
                 thousandSeparator={true} 
               />
@@ -275,8 +374,7 @@ const NavBar = ({ onOpen }) => {
                 size="small"
                 color="secondary"
                 variant="outlined"
-                component={RouterLink}
-                to="/app/stakeRewards"
+                to={DepositRedirectLink}
                 fullWidth
               >
                 Deposit CHAIN
@@ -294,11 +392,11 @@ const NavBar = ({ onOpen }) => {
                 variant="body1"
                 color="textPrimary"
               >
-                <NumberFormat 
-                  value={1000} 
-                  displayType={'text'} 
-                  thousandSeparator={true} 
-                />
+                {MAX_APPROVED_BALANCE <= approveBalance ?
+                  'success icon'
+                    :
+                  'failure icon'
+                }
               </Typography>
             </Box>
             <Box
@@ -311,8 +409,10 @@ const NavBar = ({ onOpen }) => {
                 size="small"
                 color="secondary"
                 variant="outlined"
-                component={RouterLink}
-                to="/app/stake"
+                to={ApproveRedirectLink}
+                disabled={
+                  MAX_APPROVED_BALANCE <= approveBalance
+                }
                 fullWidth
               >
                 Approve

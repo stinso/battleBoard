@@ -24,14 +24,11 @@ import {
 import * as Sentry from "@sentry/react";
 import { getEventsService } from '../../service/node.service';
 import {
-  getGameFormatFromIndex
-} from "../../utils/helpers.js";
-import {getMyInfoService} from '../../service/node.service';
-import {
   getTimeFromEpoch,
   getDateFromEpoch,
   calculateTotalPrizePool,
-  getDuration
+  getDuration,
+  getGameFormatFromIndex
 } from "../../utils/helpers";
 
 const AllBetAmount = 'All Bet Amount';
@@ -133,11 +130,8 @@ const LobbyView = () => {
       }
 
       const { data } = await getEventsService({gameID})
-      console.log('Data:')
-      console.log(data)
       if (data.success === true && data.events?.length > 0) {
-        console.log('true')
-        const editedData = data.events.map((row, index) => {
+        const editedData = data.events.map((row) => {
           return {
             ...row,
             date: getDateFromEpoch(row.startTime),
@@ -164,8 +158,6 @@ const LobbyView = () => {
             }
           return 0;
         })
-        console.log('edited Data:')
-        console.log(editedData)
         setLobbyData(editedData)
         setSelectedBetAmount(AllBetAmount)
         setSelectedDate(AllDates)
@@ -292,19 +284,19 @@ const LobbyView = () => {
                           {entry.game}
                         </TableCell>
                         <TableCell>
-                          {entry.gameFormat}
+                          {getGameFormatFromIndex(entry.game ,entry.gameFormat)}
                         </TableCell>
                         <TableCell>
-                          {entry.noOfUsersEnrolled}
+                          {`${entry.noOfUsersEnrolled} of ${entry.maxUsers}`} 
                         </TableCell>
                         <TableCell>
-                          {entry.date}
+                          {`${entry.date} ${entry.time}`}
                         </TableCell>
                         <TableCell className={entry.betAmount == 'Free' ? classes.free : ''}>
                           {entry.betAmount}
                         </TableCell>
                         <TableCell>
-                          {entry.duration}
+                          {`${entry.duration} min`}
                         </TableCell>
                         <TableCell className={classes.priceCell} align="right">
                           {entry.prizePool}
