@@ -57,6 +57,11 @@ const routes = [
     component: lazy(() => import('src/views/auth/RegisterView'))
   },
   {
+    exact: true,
+    path: '/forgotPassword',
+    component: lazy(() => import('src/views/auth/ForgotPasswordView'))
+  },
+  {
     path: '*',
     layout: MainLayout,
     routes: [

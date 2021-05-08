@@ -13,7 +13,7 @@ import {
 import Page from 'src/components/Page';
 import Logo from 'src/components/Logo';
 import useAuth from 'src/hooks/useAuth';
-import JWTRegister from './JWTRegister';
+import Register from './Register';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -108,7 +108,7 @@ const RegisterView = () => {
               flexGrow={1}
               mt={3}
             >
-              {method === 'JWT' && <JWTRegister /> }
+              <Register />
             </Box>
             <Box my={3}>
               <Divider />

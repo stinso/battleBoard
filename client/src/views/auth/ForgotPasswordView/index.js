@@ -13,8 +13,7 @@ import {
 import Page from 'src/components/Page';
 import Logo from 'src/components/Logo';
 import useAuth from 'src/hooks/useAuth';
-import Login from './Login';
-
+import ForgotPassword from './ForgotPassword';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,9 +21,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh'
-  },
-  logo: {
-    width: '400px'
   },
   banner: {
     backgroundColor: theme.palette.background.paper,
@@ -56,17 +52,20 @@ const useStyles = makeStyles((theme) => ({
       width: 'auto',
       maxHeight: '100%'
     }
+  },
+  logo: {
+    width: '400px'
   }
 }));
 
-const LoginView = () => {
+const ForgotPasswordView = () => {
   const classes = useStyles();
   const { method } = useAuth();
 
   return (
     <Page
       className={classes.root}
-      title="Login"
+      title="Forgot password"
     >
       <Container
         className={classes.cardContainer}
@@ -95,13 +94,13 @@ const LoginView = () => {
                   gutterBottom
                   variant="h2"
                 >
-                  Sign in
+                  Reset Password
                 </Typography>
                 <Typography
                   variant="body2"
                   color="textSecondary"
                 >
-                  Sign in on the internal platform
+                  Fill the form to reset your password
                 </Typography>
               </div>
             </Box>
@@ -109,29 +108,19 @@ const LoginView = () => {
               flexGrow={1}
               mt={3}
             >
-              <Login />
+              <ForgotPassword />
             </Box>
             <Box my={3}>
               <Divider />
             </Box>
             <Link
               component={RouterLink}
-              to="/register"
+              to="/login"
               variant="body2"
               color="textSecondary"
             >
-              Create new account
+              Back to Login
             </Link>
-            <Box marginTop={1}>
-              <Link
-                component={RouterLink}
-                to="/forgotPassword"
-                variant="body2"
-                color="textSecondary"
-              >
-                Forgot Password?
-              </Link>
-            </Box>
           </CardContent>
         </Card>
       </Container>
@@ -139,4 +128,4 @@ const LoginView = () => {
   );
 };
 
-export default LoginView;
+export default ForgotPasswordView;

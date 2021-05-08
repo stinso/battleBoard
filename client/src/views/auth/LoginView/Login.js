@@ -26,7 +26,7 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const JWTLogin = ({ className, ...rest }) => {
+const Login = ({ className, ...rest }) => {
   const classes = useStyles();
   const isMountedRef = useIsMountedRef();
 
@@ -238,8 +238,8 @@ const JWTLogin = ({ className, ...rest }) => {
   );
 };
 
-JWTLogin.propTypes = {
+Login.propTypes = {
   className: PropTypes.string,
 };
 
-export default JWTLogin;
+export default Login;

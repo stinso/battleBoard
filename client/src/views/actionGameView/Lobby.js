@@ -69,18 +69,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const events = [
-  /* {
-    id: "MW Warzone Kill Race FREE",
-    format: "Warzone - Max Kills",
-    participants: "16 of 30",
-    startTime: "27th Mar 21:00 CET",
-    entry: "Free",
-    duration: "60 Min.",
-    prizePool: "$28.50"
-  } */
-]
-
 const LobbyView = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = useState('all');

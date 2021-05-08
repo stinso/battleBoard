@@ -1,25 +1,11 @@
-import React from 'react';
-import Carousel from "react-material-ui-carousel"
-import autoBind from "auto-bind"
-import '../style/Example.scss';
+import Carousel from "./Carousel/Carousel"
 
-import {
+import { 
     Card,
-    CardContent,
     CardMedia,
     Typography,
-    Grid,
-    Button,
-    Checkbox,
-    FormControlLabel,
-    Radio,
-    RadioGroup,
-    FormLabel,
-    Slider,
-    IconButton
-} from '@material-ui/core';
-
-
+    makeStyles
+ } from '@material-ui/core';
 
 const items = [
     {
@@ -33,183 +19,96 @@ const items = [
     {
         Name: "MADDEN21",
         Image: "/static/images/madden.jpg"
+    },
+    {
+        Name: "APEX1",
+        Image: "/static/images/apex.jpg"
+    },
+    {
+        Name: "FIFA211",
+        Image: "/static/images/fifa21.jpg"
+    },
+    {
+        Name: "MADDEN211",
+        Image: "/static/images/madden.jpg"
     }
 ]
 
-class BannerExample extends React.Component {
-    
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            autoPlay: false,
-            animation: "fade",
-            indicators: true,
-            timeout: 500,
-            navButtonsAlwaysVisible: false,
-            navButtonsAlwaysInvisible: false,
-            cycleNavigation: true
-        }
-
-        autoBind(this);
+const useStyles = makeStyles((theme) => ({
+    card: {
+      width: '100%',
+      height: 320,
+      backgroundColor: '#00008B',
+      color: '#fff',
+      margin: '0 15px'
+    },
+    image: {
+      height: 320,
+      backgroundColor: theme.palette.background.dark
+    },
+    title: {
+      position: 'relative',
+      '&:before': {
+        position: 'absolute',
+        bottom: -2,
+        left: -16,
+        content: '" "',
+        height: 62,
+        width: 6,
+        backgroundColor: theme.palette.secondary.main,
+        marginRight: '20px'
+      }
+    },
+    media: {
+      height: '100%'
+    },
+    mediaCaption: {
+      position: 'absolute',
+      bottom: 0,
+  
+      paddingLeft: '15px',
+      paddingBottom: '10px',
+      paddingTop: '10px',
+  
+      backgroundColor: 'black',
+      color: 'white',
+      opacity: 0.8,
+  
+      width: '100%',
+      height: '30%'    
+    },
+    banner: {
+        height: 320
     }
+  }));
 
-    toggleAutoPlay() {
-        this.setState({
-            autoPlay: !this.state.autoPlay
-        })
-    }
+const Banner = () => {
+    const classes = useStyles();
 
-    toggleIndicators() {
-        this.setState({
-            indicators: !this.state.indicators
-        })
-    }
-
-    toggleNavButtonsAlwaysVisible() {
-        this.setState({
-            navButtonsAlwaysVisible: !this.state.navButtonsAlwaysVisible
-        })
-    }
-
-    toggleNavButtonsAlwaysInvisible() {
-        this.setState({
-            navButtonsAlwaysInvisible: !this.state.navButtonsAlwaysInvisible
-        })
-    }
-
-    toggleCycleNavigation() {
-        this.setState({
-            cycleNavigation: !this.state.cycleNavigation
-        })
-    }
-
-    changeAnimation(event) {
-        this.setState({
-            animation: event.target.value
-        })
-    }
-
-    changeTimeout(event, value) {
-        this.setState({
-            timeout: value
-        })
-    }
-
-    render() {
-        return (
-
-                <Carousel
-                    className="Example"
-                    autoPlay={this.state.autoPlay}
-                    animation={this.state.animation}
-                    indicators={this.state.indicators}
-                    timeout={this.state.timeout}
-                    cycleNavigation={this.state.cycleNavigation}
-                    navButtonsAlwaysVisible={this.state.navButtonsAlwaysVisible}
-                    navButtonsAlwaysInvisible={this.state.navButtonsAlwaysInvisible}
-                    next={(now, previous) => console.log(`Next User Callback: Now displaying child${now}. Previously displayed child${previous}`)}
-                    prev={(now, previous) => console.log(`Prev User Callback: Now displaying child${now}. Previously displayed child${previous}`)}
-                    onChange={(now, previous) => console.log(`OnChange User Callback: Now displaying child${now}. Previously displayed child${previous}`)}
-                    // fullHeightHover={false}
-                    // navButtonsProps={{style: {backgroundColor: 'cornflowerblue', borderRadius: 0}}}
-                    // navButtonsWrapperProps={{style: {bottom: '0', top: 'unset', }}}
-                    // indicatorContainerProps={{style: {margin: "20px"}}}
-                    // NextIcon='next'
-                >
-                    <Card raised className="Banner">
-                        <Grid container spacing={3} className="BannerGrid">
-                    {
-                        items.map((item) => {
-                            return(
-                                <Grid item xs={4} key={item.Name}>
-                                    <CardMedia
-                                        className="Media"
-                                        image={item.Image}
-                                        title={item.Name}
-                                    >
-                                        <Typography className="MediaCaption">
-                                            {item.Name}
-                                        </Typography>
-                                    </CardMedia>
-                                </Grid>
-                            )
-                        })
-                    }
-                        </Grid>
-                    </Card>
-                    {/* <FormLabel component="legend">Options</FormLabel>
-                <FormControlLabel
-                    control={
-                        <Checkbox onChange={this.toggleAutoPlay} checked={this.state.autoPlay} value="autoplay"
-                            color="primary" />
-                    }
-                    label="Auto-play"
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox onChange={this.toggleIndicators} checked={this.state.indicators} value="indicators"
-                            color="primary" />
-                    }
-                    label="Indicators"
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox onChange={this.toggleNavButtonsAlwaysVisible} checked={this.state.navButtonsAlwaysVisible} value="NavButtonsAlwaysVisible" color="primary" />
-                    }
-                    label="NavButtonsAlwaysVisible"
-                />
-
-                <FormControlLabel
-                    control={
-                        <Checkbox onChange={this.toggleNavButtonsAlwaysInvisible} checked={this.state.navButtonsAlwaysInvisible} value="NavButtonsAlwaysInvisible" color="primary" />
-                    }
-                    label="NavButtonsAlwaysInvisible"
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox onChange={this.toggleCycleNavigation} checked={this.state.cycleNavigation} value="CycleNavigation" color="primary" />
-                    }
-                    label="CycleNavigation"
-                />
-
-                <FormControlLabel
-                    control={
-                        <RadioGroup name="animation" value={this.state.animation} onChange={this.changeAnimation} row
-                            style={{ marginLeft: "10px" }}>
-                            <FormControlLabel value="fade" control={<Radio color="primary" />} label="Fade" />
-                            <FormControlLabel value="slide" control={<Radio color="primary" />} label="Slide" />
-                        </RadioGroup>
-                    }
-                />
-
-                <FormControlLabel
-                    control={
-                        <div style={{ width: 300 }}>
-                            <Typography id="discrete-slider" gutterBottom>
-                                Animation Duration (Timeout) in ms
+    return (
+        <Card raised className={classes.banner}>
+            <Carousel
+                className={classes.banner}
+                show={3}
+                infiniteLoop
+            >
+                {
+                items.map((item) => {
+                    return(
+                        <CardMedia
+                            image={item.Image}
+                            title={item.Name}
+                        >
+                            <Typography>
+                                {item.Name}
                             </Typography>
-                            <Slider
-                                defaultValue={500}
-                                getAriaValueText={() => `${this.state.timeout}ms`}
-                                aria-labelledby="discrete-slider"
-                                valueLabelDisplay="auto"
-                                step={100}
-                                marks
-                                min={100}
-                                max={2000}
-                                onChange={this.changeTimeout}
-                            />
-                        </div>
-                    }
-                /> */}
-                </Carousel>
+                        </CardMedia>
+                    )
+                })
+                }
+            </Carousel>
+        </Card>
+    )
+} 
 
-
-                
-
-        )
-    }
-}
-
-export default BannerExample;
+export default Banner

@@ -1,14 +1,17 @@
 import { useLocation } from 'react-router-dom';
-import { Paper, makeStyles } from '@material-ui/core';
+import { 
+  Paper,
+  makeStyles 
+} from '@material-ui/core';
 import COD_Image from '../../assets/img/COD_Background.jpg';
 import Madden_Image from '../../assets/img/Madden_Background.jpg'; 
 import Fifa_Image from '../../assets/img/fifa-background-image.jpg'
 
 const useStyles = makeStyles((theme) => ({
-    paper: {
-        backgroundColor: theme.palette.background.dark,
-        elevation: 10
-    }
+  paper: {
+    backgroundColor: theme.palette.background.dark,
+    elevation: 10
+  }
 }));
   
 const GameSectionOne = () => {

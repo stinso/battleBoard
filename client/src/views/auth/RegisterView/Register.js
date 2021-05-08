@@ -23,7 +23,7 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const JWTRegister = ({ className, ...rest }) => {
+const Register = ({ className, ...rest }) => {
   const classes = useStyles();
   const { register } = useAuth();
   const isMountedRef = useIsMountedRef();
@@ -51,10 +51,6 @@ const JWTRegister = ({ className, ...rest }) => {
         try {
           await register(values.email, values.name, values.password);
 
-          console.log(values.name)
-          console.log(values.email)
-          console.log(values.password)
-
           const { data } = await registerUser({
             username: values.name,
             email: values.email,
@@ -62,8 +58,6 @@ const JWTRegister = ({ className, ...rest }) => {
             reCaptchaToken: ' ',
             name: values.name
           });
-
-          console.log(data)
 
           if (isMountedRef.current) {
             setStatus({ success: true });
@@ -186,8 +180,8 @@ const JWTRegister = ({ className, ...rest }) => {
   );
 };
 
-JWTRegister.propTypes = {
+Register.propTypes = {
   className: PropTypes.string
 };
 
-export default JWTRegister;
+export default Register;
