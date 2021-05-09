@@ -3,44 +3,43 @@ import Carousel from "./Carousel/Carousel"
 import { 
     Card,
     CardMedia,
+    Link,
     Typography,
     makeStyles
  } from '@material-ui/core';
+ import { SuperCryptoKartLink } from '../config/constants';
 
 const items = [
     {
-        Name: "APEX",
-        Image: "/static/images/apex.jpg"
+        Name: "Call of Duty",
+        Image: "/static/images/cod-warzone-sm.jpg",
+        link: '/actionGamePage/cod',
+        openInNewTab: false
     },
     {
-        Name: "FIFA21",
-        Image: "/static/images/fifa21.jpg"
+        Name: "Fifa",
+        Image: "/static/images/fifa21.jpg",
+        link: '/actionGamePage/fifa',
+        openInNewTab: false
     },
     {
-        Name: "MADDEN21",
-        Image: "/static/images/madden.jpg"
+        Name: "Madden NFL 21",
+        Image: "/static/images/madden.jpg",
+        link: '/actionGamePage/madden2021',
+        openInNewTab: false
     },
     {
-        Name: "APEX1",
-        Image: "/static/images/apex.jpg"
-    },
-    {
-        Name: "FIFA211",
-        Image: "/static/images/fifa21.jpg"
-    },
-    {
-        Name: "MADDEN211",
-        Image: "/static/images/madden.jpg"
+        Name: "Super Crypto Kart",
+        Image: "/static/images/sck.jpg",
+        link: SuperCryptoKartLink,
+        openInNewTab: true
     }
 ]
 
 const useStyles = makeStyles((theme) => ({
     card: {
       width: '100%',
-      height: 320,
-      backgroundColor: '#00008B',
-      color: '#fff',
-      margin: '0 15px'
+      height: 320
     },
     image: {
       height: 320,
@@ -60,22 +59,38 @@ const useStyles = makeStyles((theme) => ({
       }
     },
     media: {
-      height: '100%'
+        height: '100%',
+        overflow: 'hidden',
+        position: 'relative',
+        transition: '300ms',
+        cursor: 'pointer',
+        '&:hover':
+        {
+            filter: 'brightness(115%)'
+        }
     },
     mediaCaption: {
-      position: 'absolute',
-      bottom: 0,
-  
-      paddingLeft: '15px',
-      paddingBottom: '10px',
-      paddingTop: '10px',
-  
-      backgroundColor: 'black',
-      color: 'white',
-      opacity: 0.8,
-  
-      width: '100%',
-      height: '30%'    
+        textOverflow: 'ellipsis',
+
+        position: 'absolute',
+        bottom: 0,
+
+        paddingLeft: '15px',
+        paddingBottom: '10px',
+        paddingTop: '10px',
+
+        backgroundColor: 'black',
+        color: 'white',
+        opacity: 0.4,
+
+        width: '100%',
+        height: '15%',
+
+        transition: '300ms',
+        cursor: 'pointer',
+        '&:hover': {
+          opacity: 0.8
+        }
     },
     banner: {
         height: 320
@@ -86,7 +101,7 @@ const Banner = () => {
     const classes = useStyles();
 
     return (
-        <Card raised className={classes.banner}>
+        <Card raised className={classes.card}>
             <Carousel
                 className={classes.banner}
                 show={3}
@@ -95,14 +110,19 @@ const Banner = () => {
                 {
                 items.map((item) => {
                     return(
-                        <CardMedia
-                            image={item.Image}
-                            title={item.Name}
+                        <Link
+                            href={item.link}
                         >
-                            <Typography>
-                                {item.Name}
-                            </Typography>
-                        </CardMedia>
+                            <CardMedia
+                                className={classes.media}
+                                image={item.Image}
+                                title={item.Name}
+                            >
+                                <Typography className={classes.mediaCaption}>
+                                    {item.Name}
+                                </Typography>
+                            </CardMedia>
+                        </Link>
                     )
                 })
                 }

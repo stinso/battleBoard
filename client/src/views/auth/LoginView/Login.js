@@ -121,8 +121,6 @@ const Login = ({ className, ...rest }) => {
                     
           const response = await loginService(formData);
 
-          console.log(response)
-
           if (isMountedRef.current) {
             setStatus({ success: true });
             setSubmitting(false);

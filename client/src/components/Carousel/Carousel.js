@@ -1,7 +1,47 @@
-import React, { useEffect, useState } from 'react'
-import './carousel.css'
+import React, { useEffect, useState } from 'react';
+import './carousel.css';
+    
+import {
+    ChevronLeft,
+    ChevronRight
+} from '@material-ui/icons';
+
+import { 
+    IconButton,
+    SvgIcon,
+    makeStyles
+} from '@material-ui/core';
+
+ const useStyles = makeStyles((theme) => ({
+    arrowLeft: {
+        backgroundColor: theme.palette.background.paper,
+        opacity: 0.8,
+        position: 'absolute',
+        zIndex: 1,
+        top: '50%',
+        transform: 'translateY(-50%)',
+        width: '48px',
+        height: '48px',
+        marginLeft: '24px'
+    },
+    arrowRight: {
+        backgroundColor: theme.palette.background.paper,
+        opacity: 0.8,
+        position: 'absolute',
+        zIndex: 1,
+        top: '50%',
+        transform: 'translateY(-50%)',
+        width: '48px',
+        height: '48px',
+        marginRight: '24px'
+    },
+    icon: {
+        color: 'white'
+    }
+}));
 
 const Carousel = (props) => {
+    const classes = useStyles();
     const {children, show, infiniteLoop} = props
 
     const [currentIndex, setCurrentIndex] = useState(infiniteLoop ? show : 0)
@@ -96,12 +136,13 @@ const Carousel = (props) => {
     return (
         <div className="carousel-container">
             <div className="carousel-wrapper">
-                {/* You can alwas change the content of the button to other things */}
                 {
                     (isRepeating || currentIndex > 0) &&
-                    <button onClick={prev} className="left-arrow">
-                        &lt;
-                    </button>
+                    <IconButton className={classes.arrowLeft} onClick={prev}>
+                        <SvgIcon className={classes.icon}>
+                            <ChevronLeft/>
+                        </SvgIcon>
+                    </IconButton>
                 }
                 <div
                     className="carousel-content-wrapper"
@@ -127,12 +168,15 @@ const Carousel = (props) => {
                         }
                     </div>
                 </div>
-                {/* You can alwas change the content of the button to other things */}
                 {
                     (isRepeating || currentIndex < (length - show)) &&
-                    <button onClick={next} className="right-arrow">
-                        &gt;
-                    </button>
+                    <div className="right-arrow">
+                    <IconButton className={classes.arrowRight} onClick={next}>
+                        <SvgIcon className={classes.icon}>
+                            <ChevronRight/>
+                        </SvgIcon>
+                    </IconButton>
+                    </div>
                 }
             </div>
         </div>
