@@ -48,6 +48,11 @@ const routes = [
   },
   {
     exact: true,
+    path: '/500',
+    component: lazy(() => import('src/views/errors/InternalServerErrorView'))
+  },
+  {
+    exact: true,
     path: '/login',
     component: lazy(() => import('src/views/auth/LoginView'))
   },
@@ -55,6 +60,16 @@ const routes = [
     exact: true,
     path: '/register',
     component: lazy(() => import('src/views/auth/RegisterView'))
+  },
+  {
+    exact: true,
+    path: '/VerifyEmail',
+    component: lazy(() => import('src/views/auth/VerifyEmailView'))
+  },
+  {
+    exact: true,
+    path: '/VerifyForgotPassword',
+    component: lazy(() => import('src/views/auth/VerifyForgotPasswordView'))
   },
   {
     exact: true,

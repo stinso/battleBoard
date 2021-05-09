@@ -10,8 +10,8 @@ import {
   TextField,
   makeStyles
 } from '@material-ui/core';
-import useAuth from 'src/hooks/useAuth';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
+import { recoverPassword } from '../../../service/node.service';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -37,7 +37,20 @@ const ForgotPassword = ({ className, ...rest }) => {
         setSubmitting
       }) => {
         try {
-          history.push('/dashboard')
+          const { data } = await recoverPassword({
+            email: values.email,
+            reCaptchaToken: ''
+          });
+
+          if (data && data.success) {
+            //setShowModal(true);
+            history.push('/dashboard')
+          }
+          else {
+            setStatus({ success: false });
+            setErrors({ submit: data.error });
+            setSubmitting(false);
+          }
 
           if (isMountedRef.current) {
             setStatus({ success: true });
@@ -88,7 +101,7 @@ const ForgotPassword = ({ className, ...rest }) => {
               type="submit"
               variant="contained"
             >
-              Reset Password
+              Send Password Reset Link
             </Button>
           </Box>
         </form>

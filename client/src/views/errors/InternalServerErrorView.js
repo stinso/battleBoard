@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const NotFoundView = () => {
+const InternalServerErrorView = () => {
   const classes = useStyles();
   const theme = useTheme();
   const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
@@ -37,7 +37,7 @@ const NotFoundView = () => {
   return (
     <Page
       className={classes.root}
-      title="404: Not found"
+      title="500: Internal Server Error"
     >
       <Container maxWidth="lg">
         <Typography
@@ -45,15 +45,14 @@ const NotFoundView = () => {
           variant={mobileDevice ? 'h4' : 'h1'}
           color="textPrimary"
         >
-          404: The page you are looking for isn’t here
+          500: Internal Server Error 
         </Typography>
         <Typography
           align="center"
           variant="subtitle2"
           color="textSecondary"
         >
-          You either tried some shady route or you
-          came here by mistake. Whichever it is, try using the navigation.
+          We are sorry. This was unexpected.
         </Typography>
         <Box
           mt={6}
@@ -74,4 +73,4 @@ const NotFoundView = () => {
   );
 };
 
-export default NotFoundView;
+export default InternalServerErrorView;
