@@ -328,6 +328,41 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const tournaments = [
+  {
+    game: "Cod",
+    tournamentStyle: "COMMUNITY TOURNAMENT",
+    date: "MAR29, 2:00 PM PST",
+    description: "$10 Free Entry 3v3 Best of 1",
+    image: "/static/images/games/cod_coldWar.jpg",
+    entry: "$10"
+  },
+  {
+    game: "NBA",
+    tournamentStyle: "COMMUNITY TOURNAMENT",
+    date: "MAR29, 2:00 PM PST",
+    description: "$10 Free Entry 3v3 Best of 1",
+    image: "/static/images/games/nba.jpg",
+    entry: "$16"
+  },
+  {
+    game: "NBA",
+    tournamentStyle: "COMMUNITY TOURNAMENT",
+    date: "MAR29, 2:00 PM PST",
+    description: "$10 Free Entry 3v3 Best of 1",
+    image: "/static/images/games/nba.jpg",
+    entry: "$10"
+  },
+  {
+    game: "Cod",
+    tournamentStyle: "COMMUNITY TOURNAMENT",
+    date: "MAR29, 2:00 PM PST",
+    description: "$10 Free Entry 3v3 Best of 1",
+    image: "/static/images/games/cod_coldWar.jpg",
+    entry: "$10"
+  }
+]
+
 function Item(props)
 {
     return (
@@ -422,226 +457,67 @@ const Hero = ({ className, ...rest }) => {
               </Card>
             </Grid>
             <Grid item container xs={6} spacing={1}>
-              <Grid item xs={6}>
-                <Card raised className={classes.cardRight}>
-                <Typography
-                  variant="h6"
-                  color="secondary"
-                  className={classes.pricePoolRight}
-                  fontFamily={font}
-                >
-                  $10
-                </Typography>
-                  <CardMedia
-                    className={classes.mediaRight}
-                    image="/static/images/games/cod_coldWar.jpg"
-                    title="title"
-                  >
-                    <Box className={classes.MediaCaption}>
-                      <Grid container spacing={1}>
-                        <Grid container xs={6} >
-                          <Grid item xs={12} >
-                            <Typography
-                              variant="body2"
-                              color="secondary"
-                            >
-                              COMMUNITY TOURNAMENT
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} >
-                            <Typography
-                              variant="body2"
-                              color="textPrimary"
-                            >
-                              MAR 29, 2:00 PM PST
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} >
-                            <Typography
-                              variant="body1"
-                              color="textPrimary"
-                            >
-                              $10 Free Entry 3v3 Best of 1
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                    <Button className={classes.viewButtonRight}
-                      variant="outlined"
-                      size="small"
+            {
+              tournaments.map((tournament) => {
+                return(
+                  <Grid item xs={6}>
+                    <Card raised className={classes.cardRight}>
+                    <Typography
+                      variant="h6"
                       color="secondary"
+                      className={classes.pricePoolRight}
+                      fontFamily={font}
                     >
-                      VIEW
-                    </Button>
-                  </CardMedia>
-                </Card>
-              </Grid>
-              <Grid item xs={6} >
-                <Card raised className={classes.cardRight}>
-                  <Typography
-                    variant="h6"
-                    color="secondary"
-                    className={classes.pricePoolRight}
-                    fontFamily={font}
-                  >
-                    $16
-                  </Typography>
-                  <CardMedia
-                    className={classes.mediaRight}
-                    image="/static/images/games/nba.jpg"
-                    title="title"
-                  >
-                    <Box className={classes.MediaCaption}>
-                      <Grid container spacing={1}>
-                        <Grid container xs={6} >
-                          <Grid item xs={12} >
-                            <Typography
-                              variant="body2"
-                              color="secondary"
-                            >
-                              COMMUNITY TOURNAMENT
-                            </Typography>
+                      {tournament.entry}
+                    </Typography>
+                      <CardMedia
+                        className={classes.mediaRight}
+                        image={tournament.image}
+                        title={tournament.game}
+                      >
+                        <Box className={classes.MediaCaption}>
+                          <Grid container spacing={1}>
+                            <Grid container xs={9} >
+                              <Grid item xs={12} >
+                                <Typography
+                                  variant="body2"
+                                  color="secondary"
+                                >
+                                  {tournament.tournamentStyle}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12} >
+                                <Typography
+                                  variant="body2"
+                                  color="textPrimary"
+                                >
+                                  {tournament.date}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12} >
+                                <Typography
+                                  variant="body1"
+                                  color="textPrimary"
+                                >
+                                  {tournament.description}
+                                </Typography>
+                              </Grid>
+                            </Grid>
                           </Grid>
-                          <Grid item xs={12} >
-                            <Typography
-                              variant="body2"
-                              color="textPrimary"
-                            >
-                              MAR 29, 2:00 PM PST
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} >
-                            <Typography
-                              variant="body1"
-                              color="textPrimary"
-                            >
-                              $10 Free Entry 3v3 Best of 1
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                    <Button className={classes.viewButtonRight}
-                      variant="outlined"
-                      size="small"
-                      color="secondary"
-                    >
-                      VIEW
-                    </Button>
-                  </CardMedia>
-                </Card>
-              </Grid>
-              <Grid item xs={6} >
-                <Card raised className={classes.cardRight}>
-                  <Typography
-                    variant="h6"
-                    color="secondary"
-                    className={classes.pricePoolRight}
-                    fontFamily={font}
-                  >
-                    $10
-                  </Typography>
-                  <CardMedia
-                    className={classes.mediaRight}
-                    image="/static/images/games/nba.jpg"
-                    title="title"
-                  >
-                    <Box className={classes.MediaCaption}>
-                      <Grid container spacing={1}>
-                        <Grid container xs={6} >
-                          <Grid item xs={12} >
-                            <Typography
-                              variant="body2"
-                              color="secondary"
-                            >
-                              COMMUNITY TOURNAMENT
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} >
-                            <Typography
-                              variant="body2"
-                              color="textPrimary"
-                            >
-                              MAR 29, 2:00 PM PST
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} >
-                            <Typography
-                              variant="body1"
-                              color="textPrimary"
-                            >
-                              $10 Free Entry 3v3 Best of 1
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                    <Button className={classes.viewButtonRight}
-                      variant="outlined"
-                      size="small"
-                      color="secondary"
-                    >
-                      VIEW
-                    </Button>
-                  </CardMedia>
-                </Card>
-              </Grid>
-              <Grid item xs={6} >
-                <Card raised className={classes.cardRight}>
-                  <Typography
-                    variant="h6"
-                    color="secondary"
-                    className={classes.pricePoolRight}
-                    fontFamily={font}
-                  >
-                    $10
-                  </Typography>
-                  <CardMedia
-                    className={classes.mediaRight}
-                    image="/static/images/games/cod_coldWar.jpg"
-                    title="title"
-                  >
-                    <Box className={classes.MediaCaption}>
-                      <Grid container spacing={1}>
-                        <Grid container xs={6} >
-                          <Grid item xs={12} >
-                            <Typography
-                              variant="body2"
-                              color="secondary"
-                            >
-                              COMMUNITY TOURNAMENT
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} >
-                            <Typography
-                              variant="body2"
-                              color="textPrimary"
-                            >
-                              MAR 29, 2:00 PM PST
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12} >
-                            <Typography
-                              variant="body1"
-                              color="textPrimary"
-                            >
-                              $10 Free Entry 3v3 Best of 1
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                    <Button className={classes.viewButtonRight}
-                      variant="outlined"
-                      size="small"
-                      color="secondary"
-                    >
-                      VIEW
-                    </Button>
-                  </CardMedia>
-                </Card>
-              </Grid>
+                        </Box>
+                        <Button className={classes.viewButtonRight}
+                          variant="outlined"
+                          size="small"
+                          color="secondary"
+                        >
+                          VIEW
+                        </Button>
+                      </CardMedia>
+                    </Card>
+                  </Grid>
+                )
+              })
+            }
             </Grid>
           </Grid>
         </Box>
