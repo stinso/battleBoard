@@ -37,7 +37,7 @@ const font = "'Saira', sans-serif";
 
 const events = [
   {
-    id: "MW Warzone Kill Race FREE",
+    id: "MW Warzone Kill Race FREE 0",
     format: "Warzone - Max Kills",
     participants: "16 of 30",
     startTime: "27th Mar 21:00 CET",
@@ -47,7 +47,7 @@ const events = [
     image: "/static/images/gameIcons/cod.jpg"
   },
   {
-    id: "MW Warzone Kill Race FREE",
+    id: "MW Warzone Kill Race FREE 1",
     format: "Warzone - Max Kills",
     participants: "11 of 30",
     startTime: "27th Mar 19:00 CET",
@@ -57,7 +57,7 @@ const events = [
     image: "/static/images/gameIcons/cod.jpg"
   },
   {
-    id: "MW Warzone Headshots",
+    id: "MW Warzone Headshots 2",
     format: "Apex - Most Headshots",
     participants: "7 of 30",
     startTime: "27th Mar 20:00 CET",
@@ -67,7 +67,7 @@ const events = [
     image: "/static/images/gameIcons/apex.jpg"
   },
   {
-    id: "MW Warzone Kill Race FREE",
+    id: "MW Warzone Kill Race FREE 3",
     format: "Fifa - Winner",
     participants: "1 of 2",
     startTime: "28th Mar 21:00 CET",
@@ -77,7 +77,7 @@ const events = [
     image: "/static/images/gameIcons/fifa.jpg"
   },
   {
-    id: "MW Warzone Kill Race FREE",
+    id: "MW Warzone Kill Race FREE 4",
     format: "Fifa - Winner",
     participants: "1 of 2",
     startTime: "28th Mar 21:00 CET",
@@ -87,7 +87,7 @@ const events = [
     image: "/static/images/gameIcons/fifa.jpg"
   },
   {
-    id: "MW Warzone Headshots",
+    id: "MW Warzone Headshots 5",
     format: "Warzone - Most Headshots",
     participants: "0 of 30",
     startTime: "28th Mar 21:00 CET",
@@ -97,7 +97,7 @@ const events = [
     image: "/static/images/gameIcons/cod.jpg"
   },
   {
-    id: "MW Warzone Kill Race FREE",
+    id: "MW Warzone Kill Race FREE 6",
     format: "Fifa - Winner",
     participants: "1 of 2",
     startTime: "28th Mar 21:00 CET",
@@ -107,7 +107,7 @@ const events = [
     image: "/static/images/gameIcons/fifa.jpg"
   },
   {
-    id: "MW Warzone Kill Race FREE",
+    id: "MW Warzone Kill Race FREE 7",
     format: "Apex - Max Kills",
     participants: "1 of 30",
     startTime: "29th Mar 21:00 CET",
@@ -117,7 +117,7 @@ const events = [
     image: "/static/images/gameIcons/apex.jpg"
   },
   {
-    id: "MW Warzone Kill Race FREE",
+    id: "MW Warzone Kill Race FREE 8",
     format: "Warzone - Max Kills",
     participants: "5 of 30",
     startTime: "29th Mar 19:00 CET",
@@ -127,7 +127,17 @@ const events = [
     image: "/static/images/gameIcons/cod.jpg"
   },
   {
-    id: "MW Warzone Kill Race FREE",
+    id: "MW Warzone Kill Race FREE 9",
+    format: "Fifa - Winner",
+    participants: "1 of 2",
+    startTime: "28th Mar 21:00 CET",
+    entry: "Free",
+    duration: "15 Min.",
+    prizePool: "$20",
+    image: "/static/images/gameIcons/fifa.jpg"
+  },
+  {
+    id: "MW Warzone Kill Race FREE 10",
     format: "Fifa - Winner",
     participants: "1 of 2",
     startTime: "28th Mar 21:00 CET",
@@ -363,25 +373,16 @@ const tournaments = [
   }
 ]
 
-function Item(props)
-{
-    return (
-        <Paper>
-            <h2>{props.item.name}</h2>
-            <p>{props.item.description}</p>
-
-            <Button className="CheckButton">
-                Check it out!
-            </Button>
-        </Paper>
-    )
-}
+const applyPagination = (list, page, limit) => {
+  return list.slice(page * limit, page * limit + limit);
+};
 
 const Hero = ({ className, ...rest }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
   const [currentTab, setCurrentTab] = useState('all');
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(10);
 
   const tabs = [
     { value: 'all', label: 'All' },
@@ -389,9 +390,19 @@ const Hero = ({ className, ...rest }) => {
     { value: 'paid', label: 'Paid' }
   ];
 
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleLimitChange = (event) => {
+    setLimit(parseInt(event.target.value));
+  };
+
   const handleTabsChange = (event, value) => {
     setCurrentTab(value);
   };
+
+  const paginatedEvents = applyPagination(events, page, limit);
 
   return (
     <div
@@ -609,7 +620,7 @@ const Hero = ({ className, ...rest }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {events.map((entry) => {
+                  {paginatedEvents.map((entry) => {
                     return (
                       <TableRow
                         spacing={0}
@@ -655,16 +666,15 @@ const Hero = ({ className, ...rest }) => {
               </Table>
               <TablePagination
                 component="div"
-                count={12}
+                count={events.length}
                 labelRowsPerPage={'Rows per page'}
-                /* onChangePage={handlePageChange}
-                onChangeRowsPerPage={handleLimitChange} */
-                page={0}
-                rowsPerPage={10}
+                onChangePage={handlePageChange}
+                onChangeRowsPerPage={handleLimitChange}
+                page={page}
+                rowsPerPage={limit}
                 rowsPerPageOptions={[5, 10, 25]}
               />
             </Box>
-          
         </Card>
       </Container>
     </div>
