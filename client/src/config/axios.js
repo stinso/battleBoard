@@ -1,5 +1,4 @@
 import { BaseApiURLBS, BaseApiURLCS, CoinGeckoAPIURL, CookieName } from "./constants";
-//import Router from 'next/router'
 import ax from "axios";
 import Cookies from "js-cookie";
 
@@ -162,6 +161,4 @@ const initialState = {
 const logout = () =>{
   global.localStorage.setItem("user", JSON.stringify(initialState));
   Cookies.remove(CookieName)
-  // removed
-  //Router.push('/login');
 }

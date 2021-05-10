@@ -183,7 +183,7 @@ const UserAccountSettings = ({ className, ...rest }) => {
               <Typography
                 className={classes.title}
                 variant="h2"
-                color="sextPrimary"
+                color="textPrimary"
               >
                 Linked Accounts
               </Typography>

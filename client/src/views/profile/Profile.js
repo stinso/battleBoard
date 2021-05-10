@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import { useLocation, useHistory } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -10,58 +11,45 @@ import {
   Divider,
   Grid,
   SvgIcon,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
   Typography,
-  useTheme,
-  useMediaQuery,
   makeStyles
 } from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import { Download as DownloadIcon } from 'react-feather';
 import { Monitor as MatchesIcon } from 'react-feather';
 import { Link2 as NetworkIcon } from 'react-feather';
 import { Users as FollowersIcon } from 'react-feather';
 import { UserCheck as FollowingIcon } from 'react-feather';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+
+import MatchHistory from './MatchHistory'
+import Followers from './Followers'
+import Following from './Following'
+import GamingNetworks from './GamingNetworks'
+
+// new
+import defaultAvatar from "../../assets/img/placeholder.jpg";
+import {
+  userInfoService,
+  followService,
+  unFollowService,
+  checkIsFollowingService,
+  getBalanceFromCS,
+} from '../../service/node.service'
+import { AuthContext } from "../../context/AuthContext";
+//import MatchHistory from "./MatchHistory";
+//import Followers from "./Followers";
+//import Following from "./Following";
+//import GamingNetworks from './GamingNetworks';
+//import ChallengeModal from '../challenges/ChallengeModal';
+//import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
+import {
+  getFormattedUserName,
+  formatInCHAIN,
+} from '../../utils/helpers.js';
+//import { useRouter } from "next/router";
+import * as Sentry from "@sentry/react";
 
 const font = "'Saira', sans-serif";
-
-const events = [
-  {
-    id: "1",
-    game: "COD - MW",
-    eventName: "Free MW",
-    format: "Warzone - Max Kills",
-    entry: "Free",
-    status: "Waiting",
-    result: "Won",
-    startTime: "00:00:04:23"
-  },
-  {
-    id: "2",
-    game: "COD - MW",
-    eventName: "Free MW",
-    format: "Warzone - Max Kills",
-    entry: "Free",
-    status: "Waiting",
-    result: "Won",
-    startTime: "00:00:05:23"
-  },
-  {
-    id: "3",
-    game: "COD - MW",
-    eventName: "Free MW",
-    format: "Warzone - Max Kills",
-    entry: "Free",
-    status: "Waiting",
-    result: "Lost",
-    startTime: "00:01:04:23"
-  }
-]
 
 
 const useStyles = makeStyles((theme) => ({
@@ -85,21 +73,6 @@ const useStyles = makeStyles((theme) => ({
     width: 64,
     height: 64
   },
-  rowImage: {
-    height: '48px',
-    width: '48px',
-    margin: 0,
-    padding: 0,
-    verticalAlign: 'top'
-  },
-  imageCell: {
-    height: '48px',
-    width: '48px',
-    padding: 0
-  },
-  accordion: {
-    marginTop: theme.spacing(4)
-  },
   title: {
     fontFamily: font,
     fontSize: 32
@@ -116,29 +89,136 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
     marginTop: theme.spacing(1),
   },
-  waiting: {
+  bannedIcon: {
+    marginTop: '4px',
+    marginRight: '4px',
+  },
+  checkCircle: {
     color: '#388e3c'
   }
 }));
 
-const applyPagination = (list, page, limit) => {
-  return list.slice(page * limit, page * limit + limit);
+const tabs = {
+  matches: 1,
+  gamingNetworks: 2,
+  followers: 3,
+  following: 4
 };
 
 const Profile = ({ className, ...rest }) => {
   const classes = useStyles();
-  const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const location = useLocation();
+  const history = useHistory();
+  const [currentTab, setCurrentTab] = useState(tabs.matches);
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+  const handleTabsChange = (event, value) => {
+    setCurrentTab(value);
   };
 
-  const handleLimitChange = (event) => {
-    setLimit(parseInt(event.target.value));
+  // new
+  const {user, dispatch} = useContext(AuthContext)
+  //const router = useRouter()
+  //const { username } = router.query
+  const username = "mukki"
+  const wrapper = useRef('wrapper');
+  //const [profileTabs, setProfileTabs] = useState(TabsEnum.MatchHistory);
+  const [imageURL, setImageURL] = useState(defaultAvatar);
+  const [name, setName] = useState('');
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isBanned, setIsBanned] = useState(false);
+  const [isOwnProfile, setIsOwnProfile] = useState(true);
+  //const [showChallengeModal, setShowChallengeModal] = useState(false);
+  const [chainNetworkBalance, setChainNetworkBalance] = useState(0);
+
+
+  useEffect(()=>{
+    setIsOwnProfile(user.user?.session?.username === username);
+  },[user, username])
+
+  async function getProfileInfo(){
+    if (username) {
+      try {
+        console.log(username)
+        const [ userInfo, checkFollowing, balanceInfo] = await Promise.all([
+          userInfoService({ username }),
+          checkIsFollowingService({ username }),
+          getBalanceFromCS({}),
+        ])
+  
+        console.log(userInfo)
+        console.log(checkFollowing)
+        console.log(balanceInfo)
+        
+        if(checkFollowing?.data?.success === true){
+          setIsFollowing(checkFollowing.data.isFollowing)
+        }
+  
+        if (balanceInfo.data.success) {
+          const networkFormatInChain = formatInCHAIN(balanceInfo.data.token.total);
+          setChainNetworkBalance(networkFormatInChain);
+        }
+  
+        if(userInfo.data.success === true){
+          setName(userInfo?.data?.username);
+          setIsBanned(userInfo?.data?.isBanned);
+          setImageURL(userInfo?.data?.dpHigh ? (userInfo?.data?.dpHigh) : defaultAvatar);
+        }
+      }
+      catch(error){
+        console.log("🚀 ~ file: ProfilePageSkeleton.jsx ~ line 89 ~ getProfileInfo ~ error", error)
+        Sentry.captureException(error, {
+          tags: {
+            page: location.pathname,
+          },
+        });
+        if (error?.response?.data?.error === 'user not found') {
+          history.push('/404');
+        }
+      }
+    }
+  }
+
+  useEffect(()=>{
+    getProfileInfo();
+  },[username])
+
+  const handleFollowClick = async (event) => {
+    if (isFollowing === false) {
+      try {
+        const response = await followService({ username });
+        if (response.data.success === true) {
+          setIsFollowing(true);
+        }
+      }
+      catch (error) {
+        console.log("🚀 ~ file: ProfilePageSkeleton.jsx ~ line 119 ~ handleFollowClick ~ error", error)
+        Sentry.captureException(error, {
+          tags: {
+            page: location.pathname,
+          },
+        });
+      }
+    }
   };
 
-  const paginatedEvents = applyPagination(events, page, limit);
+  const handleUnFollowClick = async () => {
+    if (isFollowing === true) {
+      try {
+        const response = await unFollowService({ username });
+        if (response.data.success === true) {
+          setIsFollowing(false);
+          }
+        }
+        catch (error) {
+          console.log("🚀 ~ file: ProfilePageSkeleton.jsx ~ line 138 ~ handleUnFollowClick ~ error", error)
+          Sentry.captureException(error, {
+            tags: {
+              page: location.pathname,
+            },
+          });
+        }
+    }
+  }
 
   return (
     <div
@@ -153,7 +233,7 @@ const Profile = ({ className, ...rest }) => {
                 display='flex'
                 justifyContent='center'
               >
-                <Avatar className={classes.avatar} src="/static/images/panda.png" />
+                <Avatar className={classes.avatar} src={imageURL} />
               </Box>
               <Box 
                 marginTop={2}
@@ -163,12 +243,26 @@ const Profile = ({ className, ...rest }) => {
                   justifyContent='center'
                   marginTop={1}
                 >
+                  <Box className={classes.bannedIcon}>
+                    {isBanned ? 
+                      <ErrorOutlineIcon 
+                        fontSize="medium"
+                        color="error"  
+                      />
+                    :
+                      <CheckCircleOutlineIcon 
+                        className={classes.checkCircle}
+                        fontSize="medium"
+                      />
+                    }
+                    
+                  </Box>
                   <Typography
                     className={classes.userName}
                     variant="body2"
                     color="textPrimary"
                   >
-                    MUKKI
+                    {getFormattedUserName(name?.toUpperCase(), 9)}
                   </Typography>
                 </Box>
                 <Box mt={4} mb={1}>
@@ -176,6 +270,9 @@ const Profile = ({ className, ...rest }) => {
                     className={classes.button}
                     size="large"
                     variant="text"
+                    onClick={(e) =>
+                      handleTabsChange(e, tabs.matches)
+                    }
                     startIcon={
                       <SvgIcon fontSize="small">
                         <MatchesIcon />
@@ -191,6 +288,9 @@ const Profile = ({ className, ...rest }) => {
                     className={classes.button}
                     size="large"
                     variant="text"
+                    onClick={(e) =>
+                      handleTabsChange(e, tabs.gamingNetworks)
+                    }
                     startIcon={
                       <SvgIcon fontSize="small">
                         <NetworkIcon />
@@ -206,6 +306,9 @@ const Profile = ({ className, ...rest }) => {
                     className={classes.button}
                     size="large"
                     variant="text"
+                    onClick={(e) =>
+                      handleTabsChange(e, tabs.followers)
+                    }
                     startIcon={
                       <SvgIcon fontSize="small">
                         <FollowersIcon />
@@ -221,6 +324,9 @@ const Profile = ({ className, ...rest }) => {
                     className={classes.button}
                     size="large"
                     variant="text"
+                    onClick={(e) =>
+                      handleTabsChange(e, tabs.following)
+                    }
                     startIcon={
                       <SvgIcon fontSize="small">
                         <FollowingIcon/>
@@ -236,104 +342,10 @@ const Profile = ({ className, ...rest }) => {
           <Grid item xs={12} lg={8}>
             <Card className={classes.card}>
               <Box minWidth={300} >
-                <Typography
-                  className={classes.title}
-                  variant="h2"
-                  color="sextPrimary"
-                >
-                  Match History
-                </Typography>
-                <Button
-                  className={classes.statusesButton}
-                  aria-controls="menu-shooter"
-                  aria-haspopup="true"
-                  color="secondary"
-                  variant="outlined"
-                  /* onClick={handleMenuShooter} */
-                >
-                  All Statuses
-                  <ArrowDropDownIcon />
-                </Button>
-                <Table>
-                  <TableHead>
-                    <TableRow >
-                      <TableCell>
-                        Game
-                      </TableCell>
-                      <TableCell>
-                        Event Name
-                      </TableCell>
-                      <TableCell>
-                        Game Format
-                      </TableCell>
-                      <TableCell>
-                        Entry
-                      </TableCell>
-                      <TableCell>
-                        Status
-                      </TableCell>
-                      <TableCell>
-                        Start Time
-                      </TableCell>
-                      <TableCell>
-                        Result
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {paginatedEvents.map((entry) => {
-                      return (
-                        <TableRow
-                          spacing={0}
-                          hover
-                          key={entry.id}
-                        >
-                          <TableCell>
-                            {entry.game}
-                          </TableCell>
-                          <TableCell>
-                            {entry.eventName}
-                          </TableCell>
-                          <TableCell>
-                            {entry.format}
-                          </TableCell>
-                          <TableCell>
-                            <Typography
-                              color={entry.entry == 'Free' && 'secondary'}
-                              variant="body2"
-                            >
-                              {entry.entry}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography
-                              className={entry.status == 'Waiting' && classes.waiting}
-                              variant="body2"
-                            >
-                              {entry.status}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            {entry.startTime}
-                          </TableCell>
-                          <TableCell>
-                            {entry.result}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-                <TablePagination
-                  component="div"
-                  count={events.length}
-                  labelRowsPerPage={'Rows per page'}
-                  onChangePage={handlePageChange}
-                  onChangeRowsPerPage={handleLimitChange}
-                  page={page}
-                  rowsPerPage={limit}
-                  rowsPerPageOptions={[5, 10, 25]}
-                />
+                {currentTab === tabs.matches && <MatchHistory />}
+                {currentTab === tabs.gamingNetworks && <GamingNetworks />}
+                {currentTab === tabs.followers && <Followers />}
+                {currentTab === tabs.following && <Following />}
               </Box>
             </Card>
           </Grid>

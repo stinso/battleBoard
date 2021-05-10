@@ -65,10 +65,10 @@ const Login = ({ className, ...rest }) => {
             }
           })
           if (redirect) {
-            router.push(redirect)
+            history.push(redirect)
           }
           else {
-            router.push('/dashboard')
+            history.push('/dashboard')
           }
         }
         else{
