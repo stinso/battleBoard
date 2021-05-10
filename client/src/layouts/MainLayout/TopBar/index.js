@@ -137,7 +137,6 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                   </Box>
                   <SvgIcon
                     fontSize="small"
-                    color="textPrimary"
                   >
                     <MenuIcon />
                   </SvgIcon>

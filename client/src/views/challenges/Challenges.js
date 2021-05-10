@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { NavLink as RouterLink } from 'react-router-dom';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { THEMES } from 'src/constants';
 import {
   Avatar,
   Box,
@@ -22,8 +20,6 @@ import {
   TableRow,
   Tabs,
   Typography,
-  useTheme,
-  useMediaQuery,
   makeStyles
 } from '@material-ui/core';
 import { PlusCircle as PlusCircleIcon } from 'react-feather';
@@ -110,11 +106,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const applyPagination = (list, page, limit) => {
+  return list.slice(page * limit, page * limit + limit);
+};
+
 const Challenges = ({ className, ...rest }) => {
   const classes = useStyles();
-  const theme = useTheme();
-  const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
   const [currentTab, setCurrentTab] = useState('sent');
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(10);
 
   const tabs = [
     { value: 'sent', label: 'Sent' },
@@ -122,6 +122,16 @@ const Challenges = ({ className, ...rest }) => {
     { value: 'accepted', label: 'Accepted' },
     { value: 'completed', label: 'Completed' }
   ];
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleLimitChange = (event) => {
+    setLimit(parseInt(event.target.value));
+  };
+
+  const paginatedChallenges = applyPagination(challenges, page, limit);
 
   const handleTabsChange = (event, value) => {
     setCurrentTab(value);
@@ -227,7 +237,7 @@ const Challenges = ({ className, ...rest }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {challenges.map((entry) => {
+                  {paginatedChallenges.map((entry) => {
                     return (
                       <TableRow
                         spacing={0}
@@ -287,12 +297,12 @@ const Challenges = ({ className, ...rest }) => {
               </Table>
               <TablePagination
                 component="div"
-                count={3}
+                count={challenges.length}
                 labelRowsPerPage={'Rows per page'}
-                /* onChangePage={handlePageChange}
-                onChangeRowsPerPage={handleLimitChange} */
-                page={0}
-                rowsPerPage={10}
+                onChangePage={handlePageChange}
+                onChangeRowsPerPage={handleLimitChange}
+                page={page}
+                rowsPerPage={limit}
                 rowsPerPageOptions={[5, 10, 25]}
               />
             </Box>

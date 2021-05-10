@@ -11,24 +11,28 @@ import {
 
 const items = [
     {
+        id: 0,
         Name: "Call of Duty",
         Image: "/static/images/cod-warzone-sm.jpg",
         link: '/actionGamePage/cod',
         openInNewTab: false
     },
     {
+        id: 1,
         Name: "Fifa",
         Image: "/static/images/fifa21.jpg",
         link: '/actionGamePage/fifa',
         openInNewTab: false
     },
     {
+        id: 2,
         Name: "Madden NFL 21",
         Image: "/static/images/madden.jpg",
         link: '/actionGamePage/madden2021',
         openInNewTab: false
     },
     {
+        id: 3,
         Name: "Super Crypto Kart",
         Image: "/static/images/sck.jpg",
         link: SuperCryptoKartLink,
@@ -112,6 +116,7 @@ const Banner = () => {
                     return(
                         <Link
                             href={item.link}
+                            key={item.id}
                         >
                             <CardMedia
                                 className={classes.media}

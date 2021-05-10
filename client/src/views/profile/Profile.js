@@ -121,10 +121,24 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const applyPagination = (list, page, limit) => {
+  return list.slice(page * limit, page * limit + limit);
+};
+
 const Profile = ({ className, ...rest }) => {
   const classes = useStyles();
-  const theme = useTheme();
-  const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(10);
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleLimitChange = (event) => {
+    setLimit(parseInt(event.target.value));
+  };
+
+  const paginatedEvents = applyPagination(events, page, limit);
 
   return (
     <div
@@ -267,7 +281,7 @@ const Profile = ({ className, ...rest }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {events.map((entry) => {
+                    {paginatedEvents.map((entry) => {
                       return (
                         <TableRow
                           spacing={0}
@@ -312,12 +326,12 @@ const Profile = ({ className, ...rest }) => {
                 </Table>
                 <TablePagination
                   component="div"
-                  count={3}
+                  count={events.length}
                   labelRowsPerPage={'Rows per page'}
-                  /* onChangePage={handlePageChange}
-                  onChangeRowsPerPage={handleLimitChange} */
-                  page={0}
-                  rowsPerPage={10}
+                  onChangePage={handlePageChange}
+                  onChangeRowsPerPage={handleLimitChange}
+                  page={page}
+                  rowsPerPage={limit}
                   rowsPerPageOptions={[5, 10, 25]}
                 />
               </Box>

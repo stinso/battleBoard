@@ -1,17 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { NavLink as RouterLink } from 'react-router-dom';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { THEMES } from 'src/constants';
 import {
-  Avatar,
   Box,
-  Button,
   Card,
-  CardMedia,
   Container,
-  Divider,
-  Grid,
   Table,
   TableBody,
   TableCell,
@@ -20,8 +13,6 @@ import {
   TableRow,
   Typography,
   Paper,
-  useTheme,
-  useMediaQuery,
   makeStyles
 } from '@material-ui/core';
 
@@ -57,7 +48,7 @@ const events = [
     status: "Waiting",
     participants: "12",
     startTime: "00:01:04:23"
-  },
+  }
 ]
 
 
@@ -84,10 +75,24 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const applyPagination = (list, page, limit) => {
+  return list.slice(page * limit, page * limit + limit);
+};
+
 const Events = ({ className, ...rest }) => {
   const classes = useStyles();
-  const theme = useTheme();
-  const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(10);
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleLimitChange = (event) => {
+    setLimit(parseInt(event.target.value));
+  };
+
+  const paginatedEvents = applyPagination(events, page, limit);
   
 
   return (
@@ -105,91 +110,90 @@ const Events = ({ className, ...rest }) => {
         </Typography>
         <Box mt={3}>
           <Paper>
-        <Card>
-            <Box minWidth={300} >
-              <Table>
-                <TableHead>
-                  <TableRow >
-                    <TableCell>
-                      Game
-                    </TableCell>
-                    <TableCell>
-                      Event Name
-                    </TableCell>
-                    <TableCell>
-                      Game Format
-                    </TableCell>
-                    <TableCell>
-                      Entry
-                    </TableCell>
-                    <TableCell>
-                      Status
-                    </TableCell>
-                    <TableCell>
-                      Participants
-                    </TableCell>
-                    <TableCell>
-                      Start Time
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {events.map((entry) => {
-                    return (
-                      <TableRow
-                        spacing={0}
-                        hover
-                        key={entry.id}
-                      >
-                        <TableCell>
-                          {entry.game}
-                        </TableCell>
-                        <TableCell>
-                          {entry.eventName}
-                        </TableCell>
-                        <TableCell>
-                          {entry.format}
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            color={entry.entry == 'Free' && 'secondary'}
-                            variant="body2"
-                          >
-                            {entry.entry}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            className={entry.status == 'Waiting' && classes.waiting}
-                            variant="body2"
-                          >
-                            {entry.status}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          {entry.participants}
-                        </TableCell>
-                        <TableCell>
-                          {entry.startTime}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-              <TablePagination
-                component="div"
-                count={3}
-                labelRowsPerPage={'Rows per page'}
-                /* onChangePage={handlePageChange}
-                onChangeRowsPerPage={handleLimitChange} */
-                page={0}
-                rowsPerPage={10}
-                rowsPerPageOptions={[5, 10, 25]}
-              />
-            </Box>
-          
-        </Card>
+            <Card>
+              <Box minWidth={300} >
+                <Table>
+                  <TableHead>
+                    <TableRow >
+                      <TableCell>
+                        Game
+                      </TableCell>
+                      <TableCell>
+                        Event Name
+                      </TableCell>
+                      <TableCell>
+                        Game Format
+                      </TableCell>
+                      <TableCell>
+                        Entry
+                      </TableCell>
+                      <TableCell>
+                        Status
+                      </TableCell>
+                      <TableCell>
+                        Participants
+                      </TableCell>
+                      <TableCell>
+                        Start Time
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {paginatedEvents.map((entry) => {
+                      return (
+                        <TableRow
+                          spacing={0}
+                          hover
+                          key={entry.id}
+                        >
+                          <TableCell>
+                            {entry.game}
+                          </TableCell>
+                          <TableCell>
+                            {entry.eventName}
+                          </TableCell>
+                          <TableCell>
+                            {entry.format}
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              color={entry.entry == 'Free' && 'secondary'}
+                              variant="body2"
+                            >
+                              {entry.entry}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              className={entry.status == 'Waiting' && classes.waiting}
+                              variant="body2"
+                            >
+                              {entry.status}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            {entry.participants}
+                          </TableCell>
+                          <TableCell>
+                            {entry.startTime}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+                <TablePagination
+                  component="div"
+                  count={events.length}
+                  labelRowsPerPage={'Rows per page'}
+                  onChangePage={handlePageChange}
+                  onChangeRowsPerPage={handleLimitChange}
+                  page={page}
+                  rowsPerPage={limit}
+                  rowsPerPageOptions={[5, 10, 25]}
+                />
+              </Box>
+            </Card>
           </Paper>
         </Box>
       </Container>

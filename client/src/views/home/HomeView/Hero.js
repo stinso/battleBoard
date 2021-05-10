@@ -340,6 +340,7 @@ const useStyles = makeStyles((theme) => ({
 
 const tournaments = [
   {
+    id: 0,
     game: "Cod",
     tournamentStyle: "COMMUNITY TOURNAMENT",
     date: "MAR29, 2:00 PM PST",
@@ -348,6 +349,7 @@ const tournaments = [
     entry: "$10"
   },
   {
+    id: 1,
     game: "NBA",
     tournamentStyle: "COMMUNITY TOURNAMENT",
     date: "MAR29, 2:00 PM PST",
@@ -356,6 +358,7 @@ const tournaments = [
     entry: "$16"
   },
   {
+    id: 2,
     game: "NBA",
     tournamentStyle: "COMMUNITY TOURNAMENT",
     date: "MAR29, 2:00 PM PST",
@@ -364,6 +367,7 @@ const tournaments = [
     entry: "$10"
   },
   {
+    id: 3,
     game: "Cod",
     tournamentStyle: "COMMUNITY TOURNAMENT",
     date: "MAR29, 2:00 PM PST",
@@ -429,7 +433,7 @@ const Hero = ({ className, ...rest }) => {
                 >
                   <Box className={classes.MediaCaptionLeft}>
                     <Grid container spacing={3}>
-                      <Grid container xs={6} >
+                      <Grid item xs={6} >
                         <Grid item xs={12} >
                           <Typography
                             variant="h4"
@@ -471,7 +475,7 @@ const Hero = ({ className, ...rest }) => {
             {
               tournaments.map((tournament) => {
                 return(
-                  <Grid item xs={6}>
+                  <Grid item xs={6} key={tournament.id}>
                     <Card raised className={classes.cardRight}>
                     <Typography
                       variant="h6"
@@ -488,7 +492,7 @@ const Hero = ({ className, ...rest }) => {
                       >
                         <Box className={classes.MediaCaption}>
                           <Grid container spacing={1}>
-                            <Grid container xs={9} >
+                            <Grid item xs={9} >
                               <Grid item xs={12} >
                                 <Typography
                                   variant="body2"

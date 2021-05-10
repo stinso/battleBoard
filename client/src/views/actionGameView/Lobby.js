@@ -69,9 +69,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const applyPagination = (list, page, limit) => {
+  return list.slice(page * limit, page * limit + limit);
+};
+
 const LobbyView = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = useState('all');
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(10);
 
   // new
   const [lobbyData, setLobbyData] = useState([]);
@@ -82,8 +88,15 @@ const LobbyView = () => {
   const [allDates, setAllDates] = useState([]);
   const [dates, setDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState([]);
+  const paginatedLobbyData = applyPagination(lobbyData, page, limit);
 
-  
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleLimitChange = (event) => {
+    setLimit(parseInt(event.target.value));
+  };
 
   const location = useLocation();
   const game = location.pathname.substring(location.pathname.lastIndexOf('/') + 1)
@@ -262,7 +275,7 @@ const LobbyView = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {lobbyData.map((entry) => {
+                  {paginatedLobbyData.map((entry) => {
                     return (
                       <TableRow
                         hover
@@ -296,16 +309,15 @@ const LobbyView = () => {
               </Table>
               <TablePagination
                 component="div"
-                count={12}
+                count={lobbyData.length}
                 labelRowsPerPage={'Rows per page'}
-                /* onChangePage={handlePageChange}
-                onChangeRowsPerPage={handleLimitChange} */
-                page={0}
-                rowsPerPage={10}
+                onChangePage={handlePageChange}
+                onChangeRowsPerPage={handleLimitChange}
+                page={page}
+                rowsPerPage={limit}
                 rowsPerPageOptions={[5, 10, 25]}
               />
             </Box>
-          
         </Card>
       </Container>
     </div>

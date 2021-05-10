@@ -298,7 +298,6 @@ const NavBar = ({ onOpen }) => {
       flexDirection='column'
     >
       <PerfectScrollbar options={{ suppressScrollX: true }}>
-      {/* <Divider /> */}
         <Box p={2}>
           <Box
             display='flex'
@@ -308,7 +307,6 @@ const NavBar = ({ onOpen }) => {
             </Avatar>
           </Box>
         </Box>
-        {/* <Divider /> */}
         <Box display="flex" flexDirection="row" alignItems="stretch" padding={1}>
           <Paper className={classes.paper} elevation={3} >
             <Box className={classes.overview}
@@ -420,19 +418,10 @@ const NavBar = ({ onOpen }) => {
             </Box>    
           </Paper>
         </Box>
-        {/* <Divider /> */}
         <Box p={2}>
           {mySections.map(section => (
             <List
               key={section.subheader}
-              subheader={(
-                <ListSubheader
-                  disableGutters
-                  disableSticky
-                >
-                  {section.subheader}
-                </ListSubheader>
-              )}
             >
               {renderNavItems({
                 items: section.items,
