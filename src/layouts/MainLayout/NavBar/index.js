@@ -59,12 +59,14 @@ const mySections = [
       {
         title: 'My Events',
         icon: CalendarIcon,
-        href: '/upcomingEvents'
+        href: '/upcomingEvents',
+        isExternal: false
       },
       {
         title: 'My Challanges',
         icon: AwardIcon,
-        href: '/challenges'
+        href: '/challenges',
+        isExternal: false
       }
     ]
   }
@@ -77,32 +79,38 @@ const sections = [
       {
         title: 'Profile',
         icon: UserIcon,
-        href: '/profile'
+        href: '/profile',
+        isExternal: false
       },
       {
         title: 'My Wallet',
         icon: CreditcardIcon,
-        href: 'https://wallet.chaingames.io/home'
+        href: 'https://wallet.chaingames.io/home',
+        isExternal: true
       },
       {
         title: 'Transaction History',
         icon: ListIcon,
-        href: 'https://wallet.chaingames.io/transaction-history'
+        href: 'https://wallet.chaingames.io/transaction-history',
+        isExternal: true
       },
       {
         title: 'Withdraw',
         icon: WithdrawIcon,
-        href: 'https://wallet.chaingames.io/withdraw-initiate'
+        href: 'https://wallet.chaingames.io/withdraw-initiate',
+        isExternal: true
       },
       {
         title: 'Report Issue',
         icon: PhoneIcon,
-        href: '/app/'
+        href: '/app/',
+        isExternal: false
       },
       {
         title: 'Account Settings',
         icon: ToolIcon,
-        href: '/userAccountSettings'
+        href: '/userAccountSettings',
+        isExternal: false
       }
     ]
   }
@@ -145,6 +153,7 @@ function reduceChildRoutes({
         key={key}
         open={Boolean(open)}
         title={item.title}
+        isExternal={item.isExternal}
       >
         {renderNavItems({
           depth: depth + 1,
@@ -162,6 +171,7 @@ function reduceChildRoutes({
         info={item.info}
         key={key}
         title={item.title}
+        isExternal={item.isExternal}
       />
     );
   }

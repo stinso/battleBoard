@@ -72,6 +72,7 @@ const NavItem = ({
   info: Info,
   open: openProp,
   title,
+  isExternal,
   ...rest
 }) => {
   const classes = useStyles();
@@ -127,25 +128,46 @@ const NavItem = ({
       key={title}
       {...rest}
     >
-      <Button
-        activeClassName={classes.active}
-        className={clsx(classes.buttonLeaf, `depth-${depth}`)}
-        component={RouterLink}
-        exact
-        style={style}
-        to={href}
-      >
-        {Icon && (
-          <Icon
-            className={classes.icon}
-            size="20"
-          />
-        )}
-        <span className={classes.title}>
-          {title}
-        </span>
-        {Info && <Info />}
-      </Button>
+      {isExternal ?
+        <Button
+          activeClassName={classes.active}
+          className={clsx(classes.buttonLeaf, `depth-${depth}`)}
+          style={style}
+          href={href}
+        >
+          {Icon && (
+            <Icon
+              className={classes.icon}
+              size="20"
+            />
+          )}
+          <span className={classes.title}>
+            {title}
+          </span>
+          {Info && <Info />}
+        </Button>
+      :
+        <Button
+          activeClassName={classes.active}
+          className={clsx(classes.buttonLeaf, `depth-${depth}`)}
+          component={RouterLink}
+          exact
+          style={style}
+          to={href}
+        >
+          {Icon && (
+            <Icon
+              className={classes.icon}
+              size="20"
+            />
+          )}
+          <span className={classes.title}>
+            {title}
+          </span>
+          {Info && <Info />}
+        </Button>
+      }
+      
     </ListItem>
   );
 };
