@@ -122,7 +122,10 @@ const routes = [
       },
       {
         exact: true,
-        path: '/dashboard',
+        path: [
+          '/',
+          '/dashboard',
+        ],
         component: HomeView
       },
       {

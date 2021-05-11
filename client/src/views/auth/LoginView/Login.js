@@ -15,7 +15,6 @@ import { Alert } from '@material-ui/lab';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
 
 // new
-import ReCAPTCHA from 'react-google-recaptcha';
 import { useEffect, useState, useContext } from 'react';
 import { loginService } from '../../../service/node.service.js';
 import { SignUpRedirectURL, ForgotPasswordRedirectURL, RecaptchaSiteKey } from '../../../config/constants';
@@ -135,12 +134,9 @@ const Login = ({ className, ...rest }) => {
               }
             })
             history.push('/dashboard')
-
-            console.log('######## LOGIN SUCCESS! ########')
           }
           else{
             setErrMsg('Something went wrong. Please try again');
-            console.log('######## LOGIN ERROR! ########')
           }
         }
         catch(error){

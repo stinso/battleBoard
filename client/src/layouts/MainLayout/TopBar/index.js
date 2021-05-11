@@ -127,7 +127,7 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                 </Badge>
               </IconButton>
               <Box ml={2} display="flex">
-              {user.isLoggedIn ?
+              {user.user?.isLoggedIn ?
                 <Button 
                   className={classes.root}
                   onClick={onNavOpen}
@@ -147,8 +147,9 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                   </SvgIcon>
                 </Button>
               :  
+              <Box mt={1}>
                 <Button 
-                  className={classes.root}
+                  color="secondary"
                   variant="outlined"
                   onClick={() => {
                     history.push('/login')
@@ -156,8 +157,8 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                 >
                   LOGIN
                 </Button>
+              </Box>
               }
-                
               </Box>
             </Box>
           </Hidden>
@@ -215,7 +216,7 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                       onClose={handleCloseSports}
                     >
                       <MenuItem onClick={handleCloseSports} color="#fff" component={RouterLink} to="/actionGamePage/fifa">Fifa</MenuItem>
-                      <MenuItem onClick={handleCloseSports} color="#fff" component={RouterLink} to="/actionGamePage/madden">Madden</MenuItem>
+                      <MenuItem onClick={handleCloseSports} color="#fff" component={RouterLink} to="/actionGamePage/madden2021">Madden</MenuItem>
                     </Menu>
                     <Button
                       aria-controls="menu-casual"
@@ -260,6 +261,7 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                       </Badge>
                     </IconButton>
                     <Box ml={2} display="flex">
+                    {user.user?.isLoggedIn ?
                       <Button 
                         className={classes.root}
                         onClick={onNavOpen}
@@ -269,16 +271,28 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                             variant="body1"
                             color="textPrimary"
                           >
-                            mukki
+                            {user.user?.session?.username ? user.user.session.username : ''}
                           </Typography>
                         </Box>
                         <SvgIcon
                           fontSize="small"
-                          color="textPrimary"
                         >
                           <MenuIcon />
                         </SvgIcon>
                       </Button>
+                    :  
+                      <Box mt={1}>
+                        <Button 
+                          color="secondary"
+                          variant="outlined"
+                          onClick={() => {
+                            history.push('/login')
+                          }}
+                        >
+                          LOGIN
+                        </Button>
+                      </Box>
+                    }
                     </Box>
                   </Box>
                 </Grid>

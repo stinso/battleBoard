@@ -138,7 +138,6 @@ const Profile = ({ className, ...rest }) => {
   async function getProfileInfo(){
     if (username) {
       try {
-        console.log(username)
         const [ userInfo, checkFollowing, balanceInfo] = await Promise.all([
           userInfoService({ username }),
           checkIsFollowingService({ username }),

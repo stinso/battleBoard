@@ -19,7 +19,6 @@ import {
 import {
   User as UserIcon,
   Settings as ToolIcon,
-  LogOut as LogoutIcon,
   List as ListIcon,
   CreditCard as CreditcardIcon,
   Phone as PhoneIcon,
@@ -30,6 +29,7 @@ import {
 import NavItem  from './NavItem';
 import NumberFormat from 'react-number-format';
 import { useSelector } from 'src/store';
+import Logout from './Logout'
 
 //import Notification from './EthAddressNotLinkedNotification'
 import * as Sentry from "@sentry/react";
@@ -103,12 +103,7 @@ const sections = [
         title: 'Account Settings',
         icon: ToolIcon,
         href: '/userAccountSettings'
-      },
-      {
-        title: 'Logout',
-        icon: LogoutIcon,
-        href: '/app/'
-      },
+      }
     ]
   }
 ];
@@ -448,6 +443,7 @@ const NavBar = ({ onOpen }) => {
                 items: section.items,
                 pathname: location.pathname
               })}
+              <Logout/>
             </List>
           ))}
         </Box>
