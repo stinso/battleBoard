@@ -1,15 +1,2 @@
-# No modules
-node_modules
-
-# No logs
-*.log
-
-# No databases
-*.db
-
-# No config
-.editorconfig
-
-# No cache
-.eslintcache
 package-lock.json
+build
