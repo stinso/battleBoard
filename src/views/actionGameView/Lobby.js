@@ -277,32 +277,35 @@ const LobbyView = () => {
                 <TableBody>
                   {paginatedLobbyData.map((entry) => {
                     return (
-                      <TableRow
-                        hover
-                        key={entry.id}
-                      >
-                        <TableCell className={classes.rankCell}>
-                          {entry.game}
-                        </TableCell>
-                        <TableCell>
-                          {getGameFormatFromIndex(entry.game ,entry.gameFormat)}
-                        </TableCell>
-                        <TableCell>
-                          {`${entry.noOfUsersEnrolled} of ${entry.maxUsers}`} 
-                        </TableCell>
-                        <TableCell>
-                          {`${entry.date} ${entry.time}`}
-                        </TableCell>
-                        <TableCell className={entry.betAmount == 'Free' ? classes.free : ''}>
-                          {entry.betAmount}
-                        </TableCell>
-                        <TableCell>
-                          {`${entry.duration} min`}
-                        </TableCell>
-                        <TableCell className={classes.priceCell} align="right">
-                          {entry.prizePool}
-                        </TableCell>
-                      </TableRow>
+                        <TableRow
+                          hover
+                          key={entry.id}
+                          component={RouterLink}
+                          to={`/gameInformationPage/${entry.id}`}
+                          style={{ textDecoration: 'none'}}
+                        >
+                          <TableCell className={classes.rankCell}>
+                            {entry.game}
+                          </TableCell>
+                          <TableCell>
+                            {getGameFormatFromIndex(entry.game ,entry.gameFormat)}
+                          </TableCell>
+                          <TableCell>
+                            {`${entry.noOfUsersEnrolled} of ${entry.maxUsers}`} 
+                          </TableCell>
+                          <TableCell>
+                            {`${entry.date} ${entry.time}`}
+                          </TableCell>
+                          <TableCell className={entry.betAmount == 'Free' ? classes.free : ''}>
+                            {entry.betAmount}
+                          </TableCell>
+                          <TableCell>
+                            {`${entry.duration} min`}
+                          </TableCell>
+                          <TableCell className={classes.priceCell} align="right">
+                            {entry.prizePool}
+                          </TableCell>
+                        </TableRow>
                     );
                   })}
                 </TableBody>

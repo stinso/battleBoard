@@ -97,7 +97,7 @@ const routes = [
       },
       {
         exact: true,
-        path: '/gameInformationPage',
+        path: '/gameInformationPage/:id?',
         component: lazy(() => import('src/views/gameInfo'))
       },
       {
@@ -112,7 +112,7 @@ const routes = [
       },
       {
         exact: true,
-        path: '/profile',
+        path: '/profile/:username?',
         component: lazy(() => import('src/views/profile'))
       },
       {
