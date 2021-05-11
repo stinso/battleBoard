@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -27,6 +27,8 @@ import Logo from 'src/components/Logo';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import { AuthContext } from "../../../context/AuthContext";
+import { useHistory } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -49,9 +51,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TopBar = ({ className, onNavOpen, ...rest }) => {
+  const {user} = useContext(AuthContext)
   const classes = useStyles();
   const anchorRef = useRef(null);
   const [openMenu, setOpenMenu] = useState(false);
+  const history = useHistory();
 
   // dropdowns
   const [anchorElShooter, setAnchorElShooter] = useState(null);
@@ -123,6 +127,7 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                 </Badge>
               </IconButton>
               <Box ml={2} display="flex">
+              {user.isLoggedIn ?
                 <Button 
                   className={classes.root}
                   onClick={onNavOpen}
@@ -132,7 +137,7 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                       variant="body1"
                       color="textPrimary"
                     >
-                      mukki
+                      {user.user?.session?.username ? user.user.session.username : ''}
                     </Typography>
                   </Box>
                   <SvgIcon
@@ -141,6 +146,18 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                     <MenuIcon />
                   </SvgIcon>
                 </Button>
+              :  
+                <Button 
+                  className={classes.root}
+                  variant="outlined"
+                  onClick={() => {
+                    history.push('/login')
+                  }}
+                >
+                  LOGIN
+                </Button>
+              }
+                
               </Box>
             </Box>
           </Hidden>
