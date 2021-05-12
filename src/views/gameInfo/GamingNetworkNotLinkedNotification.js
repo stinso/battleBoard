@@ -1,4 +1,4 @@
-import { Alert } from '@material-ui/lab';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import { Link as RouterLink } from 'react-router-dom';
 
 const Notification = () => {

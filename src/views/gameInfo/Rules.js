@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const Rules = ({ className }) => {
+const Rules = ({ questionAnswers, eventData }) => {
   const classes = useStyles();
 
   return (

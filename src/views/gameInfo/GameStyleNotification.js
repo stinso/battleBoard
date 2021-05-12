@@ -1,4 +1,4 @@
-import { Alert } from '@material-ui/lab';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import { getStyleName } from "../../utils/helpers.js";
 
 const Notification = ({style}) => {

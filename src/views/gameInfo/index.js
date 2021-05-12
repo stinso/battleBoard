@@ -54,12 +54,12 @@ import {
 } from '../../config/constants'
 import defaultAvatar from "../../assets/img/placeholder.jpg";
 //import GameConsoleSelection from "./ConsoleSelection";
-//import CODSettingsModal from './CODSettingsModal'
-//import FacebookModal from './FacebookModal';
+import CODSettingsModal from './CODSettingsModal'
+import FacebookModal from './FacebookModal';
 //import EventDetailsSection from "./EventDetailsSection";
 //import PrizesSection from "./PrizesSection";
-//import SubmitResultModal from './SubmitResultModal';
-//import CountDown from './CountDown';
+import SubmitResultModal from './SubmitResultModal';
+import CountDown from './CountDown';
 //import PlayersInfo from './PlayersInfo'
 //import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
 //import EventRules from "./EventRules";
@@ -68,7 +68,6 @@ import DisputeNotification from './DisputeNotification';
 import GameStyleNotification from './GameStyleNotification';
 //import Chat from '../chat/index';
 import useInterval from '../../hooks/useInterval'
-//import { useRouter } from "next/router";
 import * as Sentry from "@sentry/react";
 
 
@@ -755,6 +754,64 @@ const BattleView = () => {
       title="Battle"
     >
       <Container maxWidth="lg">
+      { modal && consoleModalWindow() }
+      {
+        showFacebookModal &&
+        <FacebookModal 
+        consoleSelectedValue={consoleSelectedValue}
+        handleConsoleOnChange={handleConsoleOnChange}
+        handleSponsoredEventRegister={handleSponsoredEventRegister}
+        fbInfo={fbInfo}
+        setFbInfo={setFbInfo}
+        eventData={eventData}
+        isSponsoredEvent={isSponsoredEvent}
+        setShowFacebookModal={setShowFacebookModal}
+        showFacebookModal={showFacebookModal}
+        facebookNotification={facebookNotification}
+        isLoading={isLoading}
+        />
+      }
+      {
+        showCODSettingsModal.show &&
+        <CODSettingsModal 
+          setShowCODSettingsModal={setShowCODSettingsModal}
+          showCODSettingsModal={showCODSettingsModal}
+        />
+      }
+      {
+        showSubmitResultModal && 
+          <SubmitResultModal 
+            setShowSubmitResultModal={setShowSubmitResultModal}
+            showSubmitResultModal={showSubmitResultModal}
+            submitResult={submitResult}
+          />
+      }
+
+      { isSponsoredEvent &&
+        !(eventState === EventStates.ONGOING || eventState === EventStates.EVENT_ENDED)
+        && generateSponsoredEventNotification()
+      }
+
+      {showGamingNetworkNotification && 
+        <GamingNetworkNotLinkedNotification />
+      }
+
+      { 
+        shouldDisplayStyle && 
+          <GameStyleNotification 
+            style = {eventData.style}
+          />
+      }
+      { /* NOTIFICATIONS */}
+      { showDisputeNotification && <DisputeNotification /> }
+      { showEthAddressNotification && <EthAddressNotLinkedNotification /> }
+      { errorNotifications.showNotification && generateErrorNotification() }
+      { successNotifications.showNotification && generateSuccessNotification() }
+
+
+
+
+
         <Box mt={10} mb={3}>
           <Paper className={classes.topPaper}>
             <Box className={classes.info} borderBottom={1}>
@@ -936,7 +993,12 @@ const BattleView = () => {
         </Box>
         {currentTab === 'info' && <Info />}
         {currentTab === 'howToPlay' && <HowToPlay />}
-        {currentTab === 'rules' && <Rules />}
+        {currentTab === 'rules' && 
+          <Rules 
+            questionAnswers={eventData?.description ? eventData.description : []}
+            eventData={eventData}
+          />
+        }
         {currentTab === 'teams' && <Teams />}
       </Container>
     </Page>
