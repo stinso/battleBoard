@@ -130,7 +130,6 @@ const NavItem = ({
     >
       {isExternal ?
         <Button
-          activeClassName={classes.active}
           className={clsx(classes.buttonLeaf, `depth-${depth}`)}
           style={style}
           href={href}

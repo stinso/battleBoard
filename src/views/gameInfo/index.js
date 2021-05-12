@@ -1,22 +1,76 @@
-import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useEffect, useState, useContext, useCallback, Fragment } from 'react';
+import { 
+  Link as RouterLink,
+  useHistory,
+  useLocation,
+  useParams 
+} from 'react-router-dom';
 import {
   Box,
   Button,
   Container,
   Divider,
   Grid,
+  Modal,
   Paper,
   Tab,
   Tabs,
   Typography,
   makeStyles
 } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import Page from 'src/components/Page';
 import Info from './Info';
 import HowToPlay from './HowToPlay';
 import Rules from './Rules';
 import Teams from './Teams';
+
+// new
+import { AuthContext } from "../../context/AuthContext";
+import moment from "moment";
+//import EthAddressNotLinkedNotification from '../dashboard/EthAddressNotLinkedNotification'
+import {
+  FacebookProvider,
+} from 'react-facebook';
+import {
+  getUSDValueOfAChain,
+  isBalanceEnough,
+  checkGameRequiresManualResult,
+  isMinutesRemaining,
+  checkWithCurrentTime
+} from "../../utils/helpers.js";
+import {
+  getEventDetailsFromId,
+  enrollInAnEventService,
+  disenrollFromEventService,
+  enrollInASponsoredEventService,
+  submitEventResultService,
+} from "../../service/node.service";
+import {
+  FacebookAppID,
+  StatusReceivedFromAPI,
+  HoursAfterWhichCanSubmitEvidence,
+  MinutesAfterWhichCanSubmitResult
+} from '../../config/constants'
+import defaultAvatar from "../../assets/img/placeholder.jpg";
+//import GameConsoleSelection from "./ConsoleSelection";
+//import CODSettingsModal from './CODSettingsModal'
+//import FacebookModal from './FacebookModal';
+//import EventDetailsSection from "./EventDetailsSection";
+//import PrizesSection from "./PrizesSection";
+//import SubmitResultModal from './SubmitResultModal';
+//import CountDown from './CountDown';
+//import PlayersInfo from './PlayersInfo'
+//import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
+//import EventRules from "./EventRules";
+import GamingNetworkNotLinkedNotification from './GamingNetworkNotLinkedNotification';
+import DisputeNotification from './DisputeNotification';
+import GameStyleNotification from './GameStyleNotification';
+//import Chat from '../chat/index';
+import useInterval from '../../hooks/useInterval'
+//import { useRouter } from "next/router";
+import * as Sentry from "@sentry/react";
+
 
 const font = "'Saira', sans-serif";
 
@@ -91,9 +145,87 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+const checkIsOngoingEvent = (startTime, endTime) => {
+  if (startTime <= moment().unix() && endTime >  moment().unix()) {
+    return true;
+  }
+  return false;
+};
+
+const checkShouldDisplayStyle = (style) => {
+  if ([2, 3, 4, 5].includes(style)) {
+    return true;
+  }
+  return false;
+}
+
+const checkHasEventEnded = (endTime) => {
+  if (endTime <  moment().unix()) {
+    return true;
+  }
+  return false;
+}
+
+const EventStates = {
+  CAN_REGISTER: 'Can Register in the event',
+  CANNOT_REGISTER_EVENT_NOT_STARTED: 'event is in middle state(stale state)',
+  CAN_UNREGISTER: 'User can disenroll from event',
+  CANNOT_UNREGISTER_EVENT_NOT_STARTED: 'event is in middle state of unregister(stale state)',
+  ONGOING: 'Event is ongoing',
+  EVENT_ENDED: 'Event has ended',
+  CAN_SUBMIT_RESULT: 'Event has ended, user can submit result',
+  CAN_SUBMIT_DISPUTE_EVIDENCE: "Event in conflict state, user can submit evidence",
+  CANNOT_DO_ANYTHING: 'Stale state',
+}
+
+const polllingMinutes = 1;
+
+
 const BattleView = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = useState('info');
+  const history = useHistory();
+  const location = useLocation();
+
+  //new 
+  const [modal, setModal] = useState(false);
+  const [showFacebookModal, setShowFacebookModal] = useState(false);
+  const [showSubmitResultModal, setShowSubmitResultModal] = useState(false);
+  const [showEthAddressNotification, setShowEthAddressNotification] = useState(false);
+  const [showGamingNetworkNotification, setShowGamingNetworkNotification] = useState(false);
+  const [showDisputeNotification, setShowDisputeNotification] = useState(false);
+  const [successNotifications, setSuccessNotifications] = useState({
+    showNotification: false,
+    message: "",
+  });
+  const [errorNotifications, setErrorNotifications] = useState({
+    showNotification: false,
+    message: "",
+  });
+  const [eventData, setEventData] = useState({betAmount: 0});
+  const [isSponsoredEvent, setIsSponsoredEvent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [chainAmount, setChainAmount] = useState(0);
+  const [fbInfo, setFbInfo] = useState({ isConnected: false });
+  const [eventState, setEventState] = useState('');
+  const [showCODSettingsModal, setShowCODSettingsModal] = useState({show: false});
+  const [notification, setNotification] = useState({
+    showNotification: false,
+    message: "Please select a linked account to register for event..",
+  });
+  const [facebookNotification, setFacebookNotification] = useState({
+    showNotification: false,
+    message: "",
+  });
+  const [consoleSelectedValue, setConsoleValue] = useState("");
+  const [currency, setCurrency] = useState('');
+  const [doesGameRequireManualResult, setDoesGameRequireManualResult] = useState(false);
+  const [timeObject, setTimeObject] = useState({ showTimer: false });
+  const [shouldDisplayStyle, setShouldDisplayStyle] = useState(false);
+  const { id } = useParams();
+  const { user } = useContext(AuthContext);
+  const account = user.user?.session?.ethAddress;
+  const username = user.user?.session?.username;
 
   const handleTabsChange = (event, value) => {
     setCurrentTab(value);
@@ -105,6 +237,517 @@ const BattleView = () => {
     { value: 'rules', label: 'Rules' },
     { value: 'teams', label: 'Teams' }
   ];
+
+  async function getChainAmount(betAmount) {
+    const usdValueOfOneChain = await getUSDValueOfAChain();
+    let chainValue = 0;
+    if (usdValueOfOneChain > 0) {
+      chainValue =  betAmount / usdValueOfOneChain
+    }
+    setChainAmount(chainValue.toFixed(0))
+  }
+
+  const getEventDetails = async () => {
+    try {
+      const { data } = await getEventDetailsFromId({ eventID: parseInt(id) });
+      if (data.success === true) {
+        getChainAmount(data.events.betAmount);
+        setEventData({
+          ...data?.events,
+          description : data.events.description ? 
+            JSON.parse(data.events.description).fb_sponsorship_hashtag :
+            '#chaingames'
+        });
+        
+        if (data?.events?.sponsored) {
+          setIsSponsoredEvent(true);
+        }
+
+        const checkGame = checkGameRequiresManualResult(data.events.game);
+        console.log('_________________________')
+        console.log(checkGame)
+        if (checkGame) {
+          setDoesGameRequireManualResult(true);
+        }
+        else {
+          setDoesGameRequireManualResult(false);
+        }
+
+        const playerInfo = data.events.playersEnrolled?.find(
+          (row) => row.username === username
+        );
+        
+        if (checkIsOngoingEvent(data.events.startTime, data.events.endTime)) {
+          setEventState(EventStates.ONGOING);
+        }
+        else if (checkHasEventEnded(data.events.endTime)) {
+          if (checkGame) {
+            if (playerInfo?.status === StatusReceivedFromAPI.RESULT_NOT_SUBMITTED && checkWithCurrentTime(data.events.endTime, 15)) {
+              setEventState(EventStates.CAN_SUBMIT_RESULT)
+            }
+            else if (playerInfo?.status === StatusReceivedFromAPI.DISPUTE_OCCURED && (checkWithCurrentTime(data.events.endTime, HoursAfterWhichCanSubmitEvidence * 60))) {
+              setShowDisputeNotification(true);
+              setEventState(EventStates.CAN_SUBMIT_DISPUTE_EVIDENCE)
+            }
+            else {
+              setEventState(EventStates.CANNOT_DO_ANYTHING)
+            }
+          }
+          else {
+            setEventState(EventStates.EVENT_ENDED);
+          }
+        }
+        else {
+          if (data.events.challengeID) {
+            setEventState(EventStates.CANNOT_DO_ANYTHING)
+          }
+          else {
+            if (playerInfo?.username) {
+              if (isMinutesRemaining(data.events.startTime, 120)) {
+                setEventState(EventStates.CAN_UNREGISTER)
+              }
+              else {
+                setEventState(EventStates.CANNOT_UNREGISTER_EVENT_NOT_STARTED)
+              }
+            } else {
+              if (isMinutesRemaining(data.events.startTime, 16)) {
+                setEventState(EventStates.CAN_REGISTER)
+              } else {
+                setEventState(EventStates.CANNOT_REGISTER_EVENT_NOT_STARTED)
+              }
+            }
+          }
+          
+        }
+      }
+    } catch (error) {
+      console.log("🚀 ~ file: gameInfo/index.js ~ line 248 ~ getEventDetails ~ error", error)
+      Sentry.captureException(error, {
+        tags: {
+            page: location.pathname
+        },
+      });
+      if (error.response?.status === 400) {
+        history.push('/404');
+      }
+    }
+  };
+
+  useInterval(() => {
+    if (doesGameRequireManualResult) {
+      getEventDetails();
+    }
+  }, polllingMinutes * 60 * 1000);
+
+  const handleErrorCodeInRegister = (error) => {
+    if (error.response && error.response.data.errorCode) {
+      switch (error.response.data.errorCode) {
+        case 100:
+          setShowCODSettingsModal({ show: true, errorCode: error.response.data.errorCode });
+          break;
+        case 101:
+          setShowCODSettingsModal({ show: true, errorCode: error.response.data.errorCode });
+          break;
+        case 102:
+          setShowGamingNetworkNotification(true);
+          break;
+      }
+    }
+    else if (error.response) {
+      setErrorNotifications({
+        showNotification: true,
+        message: error.response.data.error,
+      });
+    }
+    else {
+      setErrorNotifications({
+        showNotification: true,
+        message: 'Something went wrong.',
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (id) {
+      getEventDetails();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (eventData.style) {
+      setShouldDisplayStyle(checkShouldDisplayStyle(eventData.style))
+    }
+  }, [eventData.style]);
+
+  const toggle = (e) => {
+    e.preventDefault();
+    setNotification({
+      showNotification: false,
+      message: "Please select a linked account to register for event..",
+    });
+    setModal(!modal);
+    setConsoleValue("");
+    setCurrency("");
+  };
+
+  useEffect(() => {
+    if (eventState === EventStates.CAN_SUBMIT_RESULT) {
+      setTimeObject({ showTimer: true, time: ((eventData.endTime * 1000) + (MinutesAfterWhichCanSubmitResult * 60 *1000)) })
+    }
+    else if (eventState === EventStates.CAN_SUBMIT_DISPUTE_EVIDENCE) {
+      setTimeObject({ showTimer: true, time: ((eventData.endTime * 1000) + (HoursAfterWhichCanSubmitEvidence * 60 * 60 *1000)) })
+    }
+    else {
+      setTimeObject({ showTimer: false})
+    }
+  }, [eventState]);
+
+  const handleConsoleOnChange = (value) => {
+    setConsoleValue(value.id);
+  };
+
+  const handleCurrencyOnChange = (value) => {
+    setCurrency(value.id);
+  };
+
+  const handleDisenroll = async (e) => {
+    e.preventDefault();
+    if (isMinutesRemaining(eventData.startTime, 120)) {
+      try {
+        const { data } = await disenrollFromEventService({
+          eventID: parseInt(id, 10),
+        });
+        if (data.success === true) {
+          setSuccessNotifications({
+            showNotification: true,
+            message: "Disenrollment from the event successfull.",
+          });
+          setFbInfo({ isConnected: false });
+          getEventDetails();
+        }
+      } catch (error) {
+        console.log("🚀 ~ file: gameInfo/index.js ~ line 411 ~ handleDisenroll ~ error", error)
+        Sentry.captureException(error, {
+          tags: {
+              page: location.pathname,
+          },
+        });
+        if (error.response) {
+          setErrorNotifications({
+            showNotification: true,
+            message: error.response.data.error,
+          });
+        }
+      }
+    } else {
+      getEventDetails();
+    }
+  };
+
+  const handleSponsoredEventRegister = async (e) => {
+    setIsLoading(true);
+    
+    if (consoleSelectedValue === "") {
+      setIsLoading(false);
+      return setFacebookNotification({
+        showNotification: true,
+        message: "Please select a linked account to register for event.",
+      });
+    }
+    else if (!account) {
+      setIsLoading(false);
+      setShowEthAddressNotification(true);
+      setShowFacebookModal(false);
+      return;
+    }
+    
+  
+    if (isMinutesRemaining(eventData.startTime, 16)) {
+      try {
+        const data = {
+          eventID: parseInt(id, 10),
+          networkID: consoleSelectedValue,
+          fbAccessToken: fbInfo.accessToken,
+          skipFBVerification: true,
+        };
+        const response = await enrollInASponsoredEventService(data);
+        if (response.data?.success === true) {
+          setSuccessNotifications({
+            showNotification: true,
+            message: "Successfully registered for sponsored event",
+          });
+          getEventDetails();
+          setShowFacebookModal(false);
+        }
+      } catch (error) {
+        console.log("🚀 ~ file: gameInfo/index.js ~ line 445 ~ handleSponsoredEventRegister ~ error", error)
+        Sentry.captureException(error, {
+          tags: {
+              page: location.pathname,
+          },
+        });
+        setShowFacebookModal(false);
+        setFbInfo({});
+        console.log("display error", error);
+        handleErrorCodeInRegister(error);
+      }
+    } else {
+      getEventDetails();
+    }
+    setIsLoading(false);
+  }
+
+  const handleRegister = async (e) => {
+    setErrorNotifications({
+      showNotification: false,
+      message: "",
+    });
+    if (isSponsoredEvent) {
+      setShowEthAddressNotification(false);
+      return setShowFacebookModal(true);
+    }
+    else {
+      setIsLoading(true);
+      if (isMinutesRemaining(eventData.startTime, 16)) {
+        
+        const hasBalance = await isBalanceEnough(eventData.betAmount, currency);
+        
+        if (hasBalance) {
+          
+          try {
+            const data = {
+              eventID: parseInt(id, 10),
+              networkID: consoleSelectedValue,
+              currency: currency,
+            };
+            const response = await enrollInAnEventService(data);
+            if (response.data?.success === true) {
+              toggle(e);
+              setSuccessNotifications({
+                showNotification: true,
+                message: "Successfully registered for an event",
+              });
+              getEventDetails();
+            }
+          } catch (error) { 
+            console.log("🚀 ~ file: gameInfo/index.js ~ line 498 ~ handleRegister ~ error", error)
+            Sentry.captureException(error, {
+              tags: {
+                  page: location.pathname,
+              },
+            });
+            setModal(false);
+            handleErrorCodeInRegister(error);
+          }
+        }
+        else {
+          setNotification({
+            showNotification: true,
+            message: "Balance not enough.",
+          });
+        }
+        
+      } else {
+        getEventDetails();
+      }
+      setIsLoading(false);
+    }
+    
+  };
+
+
+  const generateErrorNotification = () => {
+    return (
+      <Alert severity="error">
+        <AlertTitle>Oops!</AlertTitle>
+        {errorNotifications.message}
+      </Alert>
+    );
+  };
+
+  const generateSponsoredEventNotification = useCallback(() => {
+    return (
+      <Alert severity="info">
+        <AlertTitle>Heads up!</AlertTitle>
+        This is a sponsored event, you don't need to pay anything to register for it.
+      </Alert>
+    );
+  }, [isSponsoredEvent]) 
+
+  const generateSuccessNotification = () => {
+    return (
+      <Alert severity="success">
+        <AlertTitle>Congratulations!</AlertTitle>
+        {successNotifications.message}
+      </Alert>
+    );
+  };
+
+  const consoleModalWindow = () => {
+    return (
+      <Modal isOpen={modal}>
+        <Typography
+          color="textPrimary"
+          variant="h2"
+        >
+          Register
+        </Typography>
+        <Box mt={2}>
+          {notification.showNotification && (
+            <Alert severity="error">
+              {notification.message}
+            </Alert>
+          )}
+          {/* <GameConsoleSelection
+            consoleSelectedValue={consoleSelectedValue}
+            handleConsoleOnChange={handleConsoleOnChange}
+            game={eventData.game}
+            deviceID={eventData.deviceID}
+            handleCurrencyOnChange={handleCurrencyOnChange}
+            currency={currency}
+          /> */}
+        </Box>
+        <Box display="flex">
+          <Button color="warning" disabled={((consoleSelectedValue === '' || currency === '' || isLoading))} onClick={handleRegister}>
+            Register
+          </Button>
+          <Button color="warning" onClick={toggle}>
+            Cancel
+          </Button>
+        </Box>
+      </Modal>
+    );
+  };
+
+  const handleSubmitResult = () => {
+    setShowSubmitResultModal(true);
+  }
+
+  const getAppropriateButton = useCallback(() => {
+
+    let showButton = true;
+    let disabled;
+    let onClick;
+    let buttonText;
+
+    switch (eventState) {
+      case EventStates.CAN_REGISTER:
+        onClick = isSponsoredEvent ? handleRegister : toggle;
+        disabled = false;
+        buttonText = `Register` + ` | $${eventData && (isSponsoredEvent ? 'Free' :
+          eventData.betAmount.toFixed(2))
+          }`;
+        break;
+      case EventStates.CANNOT_REGISTER_EVENT_NOT_STARTED:
+        onClick = isSponsoredEvent ? handleRegister : toggle;
+        disabled = true;
+        buttonText = `Register` + ` | $${eventData && (isSponsoredEvent ? 'Free' :
+          eventData.betAmount.toFixed(2))
+          }`;
+        break;
+      case EventStates.CAN_UNREGISTER:
+        onClick = handleDisenroll;
+        disabled = false;
+        buttonText = `Unregister`
+        break;
+      case EventStates.CANNOT_UNREGISTER_EVENT_NOT_STARTED:
+        onClick = handleDisenroll;
+        disabled = true;
+        buttonText = `Unregister`
+        break;
+      case EventStates.ONGOING:
+        if (doesGameRequireManualResult) {
+          showButton = false;
+        }
+        else {
+          onClick = () => {
+            history.push(`/liveStats/${id}`)
+          };
+          disabled = false;
+          buttonText = `Live Stats`;
+        }
+        break;
+      case EventStates.EVENT_ENDED:
+        onClick = () => {
+          history.push(`/liveStats/${id}`)
+        };
+        disabled = false;
+        buttonText = `Event Stats`;
+        break;
+      case EventStates.CAN_SUBMIT_RESULT:
+        onClick = handleSubmitResult
+        disabled = false;
+        buttonText = `Submit Result`;
+        break;
+      case EventStates.CAN_SUBMIT_DISPUTE_EVIDENCE:
+        onClick = () => {
+          history.push(`/dispute/${id}`)
+        };
+        disabled = false;
+        buttonText = `Submit Evidence`;
+        break;
+      default:
+        showButton = false;
+        break;
+    }
+
+    return (
+      <>
+        {
+          showButton ? (
+            <Button
+              color="warning"
+              onClick={onClick}
+              disabled={disabled}
+            >
+              {
+                buttonText
+              }
+            </Button>
+          ) : (
+              null
+            )
+        }
+      </>
+    )
+  }, [eventState] )
+
+  const submitResult = async (result) => {
+    setIsLoading(true);
+    setShowSubmitResultModal(false);
+    if (checkWithCurrentTime(eventData.endTime, MinutesAfterWhichCanSubmitResult)) {
+      try {
+        const { data } = await submitEventResultService({
+          eventID: parseInt(id, 10),
+          won: result,
+
+        });
+        if (data.success) {
+          setSuccessNotifications({
+            showNotification: true,
+            message: "Successfully submitted your result.",
+          });
+        }
+      }
+      catch (error) {
+        console.log("🚀 ~ file: gameInfo/index.js ~ line 715 ~ submitResult ~ error", error)
+        Sentry.captureException(error, {
+          tags: {
+              page: location.pathname,
+          },
+        });
+        if (error.response) {
+          setErrorNotifications({
+            showNotification: true,
+            message: error.response.data.error,
+          });
+        }
+      }
+    }
+    await getEventDetails();
+    setIsLoading(false)
+  }
+  
 
   return (
     <Page
@@ -127,7 +770,7 @@ const BattleView = () => {
                       <Typography
                         className={classes.titlePaper}
                         color="textPrimary"
-                        variant="body3"
+                        variant="body2"
                       >
                         $50 GUARANTEED 1V1 KILL RACE BEST OF 1
                       </Typography>
