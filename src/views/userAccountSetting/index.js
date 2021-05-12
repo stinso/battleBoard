@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
-import UserAccountSettings from './UserAccountSettings';
+import UserAccountSetting from './UserAccountSetting';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 const useStyles = makeStyles(() => ({
@@ -11,7 +11,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const UserAccountSettingsView = () => {
+const userAccountSettingView = () => {
   const classes = useStyles();
 
   return (
@@ -20,10 +20,10 @@ const UserAccountSettingsView = () => {
       className={classes.root}
       title="Battle | Chain Games"
     >
-      <UserAccountSettings />
+      <UserAccountSetting />
     </Page>
     </PerfectScrollbar>
   );
 };
 
-export default UserAccountSettingsView;
+export default userAccountSettingView;

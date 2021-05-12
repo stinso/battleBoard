@@ -2,6 +2,11 @@ import {
   Box,
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   Grid,
   Modal,
@@ -26,9 +31,9 @@ const FaceBookStepsModal = ({
 
 
   return (
-    <Modal isOpen={showFacebookModal}>
+    <Dialog open={showFacebookModal}>
       Facebook Modal
-    </Modal>
+    </Dialog>
   );
 };
 

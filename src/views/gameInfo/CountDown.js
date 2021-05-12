@@ -1,4 +1,5 @@
 import Countdown, { zeroPad, } from "react-countdown";
+import { Typography } from '@material-ui/core';
 
 
 const CountDown = ({
@@ -14,9 +15,12 @@ const CountDown = ({
       return null;
     } else {
       return (
-        <p>
-        {zeroPad(hours, 2)}:{zeroPad(minutes, 2)}:{zeroPad(seconds, 2)}
-        </p>
+        <Typography
+          color="textPrimary"
+          variant="h2"
+        >
+          {zeroPad(hours, 2)}:{zeroPad(minutes, 2)}:{zeroPad(seconds, 2)}
+        </Typography>
       )
     }
   };

@@ -105,7 +105,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const UserAccountSettings = ({ className, ...rest }) => {
+const userAccountSetting = ({ className, ...rest }) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
@@ -293,8 +293,8 @@ const UserAccountSettings = ({ className, ...rest }) => {
   );
 };
 
-UserAccountSettings.propTypes = {
+userAccountSetting.propTypes = {
   className: PropTypes.string
 };
 
-export default UserAccountSettings;
+export default userAccountSetting;

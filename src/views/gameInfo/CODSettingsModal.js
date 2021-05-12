@@ -2,6 +2,11 @@ import {
   Box,
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   Grid,
   Modal,
@@ -17,9 +22,9 @@ const CODSettingsModal = ({
 
 
   return (
-    <Modal isOpen={showCODSettingsModal.show}>
+    <Dialog open={showCODSettingsModal.show}>
       CODSettings Modal
-    </Modal>
+    </Dialog>
   );
 };
 

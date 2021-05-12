@@ -2,6 +2,11 @@ import {
   Box,
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   Grid,
   Modal,
@@ -18,9 +23,9 @@ const SubmitResultModal = ({
 
 
   return (
-    <Modal isOpen={showSubmitResultModal}>
+    <Dialog open={showSubmitResultModal}>
       SubmitResult Modal
-    </Modal>
+    </Dialog>
   );
 };
 

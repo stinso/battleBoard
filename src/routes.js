@@ -117,8 +117,8 @@ const routes = [
       },
       {
         exact: true,
-        path: '/userAccountSettings',
-        component: lazy(() => import('src/views/userAccountSettings'))
+        path: '/userAccountSetting',
+        component: lazy(() => import('src/views/userAccountSetting'))
       },
       {
         exact: true,

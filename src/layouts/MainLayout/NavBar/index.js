@@ -109,7 +109,7 @@ const sections = [
       {
         title: 'Account Settings',
         icon: ToolIcon,
-        href: '/userAccountSettings',
+        href: '/userAccountSetting',
         isExternal: false
       }
     ]

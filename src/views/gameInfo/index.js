@@ -9,6 +9,11 @@ import {
   Box,
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   Grid,
   Modal,
@@ -33,11 +38,13 @@ import {
   FacebookProvider,
 } from 'react-facebook';
 import {
+  getTimeAndDateFromEpoch,
   getUSDValueOfAChain,
   isBalanceEnough,
   checkGameRequiresManualResult,
   isMinutesRemaining,
-  checkWithCurrentTime
+  checkWithCurrentTime,
+  getDuration
 } from "../../utils/helpers.js";
 import {
   getEventDetailsFromId,
@@ -53,7 +60,7 @@ import {
   MinutesAfterWhichCanSubmitResult
 } from '../../config/constants'
 import defaultAvatar from "../../assets/img/placeholder.jpg";
-//import GameConsoleSelection from "./ConsoleSelection";
+import GameConsoleSelection from "./ConsoleSelection";
 import CODSettingsModal from './CODSettingsModal'
 import FacebookModal from './FacebookModal';
 //import EventDetailsSection from "./EventDetailsSection";
@@ -584,37 +591,43 @@ const BattleView = () => {
 
   const consoleModalWindow = () => {
     return (
-      <Modal isOpen={modal}>
-        <Typography
-          color="textPrimary"
-          variant="h2"
-        >
+      <Dialog 
+        open={modal}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle variant='h2'>
           Register
-        </Typography>
-        <Box mt={2}>
-          {notification.showNotification && (
-            <Alert severity="error">
-              {notification.message}
-            </Alert>
-          )}
-          {/* <GameConsoleSelection
-            consoleSelectedValue={consoleSelectedValue}
-            handleConsoleOnChange={handleConsoleOnChange}
-            game={eventData.game}
-            deviceID={eventData.deviceID}
-            handleCurrencyOnChange={handleCurrencyOnChange}
-            currency={currency}
-          /> */}
-        </Box>
-        <Box display="flex">
-          <Button color="warning" disabled={((consoleSelectedValue === '' || currency === '' || isLoading))} onClick={handleRegister}>
+        </DialogTitle >
+        <DialogContent>
+          <Box mt={2}>
+            {notification.showNotification && (
+              <Alert severity="error">
+                {notification.message}
+              </Alert>
+            )}
+            <GameConsoleSelection
+              consoleSelectedValue={consoleSelectedValue}
+              handleConsoleOnChange={handleConsoleOnChange}
+              game={eventData.game}
+              deviceID={eventData.deviceID}
+              handleCurrencyOnChange={handleCurrencyOnChange}
+              currency={currency}
+            />
+          </Box>
+          consoleSelectedValue: {consoleSelectedValue}
+          isLoading: {isLoading.toString()}
+          currency: {currency}
+        </DialogContent>
+        <DialogActions>
+          <Button color="secondary" disabled={((consoleSelectedValue === '' || currency === '' || isLoading))} onClick={handleRegister}>
             Register
           </Button>
-          <Button color="warning" onClick={toggle}>
+          <Button color="error" onClick={toggle}>
             Cancel
           </Button>
-        </Box>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     );
   };
 
@@ -623,7 +636,6 @@ const BattleView = () => {
   }
 
   const getAppropriateButton = useCallback(() => {
-
     let showButton = true;
     let disabled;
     let onClick;
@@ -695,7 +707,8 @@ const BattleView = () => {
         {
           showButton ? (
             <Button
-              color="warning"
+              variant="contained"
+              color="secondary"
               onClick={onClick}
               disabled={disabled}
             >
@@ -802,6 +815,7 @@ const BattleView = () => {
             style = {eventData.style}
           />
       }
+
       { /* NOTIFICATIONS */}
       { showDisputeNotification && <DisputeNotification /> }
       { showEthAddressNotification && <EthAddressNotLinkedNotification /> }
@@ -829,7 +843,7 @@ const BattleView = () => {
                         color="textPrimary"
                         variant="body2"
                       >
-                        $50 GUARANTEED 1V1 KILL RACE BEST OF 1
+                        {eventData?.name}
                       </Typography>
                       <Box display="flex" mb={1}>
                         <Box className={classes.borderedBoxGlew}>
@@ -837,7 +851,7 @@ const BattleView = () => {
                             color="textPrimary"
                             variant="body2"
                           >
-                            Call of Duty
+                            {eventData?.game}
                           </Typography>
                           <Typography
                             color="secondary"
@@ -873,7 +887,7 @@ const BattleView = () => {
                             color="textPrimary"
                             variant="body1"
                           >
-                            Apr 24th 1:00 AM UTC
+                            {eventData && eventData.startTime && getTimeAndDateFromEpoch(eventData.startTime)}
                           </Typography>
                         </Box>
                       </Box>
@@ -889,7 +903,7 @@ const BattleView = () => {
                             color="textPrimary"
                             variant="body2"
                           >
-                            $25
+                            { eventData && (isSponsoredEvent ? 'Free' : '$' + eventData.betAmount.toFixed(2)) }
                           </Typography>
                         </Box>
                         <Divider className={classes.divider} />
@@ -898,13 +912,17 @@ const BattleView = () => {
                             color="textSecondary"
                             variant="body2"
                           >
-                            TEAM SIZE
+                            DURATION
                           </Typography>
                           <Typography
                             color="textPrimary"
                             variant="body2"
                           >
-                            1 vs 1
+                            {eventData &&
+                            eventData.startTime &&
+                            eventData.endTime &&
+                            getDuration(eventData.startTime, eventData.endTime)}
+                            {` Min.`}
                           </Typography>
                         </Box>
                         <Divider className={classes.divider} />
@@ -913,13 +931,13 @@ const BattleView = () => {
                             color="textSecondary"
                             variant="body2"
                           >
-                            MAX TEAMS
+                            PLAYERS
                           </Typography>
                           <Typography
                             color="textPrimary"
                             variant="body2"
                           >
-                            64
+                            {eventData?.minPlayers} –{" "}{eventData?.maxPlayers}
                           </Typography>
                         </Box>
                         <Divider className={classes.divider} />
@@ -934,7 +952,7 @@ const BattleView = () => {
                             color="textPrimary"
                             variant="body2"
                           >
-                            4
+                            {eventData?.playersEnrolled && eventData?.playersEnrolled.length}
                           </Typography>
                         </Box>
                       </Box>
@@ -945,29 +963,26 @@ const BattleView = () => {
             
             <Box display="flex" className={classes.timer}>
               <Box ml={5} display="flex" alignItems="center" justifyContent="center">
-                <Box mt={1} mr={1}>
-                  <Typography
-                    color="textPrimary"
-                    variant="body2"
-                  >
-                    Starts in
-                  </Typography>
-                </Box>
-                <Typography
-                  color="textPrimary"
-                  variant="h2"
-                >
-                  10M 22S
-                </Typography>
-                  
+                { timeObject.showTimer && 
+                <>
+                  <Box mt={1} mr={1}>
+                    <Typography
+                      color="textPrimary"
+                      variant="body2"
+                    >
+                      Starts in
+                    </Typography>
+                  </Box>
+                  <CountDown 
+                    timeObject={timeObject}
+                    getEventDetails={getEventDetails}
+                    setTimeObject={setTimeObject}
+                  />
+                </>
+                }
               </Box>
-                <Box display="flex" alignItems="center" ml={9}>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                  >
-                    ENROLL NOW
-                  </Button>
+                <Box display="flex" alignItems="center" ml={timeObject.showTimer ? 9 : 0}>
+                  { eventState && getAppropriateButton() }
                 </Box>
               
             </Box>
