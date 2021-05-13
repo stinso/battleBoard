@@ -27,30 +27,15 @@ import {
   useMediaQuery,
   makeStyles
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Linking from './Linking'
+import ChangePassword from './ChangePassword'
 
 const font = "'Saira', sans-serif";
 
-const networks = [
-  {
-    id: "ps",
-    username: "N/A",
-    image: "/static/images/networks/playstation.png",
-    link: "#"
-  },
-  {
-    id: "xbox",
-    username: "N/A",
-    image: "/static/images/networks/xbox.png",
-    link: "#"
-  },
-  {
-    id: "battleNet",
-    username: "mukki@chaingames.io",
-    image: "/static/images/networks/battleNet.png",
-    link: "#"
-  }
-]
+const tabs = {
+  linking: 1,
+  changePassword: 2
+};
 
 
 const useStyles = makeStyles((theme) => ({
@@ -109,6 +94,11 @@ const userAccountSetting = ({ className, ...rest }) => {
   const classes = useStyles();
   const theme = useTheme();
   const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  const [currentTab, setCurrentTab] = useState(tabs.linking);
+
+  const handleTabsChange = (event, value) => {
+    setCurrentTab(value);
+  };
 
   return (
     <div
@@ -160,6 +150,9 @@ const userAccountSetting = ({ className, ...rest }) => {
                     color="secondary"
                     variant="outlined"
                     fullWidth
+                    onClick={(e) =>
+                      handleTabsChange(e, tabs.linking)
+                    }
                   >
                     account linking
                   </Button>
@@ -171,6 +164,9 @@ const userAccountSetting = ({ className, ...rest }) => {
                     color="secondary"
                     variant="outlined"
                     fullWidth
+                    onClick={(e) =>
+                      handleTabsChange(e, tabs.changePassword)
+                    }
                   >
                     Change password
                   </Button>
@@ -180,111 +176,8 @@ const userAccountSetting = ({ className, ...rest }) => {
           </Grid>
           <Grid item xs={12} lg={8}>
             <Paper className={classes.paper}>
-              <Typography
-                className={classes.title}
-                variant="h2"
-                color="textPrimary"
-              >
-                Linked Accounts
-              </Typography>
-              <Table>
-                <TableHead>
-                  <TableRow >
-                    <TableCell>
-                      Network
-                    </TableCell>
-                    <TableCell>
-                      Username
-                    </TableCell>
-                    <TableCell align="center">
-                      Action
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {networks.map((network) => {
-                    return (
-                      <TableRow
-                        spacing={0}
-                        hover
-                        key={network.id}
-                      >
-                        <TableCell className={classes.imageCell} align='center' padding='none'>
-                            <img className={classes.rowImage}
-                              src={network.image}
-                            />
-                        </TableCell>
-                        <TableCell>
-                          {network.username}
-                        </TableCell>
-                        <TableCell className={classes.priceCell} align="center">
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            color="secondary"
-                            href={network.link}
-                          >
-                            link
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-              <Accordion className={classes.accordion}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel2a-content"
-                  id="panel2a-header"
-                >
-                  <Typography className={classes.heading}>Linking PSN or Activision Account for Call of Duty: MW</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Box>
-                  <Typography variant="body2" gutterBottom>
-                    Note: This workaround is only for COD: Modern Warfare.
-                  </Typography>
-                  <Typography variant="body2" display="block" gutterBottom>
-                    Currently, we only support linking your XBox and
-                    <Link
-                      color="secondary"
-                      component="a"
-                      href="https://us.battle.net/account/creation/flow/create-full "
-                      variant="body2"
-                    >
-                      {' '} Battle.net {' '}
-                    </Link> 
-                    accounts on ChainGames Battle. Players using PSN or Activision accounts in COD: MW do not need to worry. Just follow these simple steps to link your account on ChainGames and start battling!
-                  </Typography>
-                  <Typography variant="body2" display="block" gutterBottom > 
-                    Create a freeBattle.net accountif you don't already have one.
-                  </Typography>
-                  <Typography variant="body2" display="block" gutterBottom >
-                    Login to the
-                    <Link
-                      color="secondary"
-                      component="a"
-                      href="https://my.callofduty.com/login"
-                      variant="body2"
-                    >
-                      {' '} My Call of Duty {' '}
-                    </Link>  
-                    website with your existing PSN or Activision account (whichever one you use to play the game).
-                  </Typography>
-                  <Typography variant="body2" display="block" gutterBottom >
-                    At the top of the website, you'll see your username. Hover over it and select "Linked Accounts" from the pop-up menu.
-                  </Typography>
-                  <Typography variant="body2" display="block" gutterBottom >
-                    You will now see options to link with other gaming networks. Select "Battle.net" from that list and login to your Battle.net account. This will link your exisitng PSN/Activision account with Battle.net and sync your COD: MW stats accross the two.
-                  </Typography>
-                  <Typography variant="body2" display="block" gutterBottom>
-                    Now you can link your Battle.net account here.
-                    That's it. Our systems will now be able to see your stats even when you're playing on your PlayStation or using your Activision account. Battle on!
-                  </Typography>
-                  </Box>
-                </AccordionDetails>
-              </Accordion>
+              {currentTab === tabs.linking && <Linking />}
+              {currentTab === tabs.changePassword && <ChangePassword />}
             </Paper>
           </Grid>
         </Grid>

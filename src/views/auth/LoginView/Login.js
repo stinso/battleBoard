@@ -98,13 +98,13 @@ const Login = ({ className, ...rest }) => {
   return (
     <Formik
       initialValues={{
-        email: 'mukki',
+        username: 'mukki',
         password: 'Proevo08!',
         submit: null
       }}
       validationSchema={Yup.object().shape({
-        //email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-        password: Yup.string().max(255).required('Password is required')
+        password: Yup.string().max(255).required('Password is required'),
+        username: Yup.string().max(255).required('Username is required'),
       })}
       onSubmit={async (values, {
         setErrors,
@@ -113,7 +113,7 @@ const Login = ({ className, ...rest }) => {
       }) => {
         try{
           let formData = {
-            username: values.email,
+            username: values.username,
             reCaptchaToken: ' ',
             password: values.password
           };
@@ -174,17 +174,17 @@ const Login = ({ className, ...rest }) => {
           {...rest}
         >
           <TextField
-            error={Boolean(touched.email && errors.email)}
+            error={Boolean(touched.username && errors.username)}
             fullWidth
             autoFocus
-            helperText={touched.email && errors.email}
-            label="Email Address"
+            helperText={touched.username && errors.username}
+            label="Username"
             margin="normal"
-            name="email"
+            name="username"
             onBlur={handleBlur}
             onChange={handleChange}
-            type="email"
-            value={values.email}
+            type="username"
+            value={values.username}
             variant="outlined"
           />
           <TextField
@@ -220,11 +220,13 @@ const Login = ({ className, ...rest }) => {
             </Button>
           </Box>
           <Box mt={2}>
-            <Alert
-              severity="info"
-            >
-              Wrong Username or Password
-            </Alert>
+            {errMsg &&
+              <Alert
+                severity="info"
+              >
+                {errMsg}
+              </Alert>
+            }
           </Box>
         </form>
       )}
