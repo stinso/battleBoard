@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import React, { useContext, useState } from 'react';
 import clsx from 'clsx';
 import { useLocation, useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';

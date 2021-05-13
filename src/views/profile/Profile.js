@@ -20,13 +20,10 @@ import { Users as FollowersIcon } from 'react-feather';
 import { UserCheck as FollowingIcon } from 'react-feather';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
-
 import MatchHistory from './MatchHistory'
 import Followers from './Followers'
 import Following from './Following'
 import GamingNetworks from './GamingNetworks'
-
-// new
 import defaultAvatar from "../../assets/img/placeholder.jpg";
 import {
   userInfoService,
@@ -36,17 +33,12 @@ import {
   getBalanceFromCS,
 } from '../../service/node.service'
 import { AuthContext } from "../../context/AuthContext";
-//import MatchHistory from "./MatchHistory";
-//import Followers from "./Followers";
-//import Following from "./Following";
-//import GamingNetworks from './GamingNetworks';
 //import ChallengeModal from '../challenges/ChallengeModal';
 //import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
 import {
   getFormattedUserName,
   formatInCHAIN,
 } from '../../utils/helpers.js';
-//import { useRouter } from "next/router";
 import * as Sentry from "@sentry/react";
 
 const font = "'Saira', sans-serif";

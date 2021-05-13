@@ -28,8 +28,6 @@ const useStyles = makeStyles(() => ({
 const Login = ({ className, ...rest }) => {
   const classes = useStyles();
   const isMountedRef = useIsMountedRef();
-
-  // new
   const history = useHistory();
   const {dispatch} = useContext(AuthContext);
   const [errMsg, setErrMsg] = useState()
@@ -40,60 +38,6 @@ const Login = ({ className, ...rest }) => {
     document.body.classList.add("login-page");
   }, [])
 
-  async function onLoginButtonClick(e){
-    setErrMsg('');
-    e.preventDefault()
-    if(userName && password && captchaVerified){
-      try{
-        let formData = {
-          username: userName,
-          reCaptchaToken: captchaToken,
-          password
-        };
-
-        
-        
-        const response = await loginService(formData);
-        
-        const data = response.data;
-        if(data.success === true){
-          dispatch({
-            type: LOGIN_REQUEST,
-            payload: {
-              ...data,
-            }
-          })
-          if (redirect) {
-            history.push(redirect)
-          }
-          else {
-            history.push('/dashboard')
-          }
-        }
-        else{
-          setErrMsg('Something went wrong. Please try again');
-        }
-      }
-      catch(error){
-        console.log("onLoginButtonClick -> error", error)
-        recaptchaRef.current.reset();
-
-        if(error.response){
-          setErrMsg(error.response.data.error);
-        }
-        
-      }
-    }
-    else if(!userName){
-      setErrMsg('Please enter User Name');
-    }
-    else if(!password){
-      setErrMsg('Please enter Password');
-    }
-    else if(!captchaVerified){
-      setErrMsg('Please complete Captcha');
-    }
-  }
 
   return (
     <Formik
@@ -138,23 +82,17 @@ const Login = ({ className, ...rest }) => {
           else{
             setErrMsg('Something went wrong. Please try again');
           }
-        }
-        catch(error){
-          console.log('++++++++')
+        } catch(error) {
           console.error(error);
           if (isMountedRef.current) {
             setStatus({ success: false });
             setErrors({ submit: error.message });
             setSubmitting(false);
           }
-          
-          console.log("onLoginButtonClick -> error", error)
-          recaptchaRef.current.reset();
   
           if(error.response){
             setErrMsg(error.response.data.error);
           }
-          
         }
       }}
     >
