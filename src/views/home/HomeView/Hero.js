@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { NavLink as RouterLink } from 'react-router-dom';
+import { 
+  NavLink as RouterLink,
+  useLocation
+ } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { THEMES } from 'src/constants';
@@ -32,10 +35,19 @@ import { useDispatch, useSelector } from 'src/store';
 import Carousel from 'react-material-ui-carousel'
 import Example from 'src/components/Example'
 import { findLastIndex } from 'lodash';
+import { getEventsService } from '../../../service/node.service';
+import * as Sentry from "@sentry/react";
+import { 
+  getTimeFromEpoch, 
+  getDateFromEpoch, 
+  getGameFormatFromIndex,
+  calculateTotalPrizePool,
+  getDuration
+} from "../../../utils/helpers";
 
 const font = "'Saira', sans-serif";
 
-const events = [
+/* const events = [
   {
     id: "MW Warzone Kill Race FREE 0",
     format: "Warzone - Max Kills",
@@ -146,7 +158,7 @@ const events = [
     prizePool: "$20",
     image: "/static/images/gameIcons/fifa.jpg"
   }
-]
+] */
 
 
 const useStyles = makeStyles((theme) => ({
@@ -387,6 +399,8 @@ const Hero = ({ className, ...rest }) => {
   const [currentTab, setCurrentTab] = useState('all');
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
+  const [events, setEvents] = useState([]);
+  const location = useLocation();
 
   const tabs = [
     { value: 'all', label: 'All' },
@@ -406,7 +420,60 @@ const Hero = ({ className, ...rest }) => {
     setCurrentTab(value);
   };
 
-  const paginatedEvents = applyPagination(events, page, limit);
+  const filterEvents = () => {
+    const result = events.filter(event => {
+      if (currentTab === 'free') {
+        if (event.entry === 'Free') {
+          return true;
+        }
+      } else if (currentTab === 'paid') {
+        if (event.entry !== 'Free') {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    });
+
+    return result;
+  };
+
+  const filteredEvents = filterEvents();
+  const paginatedEvents = applyPagination(filteredEvents, page, limit);
+
+  const getEvents = async () => {
+    try{
+      const {data} = await getEventsService({allGames:true})
+      console.log(data)
+      if(data.success === true && data.events?.length > 0){
+        setEvents(data.events.map((row) => {
+          return {
+            ...row,
+            date: getDateFromEpoch(row.startTime),
+            time: getTimeFromEpoch(row.startTime),
+            duration: getDuration(row.startTime, row.endTime),
+            gameFormat: getGameFormatFromIndex(row.game, row.gameFormat),
+            noOfUsersEnrolled: row.noOfUsersEnrolled > row.maxUsers ? row.maxUsers : row.noOfUsersEnrolled, 
+            betAmount: row.sponsored ? 'Free' : `$${(row.betAmount).toFixed(2)}`,
+            prizePool: `$${(calculateTotalPrizePool(row.betAmount,
+              row.maxUsers))}`,
+          }
+        }))
+      }
+    }
+    catch(error){
+      console.log("🚀 ~ file: Hero.js ~ line 432 ~ getEvents ~ error", error)
+      Sentry.captureException(error, {
+        tags: {
+            page: location.pathname,
+        },
+      });
+    }
+  }
+
+  useEffect(() => {
+    getEvents();
+  }, []);
 
   return (
     <div
@@ -637,19 +704,20 @@ const Hero = ({ className, ...rest }) => {
                             />
                         </TableCell>
                         <TableCell>
-                          {entry.format}
+                          {/* getGameFormatFromIndex(entry.game ,entry.gameFormat) */}
+                          {entry.gameFormat}
                         </TableCell>
                         <TableCell>
-                          {entry.participants}
+                          {`${entry.noOfUsersEnrolled} of ${entry.maxUsers}`} 
                         </TableCell>
                         <TableCell>
-                          {entry.startTime}
+                          {`${entry.date} ${entry.time}`}
                         </TableCell>
                         <TableCell className={classes.entry}>
-                          {entry.entry}
+                          {entry.betAmount}
                         </TableCell>
                         <TableCell>
-                          {entry.duration}
+                          {`${entry.duration} min`}
                         </TableCell>
                         <TableCell className={classes.priceCell}>
                           {entry.prizePool}
@@ -659,6 +727,8 @@ const Hero = ({ className, ...rest }) => {
                             variant="outlined"
                             size="small"
                             color="secondary"
+                            component={RouterLink}
+                            to={`/gameInformationPage/${entry.id}`}
                           >
                             JOIN
                           </Button>
