@@ -88,7 +88,27 @@ const LobbyView = () => {
   const [allDates, setAllDates] = useState([]);
   const [dates, setDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState([]);
-  const paginatedLobbyData = applyPagination(lobbyData, page, limit);
+
+  const filterEvents = () => {
+    const result = lobbyData.filter(event => {
+      if (currentTab === 'free') {
+        if (event.entry === 'Free') {
+          return true;
+        }
+      } else if (currentTab === 'paid') {
+        if (event.entry !== 'Free') {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    });
+
+    return result;
+  };
+
+  const filteredEvents = filterEvents();
+  const paginatedLobbyData = applyPagination(filteredEvents, page, limit);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
