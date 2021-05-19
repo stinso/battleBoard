@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { 
   NavLink as RouterLink,
   useLocation
@@ -6,6 +6,7 @@ import {
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { THEMES } from 'src/constants';
+import Notification from './EthAddressNotLinkedNotification'
 import {
   Avatar,
   Box,
@@ -35,6 +36,7 @@ import { useDispatch, useSelector } from 'src/store';
 import Carousel from 'react-material-ui-carousel'
 import Example from 'src/components/Example'
 import { findLastIndex } from 'lodash';
+import { AuthContext } from "../../../context/AuthContext";
 import { getEventsService } from '../../../service/node.service';
 import * as Sentry from "@sentry/react";
 import { 
@@ -44,120 +46,19 @@ import {
   calculateTotalPrizePool,
   getDuration
 } from "../../../utils/helpers";
+import {
+  ApproveRedirectLink,
+  DepositRedirectLink,
+  RedirectURL,
+  RegisterEthAddressRedirectURL,
+} from "../../../config/constants";
 
 const font = "'Saira', sans-serif";
 
 /* const events = [
-  {
-    id: "MW Warzone Kill Race FREE 0",
-    format: "Warzone - Max Kills",
-    participants: "16 of 30",
-    startTime: "27th Mar 21:00 CET",
-    entry: "Free",
-    duration: "60 Min.",
-    prizePool: "$28.50",
     image: "/static/images/gameIcons/cod.jpg"
-  },
-  {
-    id: "MW Warzone Kill Race FREE 1",
-    format: "Warzone - Max Kills",
-    participants: "11 of 30",
-    startTime: "27th Mar 19:00 CET",
-    entry: "$1.00",
-    duration: "120 Min.",
-    prizePool: "$28.50",
-    image: "/static/images/gameIcons/cod.jpg"
-  },
-  {
-    id: "MW Warzone Headshots 2",
-    format: "Apex - Most Headshots",
-    participants: "7 of 30",
-    startTime: "27th Mar 20:00 CET",
-    entry: "$1.00",
-    duration: "60 Min.",
-    prizePool: "$28.50",
     image: "/static/images/gameIcons/apex.jpg"
-  },
-  {
-    id: "MW Warzone Kill Race FREE 3",
-    format: "Fifa - Winner",
-    participants: "1 of 2",
-    startTime: "28th Mar 21:00 CET",
-    entry: "Free",
-    duration: "15 Min.",
-    prizePool: "$20",
     image: "/static/images/gameIcons/fifa.jpg"
-  },
-  {
-    id: "MW Warzone Kill Race FREE 4",
-    format: "Fifa - Winner",
-    participants: "1 of 2",
-    startTime: "28th Mar 21:00 CET",
-    entry: "$10.00",
-    duration: "15 Min.",
-    prizePool: "$20",
-    image: "/static/images/gameIcons/fifa.jpg"
-  },
-  {
-    id: "MW Warzone Headshots 5",
-    format: "Warzone - Most Headshots",
-    participants: "0 of 30",
-    startTime: "28th Mar 21:00 CET",
-    entry: "$1.00",
-    duration: "60 Min.",
-    prizePool: "$28.50",
-    image: "/static/images/gameIcons/cod.jpg"
-  },
-  {
-    id: "MW Warzone Kill Race FREE 6",
-    format: "Fifa - Winner",
-    participants: "1 of 2",
-    startTime: "28th Mar 21:00 CET",
-    entry: "Free",
-    duration: "15 Min.",
-    prizePool: "$20",
-    image: "/static/images/gameIcons/fifa.jpg"
-  },
-  {
-    id: "MW Warzone Kill Race FREE 7",
-    format: "Apex - Max Kills",
-    participants: "1 of 30",
-    startTime: "29th Mar 21:00 CET",
-    entry: "$1.00",
-    duration: "60 Min.",
-    prizePool: "$28.50",
-    image: "/static/images/gameIcons/apex.jpg"
-  },
-  {
-    id: "MW Warzone Kill Race FREE 8",
-    format: "Warzone - Max Kills",
-    participants: "5 of 30",
-    startTime: "29th Mar 19:00 CET",
-    entry: "$1.00",
-    duration: "120 Min.",
-    prizePool: "$28.50",
-    image: "/static/images/gameIcons/cod.jpg"
-  },
-  {
-    id: "MW Warzone Kill Race FREE 9",
-    format: "Fifa - Winner",
-    participants: "1 of 2",
-    startTime: "28th Mar 21:00 CET",
-    entry: "Free",
-    duration: "15 Min.",
-    prizePool: "$20",
-    image: "/static/images/gameIcons/fifa.jpg"
-  },
-  {
-    id: "MW Warzone Kill Race FREE 10",
-    format: "Fifa - Winner",
-    participants: "1 of 2",
-    startTime: "28th Mar 21:00 CET",
-    entry: "Free",
-    duration: "15 Min.",
-    prizePool: "$20",
-    image: "/static/images/gameIcons/fifa.jpg"
-  }
 ] */
 
 
@@ -389,6 +290,13 @@ const tournaments = [
   }
 ]
 
+const WizardEnums = {
+  AccountLink: 1,
+  Approve: 2,
+  Deposit: 3,
+  ConsoleLink: 4,
+}
+
 const applyPagination = (list, page, limit) => {
   return list.slice(page * limit, page * limit + limit);
 };
@@ -401,6 +309,76 @@ const Hero = ({ className, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [events, setEvents] = useState([]);
   const location = useLocation();
+
+  const { user } = useContext(AuthContext);
+  const account = user.user?.session?.ethAddress;
+  const [showNotification, setShowNotification] = useState(false);
+  const [showWizardModal, setShowWizardModal] = useState(false);
+  const [chainNetworkBalance, setChainNetworkBalance] = useState(0);
+  const [approveBalance, setApprovedBalance] = useState(0);
+  const [fiatBalance, setFiatBalance] = useState(0);
+  const [totalWinnings, setTotalWinnings] = useState(0);
+  const [totalEvents, setTotalEvents] = useState(0);
+  const [currentStep, setCurrentStep] = useState(WizardEnums.AccountLink);
+
+  useEffect(() => {
+    if (!user.user.session?.ethAddress) {
+      setShowNotification(true);
+    } else {
+      setShowNotification(false);
+    }
+  }, [user.user.session]);
+
+  const getInfoFromAPI = async () => {
+    try {
+      const [winnings, events, balanceInfo] = await Promise.all(
+        [getTotalWinningsService({}),
+          getTotalEventsService({}),
+          getBalanceFromCS({}),
+        ])
+      if (winnings.data?.success) {
+        setTotalWinnings(winnings.data.winnings);
+      }
+      if (events.data?.success) {
+        setTotalEvents(events.data.totalEvents);
+      }
+      if (balanceInfo.data.success) {
+        setFiatBalance(balanceInfo.data.fiat);
+        const allowanceFormatInChain = formatInCHAIN(balanceInfo.data.token.allowance);
+        const networkFormatInChain = formatInCHAIN(balanceInfo.data.token.total);
+
+        setApprovedBalance(allowanceFormatInChain);
+        setChainNetworkBalance(networkFormatInChain);
+        if (account) {
+          if (MAX_APPROVED_BALANCE > allowanceFormatInChain) {
+            setCurrentStep(WizardEnums.Approve);
+            setShowWizardModal(true);
+          }
+          else if (networkFormatInChain <= 0) {
+            setCurrentStep(WizardEnums.Deposit);
+            setShowWizardModal(true);
+          }
+          else {
+            setCurrentStep(WizardEnums.ConsoleLink);
+            setShowWizardModal(true);
+          }
+        }
+        else {
+          setCurrentStep(WizardEnums.AccountLink)
+          setShowWizardModal(true);
+        }
+      }
+      
+    }
+    catch (error) {
+      console.log("🚀 ~ file: Hero.js ~ line 331 ~ getInfoFromAPI ~ error", error)
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname,
+        },
+    });
+    }
+  };
 
   const tabs = [
     { value: 'all', label: 'All' },
@@ -473,6 +451,9 @@ const Hero = ({ className, ...rest }) => {
 
   useEffect(() => {
     getEvents();
+    setTotalEvents(0);
+    setTotalWinnings(0);
+    getInfoFromAPI();
   }, []);
 
   return (
@@ -480,6 +461,10 @@ const Hero = ({ className, ...rest }) => {
       className={clsx(classes.root, className)}
       {...rest}
     > 
+      {/* Notification to register Ethereum Address */}
+      {showNotification && (
+        <Notification />
+      )}
       <Paper className={classes.paper}>
         <Box className={classes.tournamentBox}>
           <Grid container spacing={1}>
