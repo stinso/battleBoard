@@ -332,7 +332,7 @@ const LobbyView = () => {
               </Table>
               <TablePagination
                 component="div"
-                count={lobbyData.length}
+                count={filteredEvents.length}
                 labelRowsPerPage={'Rows per page'}
                 onChangePage={handlePageChange}
                 onChangeRowsPerPage={handleLimitChange}

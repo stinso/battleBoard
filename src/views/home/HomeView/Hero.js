@@ -740,7 +740,7 @@ const Hero = ({ className, ...rest }) => {
               </Table>
               <TablePagination
                 component="div"
-                count={events.length}
+                count={filteredEvents.length}
                 labelRowsPerPage={'Rows per page'}
                 onChangePage={handlePageChange}
                 onChangeRowsPerPage={handleLimitChange}
