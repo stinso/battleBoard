@@ -412,10 +412,9 @@ const Hero = ({ className, ...rest }) => {
   const paginatedEvents = applyPagination(filteredEvents, page, limit);
 
   const getEvents = async () => {
-    try{
-      const {data} = await getEventsService({allGames:true})
-      console.log(data)
-      if(data.success === true && data.events?.length > 0){
+    try {
+      const {data} = await getEventsService({allGames:true});
+      if (data.success === true && data.events?.length > 0) {
         setEvents(data.events.map((row) => {
           return {
             ...row,
@@ -431,7 +430,7 @@ const Hero = ({ className, ...rest }) => {
         }))
       }
     }
-    catch(error){
+    catch(error) {
       console.log("🚀 ~ file: Hero.js ~ line 432 ~ getEvents ~ error", error)
       Sentry.captureException(error, {
         tags: {

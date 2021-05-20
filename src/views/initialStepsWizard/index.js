@@ -1,13 +1,12 @@
-//import Nav from './Nav.jsx';
-import React, {useState, useEffect, useContext} from 'react';
-//import StepOneLinkAccount from './StepOneLinkAccount.jsx';
-//import StepTwoApprove from './StepTwoApprove.jsx';
-//import StepThreeDeposit from './StepThreeDeposit.jsx';
-//import StepFourLinkGameNetwork from './StepFourLinkGameNetwork.jsx';
-//import { ModalHeader, Modal, ModalBody, ModalFooter, Button } from 'reactstrap';
-import { ApproveRedirectLink, DepositRedirectLink, RegisterEthAddressRedirectURL } from '../../config/constants.js';
+
+import React, { useState, useEffect, useContext, useMemo } from 'react';
+import { ApproveRedirectLink, DepositRedirectLink, RegisterEthAddressRedirectURL, MAX_APPROVED_BALANCE } from '../../config/constants.js';
 import { AuthContext } from "../../context/AuthContext";
 import { DO_NOT_SHOW_WIZARD } from '../../actions/actions.js';
+import { 
+  Link as RouterLink,
+  useLocation
+} from 'react-router-dom';
 import {
   Box,
   Button,
@@ -28,6 +27,9 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
+import * as Sentry from "@sentry/react";
+import { getMyInfoService, getLinkedNetworkService } from '../../service/node.service.js'
+import { getBalance } from '../../utils/helpers.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,19 +66,48 @@ function getStepContent(step) {
   }
 }
 
+function getStepButtonText(step) {
+  switch (step) {
+    case 0:
+      return 'LINK';
+    case 1:
+      return 'APPROVE';
+    case 2:
+      return 'DEPOSIT';
+    case 3:
+      return 'LINK';
+    default:
+      return 'Unknown step';
+  }
+}
+
+function getStepButtonLink(step) {
+  switch (step) {
+    case 0:
+      return RegisterEthAddressRedirectURL;
+    case 1:
+      return ApproveRedirectLink;
+    case 2:
+      return DepositRedirectLink;
+    case 3:
+      return '/userAccountSetting';
+    default:
+      return 'Unknown step';
+  }
+}
+
 
 export default function Wizard({
   showWizardModal,
-  setShowWizardModal,
-  currentStep,
-  setCurrentStep,
-  WizardEnums
+  setShowWizardModal
 }) {
     
   const { user, dispatch } = useContext(AuthContext);
+  const username = user.user?.session?.username;
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
+  const location = useLocation();
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -89,6 +120,123 @@ export default function Wizard({
   const handleReset = () => {
     setActiveStep(0);
   };
+
+  // Step 0/3
+  const getUserInfo = async ()=>{
+    try {
+      const {data} = await getMyInfoService({});
+      console.log('############## data')
+      console.log(data)
+      if (data.success === true) {
+        if (data.ethAddress) {
+          handleNext();
+        }
+        else {
+          setShowWizardModal(true);
+        }
+      }
+    }
+    catch(error){
+      console.log("🚀 ~ file: initialStepWizard.js ~ line 95 ~ getUserInfo ~ error", error)
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname,
+        },
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (activeStep === 0)
+      getUserInfo();
+  }, [activeStep]);
+
+  // Step 1/3
+  const getApprovedBalance = async () => {
+    try {
+      const { approvedBalance } = await getBalance(user.user?.session?.ethAddress)
+      console.log('############## approvedBalance')
+      console.log(approvedBalance)
+      if (approvedBalance >= MAX_APPROVED_BALANCE ) {
+        handleNext();
+      }
+      else {
+        setShowWizardModal(true);
+      }
+    }
+    catch(error) {
+      console.log("🚀 ~ file: initialStepWizard.js ~ line 123 ~ getApprovedBalance ~ error", error)
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname,
+        },
+      });
+    }
+  }
+
+  useEffect(() => {
+    console.log('user')
+    console.log(user)
+    if (user.user?.session?.ethAddress && activeStep === 1) {
+      getApprovedBalance();
+    }
+  }, [user.user?.session?.ethAddress, activeStep]);
+
+  // Step 2/3
+  const getNetworkBalance = async () => {
+    try {
+      const { networkBalance } = await getBalance(user.user?.session?.ethAddress);
+      if (networkBalance > 0 ) {
+        handleNext();
+      }
+      else {
+        setShowWizardModal(true);
+      }
+    }
+    catch(error) {
+      console.log("🚀 ~ file: initialStepWizard.js ~ line 143 ~ getNetworkBalance ~ error", error)
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname,
+        },
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (user.user?.session?.ethAddress && activeStep === 2) {
+      getNetworkBalance();
+    }
+  }, [user.user?.session?.ethAddress, activeStep]);
+
+  // Step 3/3
+  const getLinkedNetworks = async () => {
+    try {
+      const {data} = await getLinkedNetworkService({username});
+      if (data.success === true) {
+        if (data.linkedNetworks?.length > 0) {
+          handleNext();
+        }
+        else {
+          setShowWizardModal(true);
+        }
+      }
+    }
+    catch(error) {
+      console.log("🚀 ~ file: initialStepWizard.js ~ line 172 ~ getLinkedNetworks ~ error", error)
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname,
+        },
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (username && activeStep === 3) {
+      getLinkedNetworks();
+    }
+  }, [username, activeStep]);
 
   return (
     <Dialog 
@@ -119,10 +267,13 @@ export default function Wizard({
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={handleNext}
+                      onClick={ (e) => {
+                        e.preventDefault();
+                        openInNewWindow(getStepButtonLink(index));
+                      }}
                       className={classes.button}
                     >
-                      {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                      {getStepButtonText(index)}
                     </Button>
                   </div>
                 </div>
@@ -162,5 +313,12 @@ export default function Wizard({
       </Button>
     </DialogActions>
     </Dialog>
+  );
+}
+
+function openInNewWindow(url) {
+  window.open(
+    url,
+    '_blank'
   );
 }
