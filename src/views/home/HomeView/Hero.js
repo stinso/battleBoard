@@ -37,14 +37,15 @@ import Carousel from 'react-material-ui-carousel'
 import Example from 'src/components/Example'
 import { findLastIndex } from 'lodash';
 import { AuthContext } from "../../../context/AuthContext";
-import { getEventsService } from '../../../service/node.service';
+import { getEventsService, getBalanceFromCS } from '../../../service/node.service';
 import * as Sentry from "@sentry/react";
 import { 
   getTimeFromEpoch, 
   getDateFromEpoch, 
   getGameFormatFromIndex,
   calculateTotalPrizePool,
-  getDuration
+  getDuration,
+  formatInCHAIN
 } from "../../../utils/helpers";
 import {
   ApproveRedirectLink,
@@ -52,6 +53,7 @@ import {
   RedirectURL,
   RegisterEthAddressRedirectURL,
 } from "../../../config/constants";
+import Wizard from '../../initialStepsWizard/index';
 
 const font = "'Saira', sans-serif";
 
@@ -331,17 +333,7 @@ const Hero = ({ className, ...rest }) => {
 
   const getInfoFromAPI = async () => {
     try {
-      const [winnings, events, balanceInfo] = await Promise.all(
-        [getTotalWinningsService({}),
-          getTotalEventsService({}),
-          getBalanceFromCS({}),
-        ])
-      if (winnings.data?.success) {
-        setTotalWinnings(winnings.data.winnings);
-      }
-      if (events.data?.success) {
-        setTotalEvents(events.data.totalEvents);
-      }
+      const balanceInfo = await getBalanceFromCS({});
       if (balanceInfo.data.success) {
         setFiatBalance(balanceInfo.data.fiat);
         const allowanceFormatInChain = formatInCHAIN(balanceInfo.data.token.allowance);
@@ -451,12 +443,20 @@ const Hero = ({ className, ...rest }) => {
 
   useEffect(() => {
     getEvents();
-    setTotalEvents(0);
-    setTotalWinnings(0);
     getInfoFromAPI();
   }, []);
 
   return (
+    <>
+    {user.user.doNotShowWizard !== true && showWizardModal && 
+      <Wizard
+        showWizardModal={showWizardModal}
+        setShowWizardModal={setShowWizardModal}
+        currentStep={currentStep}
+        setCurrentStep={setCurrentStep}
+        WizardEnums={WizardEnums}
+      />
+    }
     <div
       className={clsx(classes.root, className)}
       {...rest}
@@ -737,6 +737,7 @@ const Hero = ({ className, ...rest }) => {
         </Card>
       </Container>
     </div>
+    </>
   );
 };
 
