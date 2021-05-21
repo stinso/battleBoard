@@ -24,7 +24,6 @@ import {
   TablePagination,
   TableRow,
   Tabs,
-  useTheme,
   makeStyles
 } from '@material-ui/core';
 import Carousel from './Carousel'

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 import Linking from './Linking'
 import ChangePassword from './ChangePassword'
+import { AuthContext } from "../../context/AuthContext";
 
 const font = "'Saira', sans-serif";
 
@@ -78,8 +79,7 @@ const useStyles = makeStyles((theme) => ({
 
 const userAccountSetting = ({ className, ...rest }) => {
   const classes = useStyles();
-  const theme = useTheme();
-  const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  const { user } = useContext(AuthContext);
   const [currentTab, setCurrentTab] = useState(tabs.linking);
 
   const handleTabsChange = (event, value) => {
@@ -162,7 +162,7 @@ const userAccountSetting = ({ className, ...rest }) => {
           </Grid>
           <Grid item xs={12} lg={8}>
             <Paper className={classes.paper}>
-              {currentTab === tabs.linking && <Linking />}
+              {currentTab === tabs.linking && <Linking username={user.user?.session?.username}/>}
               {currentTab === tabs.changePassword && <ChangePassword />}
             </Paper>
           </Grid>

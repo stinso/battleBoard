@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { NavLink as RouterLink } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Accordion,
@@ -26,29 +26,17 @@ import {
   makeStyles
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { 
+  getOAuthURL, 
+  deleteLinkedNetworkService, 
+  getLinkedNetworkService,
+  addPSNTagService
+} from "../../service/node.service";
+import {SupportedGameNetworks} from '../../config/constants'
+import * as Sentry from "@sentry/react";
 
 const font = "'Saira', sans-serif";
 
-const networks = [
-  {
-    id: "ps",
-    username: "N/A",
-    image: "/static/images/networks/playstation.png",
-    link: "#"
-  },
-  {
-    id: "xbox",
-    username: "N/A",
-    image: "/static/images/networks/xbox.png",
-    link: "#"
-  },
-  {
-    id: "battleNet",
-    username: "mukki@chaingames.io",
-    image: "/static/images/networks/battleNet.png",
-    link: "#"
-  }
-]
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -103,9 +91,170 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Linking = () => {
-  const classes = useStyles();
+const SuccessText = 'PSN info added.'
 
+const NetworkEnums = {
+  XBOX_NETWORK_ID: SupportedGameNetworks[0].index,
+  BATTLE_NETWORK_ID: SupportedGameNetworks[1].index,
+  PLAYSTATION_NETWORK_ID: SupportedGameNetworks[2].index,
+  ACTIVISION_NETWORK_ID: SupportedGameNetworks[3].index,
+}
+
+const Linking = (props) => {
+  const classes = useStyles();
+  const location = useLocation();
+  const history = useHistory();
+
+  const [xboxAccount, setXboxAccount] = useState({isLinked: false, infoRegardingAccount:{}});
+  const [playStationAccount, setPlayStationAccount] = useState({isLinked: false, infoRegardingAccount:{}});
+  const [battleAccount, setBattleAccount] = useState({ isLinked: false, infoRegardingAccount: {} });
+  const [showModal, setShowModal] = useState({show: false, networkSelected: ''});
+  const [showPSNModal, setShowPSNModal] = useState({
+    show: false,
+    msg: '',
+  });
+
+  const getNetworkIDFromConsole = (consoleName) => {
+    switch(consoleName){
+      case 'xbox':
+        return NetworkEnums.XBOX_NETWORK_ID;
+      case 'battle':
+        return NetworkEnums.BATTLE_NETWORK_ID;
+      case 'playstation':
+        return NetworkEnums.PLAYSTATION_NETWORK_ID;
+        // case 'activision':
+        // return NetworkEnums.ACTIVISION_NETWORK_ID;
+    }
+  }
+
+  const handleAccountLink = async (e, consoleName) => {
+    e.preventDefault();
+    const network = getNetworkIDFromConsole(consoleName);
+    try{
+    const {data} = await getOAuthURL({network});
+      if (data.success === true && data.url) {
+        window.open(
+          data.url,
+          '_blank'
+        );
+      }
+    }
+    catch (error) {
+      console.log("🚀 ~ file: Linking.js ~ line 147 ~ handleAccountLink ~ error", error)
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname,
+        },
+      });    
+    }
+  };
+
+  const handleUnlinkAccount = async (consoleName) => {
+    // e.preventDefault();
+    const network = getNetworkIDFromConsole(consoleName); 
+    try{
+      const {data} = await deleteLinkedNetworkService({network})
+      if(data.success === true){
+        switch(network){
+        case NetworkEnums.XBOX_NETWORK_ID:
+          setXboxAccount({isLinked: false, infoRegardingAccount:{}});
+          break;
+        case NetworkEnums.BATTLE_NETWORK_ID:
+          setBattleAccount({isLinked: false, infoRegardingAccount:{}});
+          break;
+        case NetworkEnums.PLAYSTATION_NETWORK_ID:
+          setPlayStationAccount({isLinked: false, infoRegardingAccount:{}});
+          break;
+        }
+        setShowModal({show: false});
+      }
+    }
+    catch (error) {
+      console.log("🚀 ~ file: Linking.js ~ line 171 ~ handleUnlinkAccount ~ error", error)
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname,
+        },
+      });
+    }
+  };
+
+  const linkPSN = async (values) => {
+    setShowPSNModal((preValue) => {
+      return { ...preValue, msg: '' }
+    })
+    try {
+      const { data } = await addPSNTagService({
+        uID: values.psnName,
+        networkID: getNetworkIDFromConsole('playstation'),
+      });
+      if (data.success) {
+        getLinkedAccounts();
+        setShowPSNModal({
+          show: false,
+          msg: '',
+        })
+      }
+    }
+    catch (error) {
+      console.log("🚀 ~ file: Linking.js ~ line 201 ~ linkPSN ~ error", error);
+      if (error.response?.data) {
+        if (error.response.data.errorCode === 103) {
+          history.push(`/claim-network?tag=${values.psnName}&network=2`)
+        }
+        setShowPSNModal((preValue) => {
+          return { ...preValue, msg: error.response.data.error }
+        })
+      }
+      else {
+        setShowPSNModal((preValue) => {
+          return { ...preValue, msg: 'Something went wrong!' }
+        })
+      }
+    }
+  }
+
+  const getLinkedAccounts = async () => {
+    try {
+      const response = await getLinkedNetworkService({username : props.username});
+      if(response.data.success === true && response.data.linkedNetworks) {
+        response.data.linkedNetworks.map((row, index) => {
+          switch(row.network) {
+            case NetworkEnums.XBOX_NETWORK_ID:
+              setXboxAccount({isLinked: true, infoRegardingAccount: {
+                userNameOnNetwork : row.idOnNetwork
+              }})
+              break;
+            case NetworkEnums.BATTLE_NETWORK_ID:
+              setBattleAccount({isLinked: true, infoRegardingAccount: {
+                userNameOnNetwork : row.idOnNetwork
+              }})
+              break;
+            case NetworkEnums.PLAYSTATION_NETWORK_ID:
+              setPlayStationAccount({isLinked: true, infoRegardingAccount: {
+                userNameOnNetwork : row.idOnNetwork
+              }})
+              break;
+            // case NetworkEnums.ACTIVISION_NETWORK_ID:
+            //   break;
+          }
+        })
+      }
+    } catch (error) {
+      console.log("🚀 ~ file: Linking.js ~ line 237 ~ getLinkedAccounts ~ error", error)
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname,
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (props.username) {
+      getLinkedAccounts() 
+    }
+  }, [props.username]);
 
   return(
     <div>
@@ -117,50 +266,120 @@ const Linking = () => {
         Linked Accounts
       </Typography>
       <Table>
-      <TableHead>
-        <TableRow >
-        <TableCell>
-          Network
-        </TableCell>
-        <TableCell>
-          Username
-        </TableCell>
-        <TableCell align="center">
-          Action
-        </TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {networks.map((network) => {
-        return (
-          <TableRow
-          spacing={0}
-          hover
-          key={network.id}
-          >
-          <TableCell className={classes.imageCell} align='center' padding='none'>
-            <img className={classes.rowImage}
-              src={network.image}
-            />
+        <TableHead>
+          <TableRow >
+          <TableCell>
+            Network
           </TableCell>
           <TableCell>
-            {network.username}
+            Username
           </TableCell>
-          <TableCell className={classes.priceCell} align="center">
-            <Button
-              variant="outlined"
-              size="small"
-              color="secondary"
-              href={network.link}
-            >
-              link
-            </Button>
+          <TableCell align="center">
+            Action
           </TableCell>
           </TableRow>
-        );
-        })}
-      </TableBody>
+        </TableHead>
+        <TableBody>
+          {/* xbox */}
+          <TableRow
+            spacing={0}
+            hover
+            key={'xbox'}
+          >
+            <TableCell className={classes.imageCell} align='center' padding='none'>
+              <img className={classes.rowImage}
+                src="/static/images/networks/xbox.png"
+              />
+            </TableCell>
+            <TableCell>
+              {xboxAccount.isLinked ? `${xboxAccount.infoRegardingAccount.userNameOnNetwork}` : 'NA'}
+            </TableCell>
+            <TableCell align="center">
+              <Button
+                variant="outlined"
+                size="small"
+                color="secondary"
+                onClick={(e) => {
+                  if (xboxAccount.isLinked) {
+                    setShowModal({ show: true, networkSelected: 'xbox' })
+                  }
+                  else {
+                    handleAccountLink(e, 'xbox');
+                  }
+                }}
+              >
+                {xboxAccount.isLinked ? 'Unlink' : 'Link'}
+              </Button>
+            </TableCell>
+          </TableRow>
+          {/* battlenet */}
+          <TableRow
+            spacing={0}
+            hover
+            key={'battlenet'}
+          >
+            <TableCell className={classes.imageCell} align='center' padding='none'>
+              <img className={classes.rowImage}
+                src="/static/images/networks/battleNet.png"
+              />
+            </TableCell>
+            <TableCell>
+              {battleAccount.isLinked ? `${battleAccount.infoRegardingAccount.userNameOnNetwork}` : 'NA'}
+            </TableCell>
+            <TableCell align="center">
+              <Button
+                variant="outlined"
+                size="small"
+                color="secondary"
+                onClick={(e) => {
+                  if (battleAccount.isLinked) {
+                    setShowModal({ show: true, networkSelected: 'battle' })
+                  }
+                  else {
+                    handleAccountLink(e, 'battle');
+                  }
+                }}
+              >
+                {battleAccount.isLinked ? 'Unlink' : 'Link'}
+              </Button>
+            </TableCell>
+          </TableRow>
+          {/* psn */}
+          <TableRow
+            spacing={0}
+            hover
+            key={'psn'}
+          >
+            <TableCell className={classes.imageCell} align='center' padding='none'>
+              <img className={classes.rowImage}
+                src="/static/images/networks/playstation.png"
+              />
+            </TableCell>
+            <TableCell>
+              {playStationAccount.isLinked ? `${playStationAccount.infoRegardingAccount.userNameOnNetwork}` : 'NA'}
+            </TableCell>
+            <TableCell align="center">
+              <Button
+                variant="outlined"
+                size="small"
+                color="secondary"
+                onClick={(e) => {
+                  if (playStationAccount.isLinked) {
+                    setShowModal({ show: true, networkSelected: 'playstation' })
+                  }
+                  else {
+                    setShowPSNModal({ show: true, msg: '' });
+                  }
+                }}
+              >
+                {playStationAccount.isLinked ? 'Unlink' : 'Link'}
+              </Button>
+            </TableCell>
+          </TableRow>
+        </TableBody>
       </Table>
+
+
       <Accordion className={classes.accordion}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
