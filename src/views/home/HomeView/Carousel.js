@@ -5,7 +5,9 @@ import {
     CardMedia,
     Link,
     Typography,
-    makeStyles
+    makeStyles,
+    useMediaQuery,
+    useTheme
  } from '@material-ui/core';
  import { SuperCryptoKartLink } from '../../../config/constants';
 
@@ -103,12 +105,15 @@ const useStyles = makeStyles((theme) => ({
 
 const Banner = () => {
     const classes = useStyles();
+    const theme = useTheme();
+    const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
+    const mediumDevice = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
         <Card raised className={classes.card}>
             <Carousel
                 className={classes.banner}
-                show={3}
+                show={mobileDevice ? 1 : mediumDevice ? 2 : 3}
                 infiniteLoop
             >
                 {

@@ -17,7 +17,8 @@ import {
   MenuItem,
   Typography,
   SvgIcon,
-  makeStyles
+  makeStyles,
+  useTheme
 } from '@material-ui/core';
 import {
   ChevronDown as ArrowIcon,
@@ -164,7 +165,7 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
           </Hidden>
           <Hidden mdDown>
             <Grid container className={classes.root}>
-              <Grid item xs={4}>
+              <Grid item xs={5}>
                 <Grid container justify="flex-start">
                   <Box display="flex">
                     <Box mr={2}>
@@ -242,14 +243,14 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                   </Box>
                 </Grid>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={2}>
                 <Grid container justify="center">
                   <RouterLink to="/dashboard">
                     <Logo />
                   </RouterLink>
                 </Grid>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={5}>
                 <Grid container justify="flex-end" spacing={2}>
                   <Box display="flex">
                     <IconButton aria-label="search" color="inherit">

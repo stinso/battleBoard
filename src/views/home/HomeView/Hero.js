@@ -69,17 +69,6 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 0,
     width: '100%'
   },
-  card: {
-    width: '100%',
-    height: 320,
-    backgroundColor: '#00008B',
-    color: '#fff',
-    margin: '0 15px'
-  },
-  image: {
-    height: 320,
-    backgroundColor: theme.palette.background.dark
-  },
   title: {
     position: 'relative',
     '&:before': {
@@ -96,7 +85,6 @@ const useStyles = makeStyles((theme) => ({
   cardLeft: {
     width: '100%',
     height: 502,
-    backgroundColor: '#00008B',
     color: '#fff',
     margin: '0 15px',
     position: 'relative'
@@ -104,7 +92,6 @@ const useStyles = makeStyles((theme) => ({
   cardRight: {
     width: '100%',
     height: 248,
-    backgroundColor: '#00008B',
     color: '#fff',
     margin: '0 15px',
     position: 'relative'
@@ -147,15 +134,11 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 16
     }
   },
-  mediaLeft: {
-    height: '100%'
-  },
-  mediaRight: {
+  media: {
     height: '100%'
   },
   tournamentBox: {
-    width: '100%',
-    display: "flex"
+    width: '100%'
   },
   paper: {
     paddingTop: 20,
@@ -211,10 +194,6 @@ const useStyles = makeStyles((theme) => ({
   },
   priceCell: {
     color: theme.palette.success.main
-  },
-  avatar: {
-    height: 100,
-    width: 100
   },
   rowImage: {
     height: '60px',
@@ -456,13 +435,13 @@ const Hero = ({ className, ...rest }) => {
                   $10
                 </Typography>
                 <CardMedia
-                  className={classes.mediaLeft}
+                  className={classes.media}
                   image="/static/images/games/cod_coldWar.jpg"
                   title="title"
                 >
                   <Box className={classes.MediaCaptionLeft}>
                     <Grid container spacing={3}>
-                      <Grid item xs={6} >
+                      <Grid item xs={8} >
                         <Grid item xs={12} >
                           <Typography
                             variant="h4"
@@ -488,15 +467,17 @@ const Hero = ({ className, ...rest }) => {
                           </Typography>
                         </Grid>
                       </Grid>
+                      <Grid item xs={4} >
+                        <Button className={classes.viewButtonLeft}
+                          variant="contained"
+                          size="large"
+                          color="secondary"
+                        >
+                          VIEW TOURNAMENT
+                        </Button>
+                      </Grid>
                     </Grid>
                   </Box>
-                  <Button className={classes.viewButtonLeft}
-                    variant="contained"
-                    size="large"
-                    color="secondary"
-                  >
-                    VIEW TOURNAMENT
-                  </Button>
                 </CardMedia>
               </Card>
             </Grid>
@@ -515,7 +496,7 @@ const Hero = ({ className, ...rest }) => {
                       {tournament.entry}
                     </Typography>
                       <CardMedia
-                        className={classes.mediaRight}
+                        className={classes.media}
                         image={tournament.image}
                         title={tournament.game}
                       >
