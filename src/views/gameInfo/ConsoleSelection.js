@@ -85,7 +85,7 @@ const GameConsoleSelection = ({
           return gameSupportedNetwork.includes(row.id)
         })
 
-        setLinkedNetworks(networksWithLabel)
+        setLinkedNetworks(networksWithLabel);
       }
     } catch (error) {
       console.log("🚀 ~ file: ConsoleSelection.js ~ line 40 ~ getLinkedAccounts ~ error", error)
@@ -181,7 +181,7 @@ const GameConsoleSelection = ({
                   <em>None</em>
                 </MenuItem>
                 {linkedNetworks && linkedNetworks.map(network => 
-                  <MenuItem value={network}>{network}</MenuItem>
+                  <MenuItem value={network.id}>{network.label}</MenuItem>
                 )}
               </Select>
             </FormControl>
