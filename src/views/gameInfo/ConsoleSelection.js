@@ -156,7 +156,7 @@ const GameConsoleSelection = ({
                 <em>None</em>
               </MenuItem>
               {SupportedCurrency.map(row => 
-                <MenuItem value={row.currency}>{row.currency}</MenuItem>
+                <MenuItem key={row.currency} value={row.currency}>{row.currency}</MenuItem>
               )}
             </Select>
           </FormControl>
@@ -181,7 +181,7 @@ const GameConsoleSelection = ({
                   <em>None</em>
                 </MenuItem>
                 {linkedNetworks && linkedNetworks.map(network => 
-                  <MenuItem value={network.id}>{network.label}</MenuItem>
+                  <MenuItem key={network.id} value={network.id}>{network.label}</MenuItem>
                 )}
               </Select>
             </FormControl>

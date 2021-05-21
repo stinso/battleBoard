@@ -598,9 +598,11 @@ const BattleView = () => {
         <DialogContent>
           <Box>
             {notification.showNotification && (
-              <Alert severity="error">
-                {notification.message}
-              </Alert>
+              <Box mb={2}>
+                <Alert severity="error">
+                  {notification.message}
+                </Alert>
+              </Box>
             )}
             <GameConsoleSelection
               consoleSelectedValue={consoleSelectedValue}
@@ -616,7 +618,7 @@ const BattleView = () => {
           <Button color="secondary" disabled={((consoleSelectedValue === '' || currency === '' || isLoading))} onClick={handleRegister}>
             Register
           </Button>
-          <Button color="error" onClick={toggle}>
+          <Button color="secondary" onClick={toggle}>
             Cancel
           </Button>
         </DialogActions>

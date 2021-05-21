@@ -69,7 +69,6 @@ const mySections = [
   }
 ];
 
-
 const sections = [
   {
     items: [
@@ -212,12 +211,8 @@ const useStyles = makeStyles(theme => ({
 const NavBar = ({ onOpen }) => {
   const classes = useStyles();
   const location = useLocation();
-  const acc = useSelector((state) => state.account);
-
   const { user } = useContext(AuthContext);
-
   const  account = user.user?.session?.ethAddress;
-  
   const [showNotification, setShowNotification] = useState(false);
   const [showWizardModal, setShowWizardModal] = useState(false);
   const [chainNetworkBalance, setChainNetworkBalance] = useState(0);
