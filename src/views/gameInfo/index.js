@@ -270,8 +270,6 @@ const BattleView = () => {
         }
 
         const checkGame = checkGameRequiresManualResult(data.events.game);
-        console.log('_________________________')
-        console.log(checkGame)
         if (checkGame) {
           setDoesGameRequireManualResult(true);
         }

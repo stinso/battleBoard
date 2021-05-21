@@ -1,14 +1,12 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { 
   NavLink as RouterLink,
   useLocation
  } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { THEMES } from 'src/constants';
 import Notification from './EthAddressNotLinkedNotification'
 import {
-  Avatar,
   Box,
   Button,
   Card,
@@ -27,15 +25,9 @@ import {
   TableRow,
   Tabs,
   useTheme,
-  useMediaQuery,
   makeStyles
 } from '@material-ui/core';
-import useIsMountedRef from 'src/hooks/useIsMountedRef';
-import { axios } from 'src/utils/axiosHook';
-import { useDispatch, useSelector } from 'src/store';
-import Carousel from 'react-material-ui-carousel'
-import Example from 'src/components/Example'
-import { findLastIndex } from 'lodash';
+import Carousel from './Carousel'
 import { AuthContext } from "../../../context/AuthContext";
 import { getEventsService, getBalanceFromCS } from '../../../service/node.service';
 import * as Sentry from "@sentry/react";
@@ -47,12 +39,7 @@ import {
   getDuration,
   formatInCHAIN
 } from "../../../utils/helpers";
-import {
-  ApproveRedirectLink,
-  DepositRedirectLink,
-  RedirectURL,
-  RegisterEthAddressRedirectURL,
-} from "../../../config/constants";
+import { MAX_APPROVED_BALANCE } from "../../../config/constants";
 import Wizard from '../../initialStepsWizard/index';
 
 const font = "'Saira', sans-serif";
@@ -293,10 +280,10 @@ const tournaments = [
 ]
 
 const WizardEnums = {
-  AccountLink: 1,
-  Approve: 2,
-  Deposit: 3,
-  ConsoleLink: 4,
+  AccountLink: 0,
+  Approve: 1,
+  Deposit: 2,
+  ConsoleLink: 3,
 }
 
 const applyPagination = (list, page, limit) => {
@@ -305,7 +292,6 @@ const applyPagination = (list, page, limit) => {
 
 const Hero = ({ className, ...rest }) => {
   const classes = useStyles();
-  const theme = useTheme();
   const [currentTab, setCurrentTab] = useState('all');
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -316,11 +302,6 @@ const Hero = ({ className, ...rest }) => {
   const account = user.user?.session?.ethAddress;
   const [showNotification, setShowNotification] = useState(false);
   const [showWizardModal, setShowWizardModal] = useState(false);
-  const [chainNetworkBalance, setChainNetworkBalance] = useState(0);
-  const [approveBalance, setApprovedBalance] = useState(0);
-  const [fiatBalance, setFiatBalance] = useState(0);
-  const [totalWinnings, setTotalWinnings] = useState(0);
-  const [totalEvents, setTotalEvents] = useState(0);
   const [currentStep, setCurrentStep] = useState(WizardEnums.AccountLink);
 
   useEffect(() => {
@@ -335,24 +316,22 @@ const Hero = ({ className, ...rest }) => {
     try {
       const balanceInfo = await getBalanceFromCS({});
       if (balanceInfo.data.success) {
-        setFiatBalance(balanceInfo.data.fiat);
         const allowanceFormatInChain = formatInCHAIN(balanceInfo.data.token.allowance);
         const networkFormatInChain = formatInCHAIN(balanceInfo.data.token.total);
-
-        setApprovedBalance(allowanceFormatInChain);
-        setChainNetworkBalance(networkFormatInChain);
+        
         if (account) {
           if (MAX_APPROVED_BALANCE > allowanceFormatInChain) {
             setCurrentStep(WizardEnums.Approve);
+            console.log('1')
             setShowWizardModal(true);
           }
           else if (networkFormatInChain <= 0) {
+            console.log('2')
             setCurrentStep(WizardEnums.Deposit);
             setShowWizardModal(true);
           }
           else {
             setCurrentStep(WizardEnums.ConsoleLink);
-            setShowWizardModal(true);
           }
         }
         else {
@@ -605,7 +584,7 @@ const Hero = ({ className, ...rest }) => {
             Select a game and choose how you want to play.
           </Typography>
         </Box>
-        <Example/>
+        <Carousel/>
       </Container>
       <Container maxWidth="lg">
         <Box ml={2} mt={10} mb={3}>

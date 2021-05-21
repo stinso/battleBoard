@@ -98,6 +98,7 @@ function getStepButtonLink(step) {
 
 
 export default function Wizard({
+  currentStep,
   showWizardModal,
   setShowWizardModal
 }) {
@@ -105,7 +106,7 @@ export default function Wizard({
   const { user, dispatch } = useContext(AuthContext);
   const username = user.user?.session?.username;
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(currentStep);
   const steps = getSteps();
   const location = useLocation();
 
@@ -125,8 +126,6 @@ export default function Wizard({
   const getUserInfo = async ()=>{
     try {
       const {data} = await getMyInfoService({});
-      console.log('############## data')
-      console.log(data)
       if (data.success === true) {
         if (data.ethAddress) {
           handleNext();
@@ -154,9 +153,7 @@ export default function Wizard({
   // Step 1/3
   const getApprovedBalance = async () => {
     try {
-      const { approvedBalance } = await getBalance(user.user?.session?.ethAddress)
-      console.log('############## approvedBalance')
-      console.log(approvedBalance)
+      const { approvedBalance } = await getBalance(user.user?.session?.ethAddress);
       if (approvedBalance >= MAX_APPROVED_BALANCE ) {
         handleNext();
       }
@@ -215,7 +212,7 @@ export default function Wizard({
       const {data} = await getLinkedNetworkService({username});
       if (data.success === true) {
         if (data.linkedNetworks?.length > 0) {
-          handleNext();
+          setShowWizardModal(false);
         }
         else {
           setShowWizardModal(true);
@@ -238,12 +235,17 @@ export default function Wizard({
     }
   }, [username, activeStep]);
 
+  const handleClose = () => {
+    setShowWizardModal(false);
+  };
+
   return (
     <Dialog 
-        open={showWizardModal}
-        maxWidth="sm"
-        fullWidth
-      >
+      open={showWizardModal}
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+    >
     <DialogTitle>
       <Typography variant="h4">In order to get started with Chain Games, please follow these steps.</Typography>
     </DialogTitle >
