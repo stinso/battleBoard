@@ -11,14 +11,23 @@ import {
   Card,
   CardMedia,
   Container,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
   Divider,
   Grid,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
   Link,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  TextField,
   Typography,
   Paper,
   useTheme,
@@ -34,6 +43,8 @@ import {
 } from "../../service/node.service";
 import {SupportedGameNetworks} from '../../config/constants'
 import * as Sentry from "@sentry/react";
+import {Formik} from 'formik';
+import * as yup from "yup";
 
 const font = "'Saira', sans-serif";
 
@@ -88,6 +99,11 @@ const useStyles = makeStyles((theme) => ({
       width: 48,
       backgroundColor: theme.palette.primary.main
     }
+  },
+  linkPS: {
+    height: '56px',
+    marginLeft: theme.spacing(2),
+    marginTop: theme.spacing(2)
   }
 }));
 
@@ -112,6 +128,12 @@ const Linking = (props) => {
   const [showPSNModal, setShowPSNModal] = useState({
     show: false,
     msg: '',
+  });
+
+  console.log(showPSNModal);
+
+  const schema = yup.object({
+    psnName: yup.string().required("This field is required."),
   });
 
   const getNetworkIDFromConsole = (consoleName) => {
@@ -256,8 +278,131 @@ const Linking = (props) => {
     }
   }, [props.username]);
 
+  const ModalWindow = () => {
+    return (
+      <Dialog 
+        open={showModal}
+        onClose={()=>setShowModal(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle disableTypography>
+          <Typography variant="h4">Are you sure?</Typography>
+        </DialogTitle >
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to unlink? The Events and challenges in which you've registered with this linked account would fail. 
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              handleUnlinkAccount(showModal.networkSelected);
+            }}
+            className={classes.button}
+          >
+            unlink
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setShowModal(false);
+            }}
+            className={classes.button}
+          >
+            close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
+  const handleClosePSNModal = () => {
+    setShowPSNModal({show: false, msg:''});
+  }
+
+  const PSNModal = () => {
+    return (
+      <Dialog 
+        open={showPSNModal.show}
+        onClose={handleClosePSNModal}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle disableTypography >
+          <Typography variant="h4"> PSN Network Name </Typography>
+        </DialogTitle >
+        <DialogContent>
+          <Formik
+            validationSchema={schema}
+            onSubmit={linkPSN}
+            initialValues={{
+            }}
+            isInitialValid={schema.isValidSync()}
+          >
+            {({
+              handleSubmit,
+              handleChange,
+              values,
+              isValid,
+              errors,
+            }) => (
+              <form noValidate onSubmit={handleSubmit}>
+                <Box display='flex'>
+                <FormControl>
+                  <TextField
+                    error={errors.psnName}
+                    fullWidth
+                    helperText={!!errors.psnName && errors.psnName}
+                    label="PSN name"
+                    margin="normal"
+                    name="psnName"
+                    onChange={handleChange}
+                    type="text"
+                    value={values.psnName}
+                    variant="outlined"
+                  />  
+                  <FormHelperText error>
+                    {errors.psnName}
+                  </FormHelperText>
+                </FormControl>
+                
+                  <Typography variant="h4"> {showPSNModal.msg} </Typography>
+                  <Button
+                    className={classes.linkPS}
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    disabled={!(isValid)} 
+                  >
+                    Link
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </Formik>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleClosePSNModal}
+            className={classes.button}
+          >
+            close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
   return(
     <div>
+      {showModal.show && ModalWindow()}
+      {showPSNModal.show && PSNModal()}
       <Typography
         className={classes.title}
         variant="h2"

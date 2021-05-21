@@ -246,7 +246,7 @@ export default function Wizard({
       maxWidth="sm"
       fullWidth
     >
-    <DialogTitle>
+    <DialogTitle disableTypography>
       <Typography variant="h4">In order to get started with Chain Games, please follow these steps.</Typography>
     </DialogTitle >
     <DialogContent>
