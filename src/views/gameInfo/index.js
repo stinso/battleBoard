@@ -29,11 +29,9 @@ import Info from './Info';
 import HowToPlay from './HowToPlay';
 import Rules from './Rules';
 import Teams from './Teams';
-
-// new
 import { AuthContext } from "../../context/AuthContext";
 import moment from "moment";
-//import EthAddressNotLinkedNotification from '../dashboard/EthAddressNotLinkedNotification'
+import EthAddressNotLinkedNotification from '../home/HomeView/EthAddressNotLinkedNotification'
 import {
   FacebookProvider,
 } from 'react-facebook';

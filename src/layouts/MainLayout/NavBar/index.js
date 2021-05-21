@@ -30,8 +30,6 @@ import NavItem  from './NavItem';
 import NumberFormat from 'react-number-format';
 import { useSelector } from 'src/store';
 import Logout from './Logout'
-
-//import Notification from './EthAddressNotLinkedNotification'
 import * as Sentry from "@sentry/react";
 import { AuthContext } from "../../../context/AuthContext";
 import {
@@ -43,7 +41,7 @@ import {
 import { getBalance, formatInCHAIN } from '../../../utils/helpers.js';
 import {getTotalEventsService, getTotalWinningsService, getBalanceFromCS} from '../../../service/node.service'
 import { MAX_APPROVED_BALANCE } from '../../../config/constants';
-//import Wizard from '../initialStepsWizard/index';
+
 
 const WizardEnums = {
   AccountLink: 1,
@@ -51,7 +49,6 @@ const WizardEnums = {
   Deposit: 3,
   ConsoleLink: 4,
 }
-
 
 const mySections = [
   {
