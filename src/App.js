@@ -16,8 +16,6 @@ import useSettings from './hooks/useSettings';
 import { createTheme } from './theme';
 import routes, { renderRoutes } from './routes';
 //import {StakingContractProvider} from "./context/StakingContract/index";
-import { Web3Provider } from '@ethersproject/providers'
-import { Web3ReactProvider } from '@web3-react/core'
 
 import cookie from "cookie";
 import { AuthContextProvider } from "./context/AuthContext.js";
@@ -29,12 +27,6 @@ import { Integrations } from "@sentry/tracing";
 const jss = create({ plugins: [...jssPreset().plugins] });
 const history = createBrowserHistory();
 
-function getLibrary(provider) {
-  const library = new Web3Provider(provider)
-  library.pollingInterval = 15000
-  return library
-}
-
 const App = () => {
   const { settings } = useSettings();
 
@@ -44,49 +36,24 @@ const App = () => {
 
   return (
     <AuthContextProvider>
-      <Web3ReactProvider getLibrary={getLibrary}>
-          <ThemeProvider theme={theme}>
-            <StylesProvider jss={jss}>
-              <MuiPickersUtilsProvider utils={MomentUtils}>
-                <SnackbarProvider
-                  dense
-                  maxSnack={3}
-                >
-                  <Router history={history}>
-                    <GlobalStyles />
-                    <ScrollReset />
-                    {renderRoutes(routes)}
-                  </Router>
-                </SnackbarProvider>
-              </MuiPickersUtilsProvider>
-            </StylesProvider>
-          </ThemeProvider>
-      </Web3ReactProvider>
+      <ThemeProvider theme={theme}>
+        <StylesProvider jss={jss}>
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <SnackbarProvider
+              dense
+              maxSnack={3}
+            >
+              <Router history={history}>
+                <GlobalStyles />
+                <ScrollReset />
+                {renderRoutes(routes)}
+              </Router>
+            </SnackbarProvider>
+          </MuiPickersUtilsProvider>
+        </StylesProvider>
+      </ThemeProvider>
     </AuthContextProvider>
   );
 };
-  /* return (
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <StakingContractProvider>
-        <ThemeProvider theme={theme}>
-          <StylesProvider jss={jss}>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
-              <SnackbarProvider
-                dense
-                maxSnack={3}
-              >
-                <Router history={history}>
-                  <GlobalStyles />
-                  <ScrollReset />
-                  {renderRoutes(routes)}
-                </Router>
-              </SnackbarProvider>
-            </MuiPickersUtilsProvider>
-          </StylesProvider>
-        </ThemeProvider>
-      </StakingContractProvider>
-    </Web3ReactProvider>
-  );
-}; */
 
 export default App;

@@ -551,7 +551,7 @@ const Linking = (props) => {
             accounts on ChainGames Battle. Players using PSN or Activision accounts in COD: MW do not need to worry. Just follow these simple steps to link your account on ChainGames and start battling!
           </Typography>
           <Typography variant="body2" display="block" gutterBottom > 
-            Create a freeBattle.net accountif you don't already have one.
+            Create a freeBattle.net account if you don't already have one.
           </Typography>
           <Typography variant="body2" display="block" gutterBottom >
             Login to the
