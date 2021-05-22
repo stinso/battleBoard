@@ -323,8 +323,12 @@ const Profile = ({ className, ...rest }) => {
                   <MatchHistory username={username} />
                 )}
                 {currentTab === tabs.gamingNetworks && <GamingNetworks />}
-                {currentTab === tabs.followers && <Followers username={username} />}
-                {currentTab === tabs.following && <Following username={username} isOwnProfile={isOwnProfile} />}
+                {currentTab === tabs.followers && (
+                  <Followers username={username} />
+                )}
+                {currentTab === tabs.following && (
+                  <Following username={username} isOwnProfile={isOwnProfile} />
+                )}
               </Box>
             </Card>
           </Grid>

@@ -22,7 +22,12 @@ import {
   AllSupportedGamesWithOtherAttributes
 } from '../../config/constants.js';
 import { getHistoricalEventsService } from '../../service/node.service';
-import { getTimeFromEpoch, getDateFromEpoch, formatEventStatus, getGameFormatFromIndex } from "../../utils/helpers";
+import {
+  getTimeFromEpoch,
+  getDateFromEpoch,
+  formatEventStatus,
+  getGameFormatFromIndex
+} from '../../utils/helpers';
 
 const font = "'Saira', sans-serif";
 
@@ -113,7 +118,11 @@ const MatchHistory = ({ className, username }) => {
     setLimit(parseInt(event.target.value));
   };
 
-  const paginatedEvents = applyPagination(data.filter((row)=> games.includes(row.game)), page, limit);
+  const paginatedEvents = applyPagination(
+    data.filter((row) => games.includes(row.game)),
+    page,
+    limit
+  );
 
   async function getMatchHistory() {
     try {
@@ -175,13 +184,13 @@ const MatchHistory = ({ className, username }) => {
           </Button>
         </DialogActions>
       </Dialog>
-    )
-  }
+    );
+  };
 
   const onDropdownClick = (event) => {
     setSelectedGame(event.target.value);
     setPage(0);
-    if (event.target.value === "All Games") {
+    if (event.target.value === 'All Games') {
       setGames([...allSupportedGames]);
     } else {
       setGames([event.target.value]);
@@ -198,8 +207,7 @@ const MatchHistory = ({ className, username }) => {
           <Select
             id="select-game"
             value={selectedGame}
-            onChange={onDropdownClick
-            }
+            onChange={onDropdownClick}
           >
             {allSupportedGames.map((row, index) => (
               <MenuItem key={index} value={row}>
@@ -222,58 +230,53 @@ const MatchHistory = ({ className, username }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {paginatedEvents.map((row, index)=>{
+          {paginatedEvents.map((row, index) => {
             return (
-              <TableRow 
-                spacing={0} 
-                hover 
+              <TableRow
+                spacing={0}
+                hover
                 key={index}
                 onClick={(e) => {
                   e.preventDefault();
-                  if (row.eventStatus === 'Cancelled' || 
+                  if (
+                    row.eventStatus === 'Cancelled' ||
                     row.eventStatus === 'Deleted'
-                  )
-                  {
+                  ) {
                     setSelectedRow(row);
                     setShowModal(true);
-                  }
-                  else {
-                    history.push(`/gameInformationPage/${row.id}`)
+                  } else {
+                    history.push(`/gameInformationPage/${row.id}`);
                   }
                 }}
               >
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.gameShortName}</TableCell>
-                <TableCell>{getGameFormatFromIndex(row.game, row.gameFormat)}</TableCell>
+                <TableCell>
+                  {getGameFormatFromIndex(row.game, row.gameFormat)}
+                </TableCell>
                 <TableCell>
                   <Typography
                     color={row.sponsored ? 'secondary' : ''}
                     variant="body2"
                   >
-                    {row.sponsored ? 'Free' : `$${(row.betAmount).toFixed(2)}`}
+                    {row.sponsored ? 'Free' : `$${row.betAmount.toFixed(2)}`}
                   </Typography>
                 </TableCell>
-                <TableCell>{getDateFromEpoch(row.startTime)}{' '}{getTimeFromEpoch(row.startTime)}</TableCell>
                 <TableCell>
-                  <Typography
-                    className={classes.waiting}
-                    variant="body2"
-                  >
+                  {getDateFromEpoch(row.startTime)}{' '}
+                  {getTimeFromEpoch(row.startTime)}
+                </TableCell>
+                <TableCell>
+                  <Typography className={classes.waiting} variant="body2">
                     {formatEventStatus(row.eventStatus)}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  {
-                    (['WinnersDeclared'].includes(row.eventStatus))
-                      ?
-                      (row.rank
-                        ?
-                        (`Won : Ranked ${row.rank}`)
-                        :
-                        `Lost`)
-                      :
-                      (`--`)
-                  }
+                  {['WinnersDeclared'].includes(row.eventStatus)
+                    ? row.rank
+                      ? `Won : Ranked ${row.rank}`
+                      : `Lost`
+                    : `--`}
                 </TableCell>
               </TableRow>
             );
@@ -282,7 +285,7 @@ const MatchHistory = ({ className, username }) => {
       </Table>
       <TablePagination
         component="div"
-        count={data.filter((row)=> games.includes(row.game)).length}
+        count={data.filter((row) => games.includes(row.game)).length}
         labelRowsPerPage={'Rows per page'}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}

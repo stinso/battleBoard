@@ -27,12 +27,12 @@ const baseOptions = {
     MuiStepIcon: {
       root: {
         '&$completed': {
-          color: '#f5542a',
+          color: '#f5542a'
         },
         '&$active': {
-          color: '#f5542a',
-        },
-      },
+          color: '#f5542a'
+        }
+      }
     }
   }
 };

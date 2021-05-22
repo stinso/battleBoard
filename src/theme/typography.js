@@ -20,13 +20,13 @@ export default {
     letterSpacing: '-0.06px'
   },
   h5: {
-    fontFamily: "Saira, sans-serif",
+    fontFamily: 'Saira, sans-serif',
     fontWeight: 500,
     fontSize: 40,
     letterSpacing: '-0.05px'
   },
   h6: {
-    fontFamily: "Saira, sans-serif",
+    fontFamily: 'Saira, sans-serif',
     fontWeight: 500,
     fontSize: 32,
     letterSpacing: '-0.05px'
