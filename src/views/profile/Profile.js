@@ -269,7 +269,7 @@ const Profile = ({ className, ...rest }) => {
                     </Button>
                   </ListItem>
                   <Divider />
-                  <ListItem className={classes.item}>
+                  {/* <ListItem className={classes.item}>
                     <Button
                       className={classes.button}
                       size="large"
@@ -284,7 +284,7 @@ const Profile = ({ className, ...rest }) => {
                       Tournaments
                     </Button>
                   </ListItem>
-                  <Divider />
+                  <Divider /> */}
                   <ListItem className={classes.item}>
                     <Button
                       className={classes.button}
