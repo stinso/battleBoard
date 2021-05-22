@@ -26,39 +26,6 @@ import { getTimeFromEpoch, getDateFromEpoch, formatEventStatus, getGameFormatFro
 
 const font = "'Saira', sans-serif";
 
-const events = [
-  {
-    id: '1',
-    game: 'COD - MW',
-    eventName: 'Free MW',
-    format: 'Warzone - Max Kills',
-    entry: 'Free',
-    status: 'Waiting',
-    result: 'Won',
-    startTime: '00:00:04:23'
-  },
-  {
-    id: '2',
-    game: 'COD - MW',
-    eventName: 'Free MW',
-    format: 'Warzone - Max Kills',
-    entry: 'Free',
-    status: 'Waiting',
-    result: 'Won',
-    startTime: '00:00:05:23'
-  },
-  {
-    id: '3',
-    game: 'COD - MW',
-    eventName: 'Free MW',
-    format: 'Warzone - Max Kills',
-    entry: 'Free',
-    status: 'Waiting',
-    result: 'Lost',
-    startTime: '00:01:04:23'
-  }
-];
-
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -146,7 +113,7 @@ const MatchHistory = ({ className, username }) => {
     setLimit(parseInt(event.target.value));
   };
 
-  const paginatedEvents = applyPagination(events, page, limit);
+  const paginatedEvents = applyPagination(data.filter((row)=> games.includes(row.game)), page, limit);
 
   async function getMatchHistory() {
     try {
@@ -213,6 +180,7 @@ const MatchHistory = ({ className, username }) => {
 
   const onDropdownClick = (event) => {
     setSelectedGame(event.target.value);
+    setPage(0);
     if (event.target.value === "All Games") {
       setGames([...allSupportedGames]);
     } else {
@@ -222,7 +190,7 @@ const MatchHistory = ({ className, username }) => {
 
   return (
     <div>
-      <Typography className={classes.title} variant="h2" color="textPrimary">
+      <Typography variant="h6" color="textPrimary">
         Match History
       </Typography>
       <Box mt={2}>
@@ -254,12 +222,12 @@ const MatchHistory = ({ className, username }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.filter((row)=> games.includes(row.game)).map((row, index)=>{
+          {paginatedEvents.map((row, index)=>{
             return (
               <TableRow 
                 spacing={0} 
                 hover 
-                key={entry.id}
+                key={index}
                 onClick={(e) => {
                   e.preventDefault();
                   if (row.eventStatus === 'Cancelled' || 
@@ -314,7 +282,7 @@ const MatchHistory = ({ className, username }) => {
       </Table>
       <TablePagination
         component="div"
-        count={events.length}
+        count={data.filter((row)=> games.includes(row.game)).length}
         labelRowsPerPage={'Rows per page'}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}

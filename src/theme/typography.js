@@ -16,17 +16,19 @@ export default {
   },
   h4: {
     fontWeight: 500,
-    fontSize: 20,
+    fontSize: 16,
     letterSpacing: '-0.06px'
   },
   h5: {
+    fontFamily: "Saira, sans-serif",
     fontWeight: 500,
-    fontSize: 16,
+    fontSize: 40,
     letterSpacing: '-0.05px'
   },
   h6: {
-    fontWeight: 1500,
-    fontSize: 42,
+    fontFamily: "Saira, sans-serif",
+    fontWeight: 500,
+    fontSize: 32,
     letterSpacing: '-0.05px'
   },
   overline: {

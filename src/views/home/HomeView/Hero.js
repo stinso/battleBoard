@@ -555,7 +555,7 @@ const Hero = ({ className, ...rest }) => {
         <Container maxWidth="lg">
           <Box mt={3} mb={3} ml={2}>
             <Typography
-              variant="h1"
+              variant="h5"
               color="textPrimary"
               className={classes.gamesTitle}
             >
@@ -563,7 +563,7 @@ const Hero = ({ className, ...rest }) => {
             </Typography>
             <Typography
               className={classes.title}
-              variant="h5"
+              variant="h4"
               color="textPrimary"
             >
               Select a game and choose how you want to play.
@@ -583,7 +583,7 @@ const Hero = ({ className, ...rest }) => {
             </Typography>
             <Typography
               className={classes.title}
-              variant="h5"
+              variant="h4"
               color="textPrimary"
             >
               Here you can find all upcoming tournaments.

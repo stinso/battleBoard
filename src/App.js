@@ -30,6 +30,12 @@ const App = () => {
     theme: settings.theme
   });
 
+  Sentry.init({
+    dsn: "https://ad98ddba9156418181310241fa8d7116@o544538.ingest.sentry.io/5669385",
+    integrations: [new Integrations.BrowserTracing()],
+    tracesSampleRate: 0.0,
+  });
+
   return (
     <AuthContextProvider>
       <ThemeProvider theme={theme}>

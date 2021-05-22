@@ -23,7 +23,7 @@ const GamingNetworks = ({ className }) => {
 
   return (
     <div>
-      <Typography className={classes.title} variant="h2" color="textPrimary">
+      <Typography className={classes.title} variant="h6" color="textPrimary">
         GamingNetworks
       </Typography>
     </div>

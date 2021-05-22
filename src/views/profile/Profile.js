@@ -161,7 +161,7 @@ const Profile = ({ className, ...rest }) => {
         }
       } catch (error) {
         console.log(
-          '🚀 ~ file: ProfilePageSkeleton.jsx ~ line 89 ~ getProfileInfo ~ error',
+          '🚀 ~ file: ProfilePageSkeleton.js ~ line 135 ~ getProfileInfo ~ error',
           error
         );
         Sentry.captureException(error, {
@@ -189,7 +189,7 @@ const Profile = ({ className, ...rest }) => {
         }
       } catch (error) {
         console.log(
-          '🚀 ~ file: ProfilePageSkeleton.jsx ~ line 119 ~ handleFollowClick ~ error',
+          '🚀 ~ file: ProfilePageSkeleton.js ~ line 183 ~ handleFollowClick ~ error',
           error
         );
         Sentry.captureException(error, {
@@ -210,7 +210,7 @@ const Profile = ({ className, ...rest }) => {
         }
       } catch (error) {
         console.log(
-          '🚀 ~ file: ProfilePageSkeleton.jsx ~ line 138 ~ handleUnFollowClick ~ error',
+          '🚀 ~ file: ProfilePageSkeleton.js ~ line 204 ~ handleUnFollowClick ~ error',
           error
         );
         Sentry.captureException(error, {
@@ -323,8 +323,8 @@ const Profile = ({ className, ...rest }) => {
                   <MatchHistory username={username} />
                 )}
                 {currentTab === tabs.gamingNetworks && <GamingNetworks />}
-                {currentTab === tabs.followers && <Followers />}
-                {currentTab === tabs.following && <Following />}
+                {currentTab === tabs.followers && <Followers username={username} />}
+                {currentTab === tabs.following && <Following username={username} isOwnProfile={isOwnProfile} />}
               </Box>
             </Card>
           </Grid>
