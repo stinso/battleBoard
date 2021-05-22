@@ -17,7 +17,11 @@ import useIsMountedRef from 'src/hooks/useIsMountedRef';
 // new
 import { useEffect, useState, useContext } from 'react';
 import { loginService } from '../../../service/node.service.js';
-import { SignUpRedirectURL, ForgotPasswordRedirectURL, RecaptchaSiteKey } from '../../../config/constants';
+import {
+  SignUpRedirectURL,
+  ForgotPasswordRedirectURL,
+  RecaptchaSiteKey
+} from '../../../config/constants';
 import { AuthContext } from '../../../context/AuthContext';
 import { LOGIN_REQUEST } from '../../../actions/actions';
 
@@ -29,15 +33,14 @@ const Login = ({ className, ...rest }) => {
   const classes = useStyles();
   const isMountedRef = useIsMountedRef();
   const history = useHistory();
-  const {dispatch} = useContext(AuthContext);
-  const [errMsg, setErrMsg] = useState()
+  const { dispatch } = useContext(AuthContext);
+  const [errMsg, setErrMsg] = useState();
 
-  useEffect(() =>{
+  useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
-    document.body.classList.add("login-page");
-  }, [])
-
+    document.body.classList.add('login-page');
+  }, []);
 
   return (
     <Formik
@@ -48,49 +51,44 @@ const Login = ({ className, ...rest }) => {
       }}
       validationSchema={Yup.object().shape({
         password: Yup.string().max(255).required('Password is required'),
-        username: Yup.string().max(255).required('Username is required'),
+        username: Yup.string().max(255).required('Username is required')
       })}
-      onSubmit={async (values, {
-        setErrors,
-        setStatus,
-        setSubmitting
-      }) => {
-        try{
+      onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+        try {
           let formData = {
             username: values.username,
             reCaptchaToken: ' ',
             password: values.password
           };
-                    
+
           const response = await loginService(formData);
 
           if (isMountedRef.current) {
             setStatus({ success: true });
             setSubmitting(false);
           }
-          
+
           const data = response.data;
-          if(data.success === true){
+          if (data.success === true) {
             dispatch({
               type: LOGIN_REQUEST,
               payload: {
-                ...data,
+                ...data
               }
-            })
-            history.push('/dashboard')
-          }
-          else{
+            });
+            history.push('/dashboard');
+          } else {
             setErrMsg('Something went wrong. Please try again');
           }
-        } catch(error) {
+        } catch (error) {
           console.error(error);
           if (isMountedRef.current) {
             setStatus({ success: false });
             setErrors({ submit: error.message });
             setSubmitting(false);
           }
-  
-          if(error.response){
+
+          if (error.response) {
             setErrMsg(error.response.data.error);
           }
         }
@@ -140,9 +138,7 @@ const Login = ({ className, ...rest }) => {
           />
           {errors.submit && (
             <Box mt={3}>
-              <FormHelperText error>
-                {errors.submit}
-              </FormHelperText>
+              <FormHelperText error>{errors.submit}</FormHelperText>
             </Box>
           )}
           <Box mt={2}>
@@ -157,15 +153,7 @@ const Login = ({ className, ...rest }) => {
               Log In
             </Button>
           </Box>
-          <Box mt={2}>
-            {errMsg &&
-              <Alert
-                severity="info"
-              >
-                {errMsg}
-              </Alert>
-            }
-          </Box>
+          <Box mt={2}>{errMsg && <Alert severity="info">{errMsg}</Alert>}</Box>
         </form>
       )}
     </Formik>
@@ -173,7 +161,7 @@ const Login = ({ className, ...rest }) => {
 };
 
 Login.propTypes = {
-  className: PropTypes.string,
+  className: PropTypes.string
 };
 
 export default Login;

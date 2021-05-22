@@ -1,12 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Box,
-  Grid,
-  Paper,
-  makeStyles
-} from '@material-ui/core';
-
+import { Box, Grid, Paper, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -15,11 +9,7 @@ const useStyles = makeStyles(() => ({
 const Teams = ({ className }) => {
   const classes = useStyles();
 
-  return (
-    <Paper>
-      team
-    </Paper>
-  );
+  return <Paper>team</Paper>;
 };
 
 Teams.propTypes = {

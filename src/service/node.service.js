@@ -1,42 +1,74 @@
-const { nodeAxios, nodeAxiosWithCredentials,
-  axiosCoinGecko, formDataAxiosServiceCentralServer,
-  nodeAxiosForXbox, formDataAxiosService,
-  nodeAxiosWithCredentialsCentralServer } = require("../config/axios");
+const {
+  nodeAxios,
+  nodeAxiosWithCredentials,
+  axiosCoinGecko,
+  formDataAxiosServiceCentralServer,
+  nodeAxiosForXbox,
+  formDataAxiosService,
+  nodeAxiosWithCredentialsCentralServer
+} = require('../config/axios');
 
 export const registerUser = async (body) => {
-  return await nodeAxiosWithCredentialsCentralServer.post(`/public/register`, body)
-}
+  return await nodeAxiosWithCredentialsCentralServer.post(
+    `/public/register`,
+    body
+  );
+};
 
 export const loginService = async (body) => {
-  return await nodeAxiosWithCredentialsCentralServer.post(`/public/login`, body);
+  return await nodeAxiosWithCredentialsCentralServer.post(
+    `/public/login`,
+    body
+  );
 };
 
 export const logoutService = async () => {
-  return await nodeAxiosWithCredentialsCentralServer.post(`/authenticated/logout`, {});
+  return await nodeAxiosWithCredentialsCentralServer.post(
+    `/authenticated/logout`,
+    {}
+  );
 };
 
 export const getBalanceFromCS = async (body) => {
-  return await nodeAxiosWithCredentialsCentralServer.post(`/authenticated/get-balance`, body);
+  return await nodeAxiosWithCredentialsCentralServer.post(
+    `/authenticated/get-balance`,
+    body
+  );
 };
 
 export const postReportIssue = async (body) => {
-  return await formDataAxiosServiceCentralServer.post(`/authenticated/report-issue`, body);
+  return await formDataAxiosServiceCentralServer.post(
+    `/authenticated/report-issue`,
+    body
+  );
 };
 
 export const verifyEmailService = async (body) => {
-  return await nodeAxiosWithCredentialsCentralServer.post(`/public/verify-email-token`, body);
+  return await nodeAxiosWithCredentialsCentralServer.post(
+    `/public/verify-email-token`,
+    body
+  );
 };
 
 export const recoverPassword = async (body) => {
-  return await nodeAxiosWithCredentialsCentralServer.post(`/public/send-reset-link`, body)
-}
+  return await nodeAxiosWithCredentialsCentralServer.post(
+    `/public/send-reset-link`,
+    body
+  );
+};
 
 export const verifyForgotPasswordTokenService = async (body) => {
-  return await nodeAxiosWithCredentialsCentralServer.post(`/public/verify-forgot-password-token`, body);
+  return await nodeAxiosWithCredentialsCentralServer.post(
+    `/public/verify-forgot-password-token`,
+    body
+  );
 };
 
 export const resetForgottenPasswordService = async (body) => {
-  return await nodeAxiosWithCredentialsCentralServer.post(`/public/reset-forgotten-password`, body);
+  return await nodeAxiosWithCredentialsCentralServer.post(
+    `/public/reset-forgotten-password`,
+    body
+  );
 };
 
 export const convertChaintoUSDService = async (body) => {
@@ -50,7 +82,6 @@ export const getMyEventsService = async (body) => {
   );
 };
 
-
 //Notifications Services
 export const notificationPollingService = async (body) => {
   return await nodeAxiosWithCredentials.post(
@@ -60,10 +91,7 @@ export const notificationPollingService = async (body) => {
 };
 
 export const markNotificationReadService = async (body) => {
-  return await nodeAxiosWithCredentials.post(
-    `authenticated/mark-read`,
-    body
-  );
+  return await nodeAxiosWithCredentials.post(`authenticated/mark-read`, body);
 };
 
 export const getEventDetailsFromId = async (body) => {
@@ -94,7 +122,6 @@ export const enrollInASponsoredEventService = async (body) => {
   );
 };
 
-
 export const disenrollFromEventService = async (body) => {
   return await nodeAxiosWithCredentials.post(
     `authenticated/disenroll-from-event`,
@@ -115,8 +142,6 @@ export const getTotalEventsService = async (body) => {
     body
   );
 };
-
-
 
 //Profile Page APIs below
 export const uploadProfileImageService = async (body) => {
@@ -141,13 +166,8 @@ export const userInfoService = async (body) => {
 };
 
 export const getMyInfoService = async (body) => {
-  return await nodeAxiosWithCredentials.post(
-    `authenticated/get-my-info`,
-    body
-  );
+  return await nodeAxiosWithCredentials.post(`authenticated/get-my-info`, body);
 };
-
-
 
 //Admin Panel APIs below
 
@@ -160,27 +180,18 @@ export const getEventsService = async (body) => {
 };
 
 export const adminAddEventService = async (body) => {
-  return await nodeAxiosWithCredentials.post(
-    `admin/schedule-event`,
-    body
-  );
+  return await nodeAxiosWithCredentials.post(`admin/schedule-event`, body);
 };
 
 export const adminUpdateEventService = async (body) => {
-  return await nodeAxiosWithCredentials.post(
-    `admin/update-event`,
-    body
-  );
+  return await nodeAxiosWithCredentials.post(`admin/update-event`, body);
 };
 
 export const adminDeleteEventService = async (body) => {
-  return await nodeAxiosWithCredentials.post(
-    `admin/delete-event`,
-    body
-  );
+  return await nodeAxiosWithCredentials.post(`admin/delete-event`, body);
 };
 
-//Recurring Events APIs 
+//Recurring Events APIs
 export const getRecurringEventsService = async (body) => {
   return await nodeAxiosWithCredentials.post(
     `/admin/get-recurring-events`,
@@ -194,7 +205,6 @@ export const adminAddRecurringEventService = async (body) => {
     body
   );
 };
-
 
 export const adminDeleteRecurringEventService = async (body) => {
   return await nodeAxiosWithCredentials.post(
@@ -253,14 +263,9 @@ export const getOAuthURL = async (body) => {
   );
 };
 
-
-
 //Followers and Following Services
 export const followService = async (body) => {
-  return await nodeAxiosWithCredentials.post(
-    `authenticated/follow`,
-    body
-  );
+  return await nodeAxiosWithCredentials.post(`authenticated/follow`, body);
 };
 
 export const checkIsFollowingService = async (body) => {
@@ -285,12 +290,8 @@ export const getFollowingService = async (body) => {
 };
 
 export const unFollowService = async (body) => {
-  return await nodeAxiosWithCredentials.post(
-    `authenticated/unfollow`,
-    body
-  );
+  return await nodeAxiosWithCredentials.post(`authenticated/unfollow`, body);
 };
-
 
 //Challenges Services
 export const createChallengeService = async (body) => {
@@ -335,7 +336,6 @@ export const getChallengeService = async (body) => {
   );
 };
 
-
 //Madden Support APIS
 
 export const submitEventResultService = async (body) => {
@@ -343,83 +343,72 @@ export const submitEventResultService = async (body) => {
     `authenticated/user-attestation`,
     body
   );
-}
+};
 
 export const submitEvidenceService = async (body) => {
   return await formDataAxiosService.post(
     `authenticated/submit-winning-proof`,
     body
   );
-}
+};
 
 export const getDisputesService = async (body) => {
   return await nodeAxiosWithCredentials.post(
     `admin/get-conflicted-events`,
     body
   );
-}
+};
 
 export const resolveDisputeService = async (body) => {
-  return await nodeAxiosWithCredentials.post(
-    `admin/winner-attestation`,
-    body
-  );
-}
+  return await nodeAxiosWithCredentials.post(`admin/winner-attestation`, body);
+};
 
 export const addPSNTagService = async (body) => {
   return await nodeAxiosWithCredentials.post(
     `authenticated/link-network`,
     body
   );
-}
+};
 
 export const getBannedPlayersService = async () => {
-  return await nodeAxiosWithCredentials.get(
-    `admin/get-banned-users`,
-  );
-}
+  return await nodeAxiosWithCredentials.get(`admin/get-banned-users`);
+};
 
 export const unbanPlayerService = async (body) => {
-  return await nodeAxiosWithCredentials.post(
-    `admin/unban-user`,
-    body
-  );
-}
-
-
+  return await nodeAxiosWithCredentials.post(`admin/unban-user`, body);
+};
 
 export const sendSubscriptionOfServiceWorkerService = async (body) => {
   return await nodeAxiosWithCredentials.post(
     `authenticated/register-subscription`,
     body
   );
-}
+};
 
 export const claimNetworkService = async (body) => {
   return await formDataAxiosService.post(
     `authenticated/claim-network-account`,
     body
   );
-}
+};
 
 export const getNetworkClaimsService = async (body) => {
   return await nodeAxiosWithCredentials.post(
     `admin/get-network-account-claim`,
     body
   );
-}
+};
 
 export const approveNetworkClaimService = async (body) => {
   return await nodeAxiosWithCredentials.post(
     `admin/approve-network-account-claim`,
     body
   );
-}
+};
 
 export const rejectNetworkClaimService = async (body) => {
   return await nodeAxiosWithCredentials.post(
     `admin/reject-network-account-claim`,
     body
   );
-}
-
+};

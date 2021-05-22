@@ -22,29 +22,25 @@ import { Users as FollowersIcon } from 'react-feather';
 import { UserCheck as FollowingIcon } from 'react-feather';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
-import MatchHistory from './MatchHistory'
-import Followers from './Followers'
-import Following from './Following'
-import GamingNetworks from './GamingNetworks'
-import defaultAvatar from "../../assets/img/placeholder.jpg";
+import MatchHistory from './MatchHistory';
+import Followers from './Followers';
+import Following from './Following';
+import GamingNetworks from './GamingNetworks';
+import defaultAvatar from '../../assets/img/placeholder.jpg';
 import {
   userInfoService,
   followService,
   unFollowService,
   checkIsFollowingService,
-  getBalanceFromCS,
-} from '../../service/node.service'
-import { AuthContext } from "../../context/AuthContext";
+  getBalanceFromCS
+} from '../../service/node.service';
+import { AuthContext } from '../../context/AuthContext';
 //import ChallengeModal from '../challenges/ChallengeModal';
 //import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
-import {
-  getFormattedUserName,
-  formatInCHAIN,
-} from '../../utils/helpers.js';
-import * as Sentry from "@sentry/react";
+import { getFormattedUserName, formatInCHAIN } from '../../utils/helpers.js';
+import * as Sentry from '@sentry/react';
 
 const font = "'Saira', sans-serif";
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 0
   },
   card: {
-    minHeight: "200px",
+    minHeight: '200px',
     padding: theme.spacing(4)
   },
   avatar: {
@@ -94,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
   },
   bannedIcon: {
     marginTop: '4px',
-    marginRight: '4px',
+    marginRight: '4px'
   },
   checkCircle: {
     color: '#388e3c'
@@ -119,7 +115,7 @@ const Profile = ({ className, ...rest }) => {
   };
 
   // new
-  const {user, dispatch} = useContext(AuthContext)
+  const { user, dispatch } = useContext(AuthContext);
   //const router = useRouter()
   const { username } = useParams();
   const wrapper = useRef('wrapper');
@@ -132,41 +128,46 @@ const Profile = ({ className, ...rest }) => {
   //const [showChallengeModal, setShowChallengeModal] = useState(false);
   const [chainNetworkBalance, setChainNetworkBalance] = useState(0);
 
-
-  useEffect(()=>{
+  useEffect(() => {
     setIsOwnProfile(user.user?.session?.username === username);
-  },[user, username])
+  }, [user, username]);
 
-  async function getProfileInfo(){
+  async function getProfileInfo() {
     if (username) {
       try {
-        const [ userInfo, checkFollowing, balanceInfo] = await Promise.all([
+        const [userInfo, checkFollowing, balanceInfo] = await Promise.all([
           userInfoService({ username }),
           checkIsFollowingService({ username }),
-          getBalanceFromCS({}),
-        ])
-        
-        if(checkFollowing?.data?.success === true){
-          setIsFollowing(checkFollowing.data.isFollowing)
+          getBalanceFromCS({})
+        ]);
+
+        if (checkFollowing?.data?.success === true) {
+          setIsFollowing(checkFollowing.data.isFollowing);
         }
-  
+
         if (balanceInfo.data.success) {
-          const networkFormatInChain = formatInCHAIN(balanceInfo.data.token.total);
+          const networkFormatInChain = formatInCHAIN(
+            balanceInfo.data.token.total
+          );
           setChainNetworkBalance(networkFormatInChain);
         }
-  
-        if(userInfo.data.success === true){
+
+        if (userInfo.data.success === true) {
           setName(userInfo?.data?.username);
           setIsBanned(userInfo?.data?.isBanned);
-          setImageURL(userInfo?.data?.dpHigh ? (userInfo?.data?.dpHigh) : defaultAvatar);
+          setImageURL(
+            userInfo?.data?.dpHigh ? userInfo?.data?.dpHigh : defaultAvatar
+          );
         }
-      }
-      catch(error){
-        console.log("🚀 ~ file: ProfilePageSkeleton.jsx ~ line 89 ~ getProfileInfo ~ error", error)
+      } catch (error) {
+        console.log(
+          '🚀 ~ file: ProfilePageSkeleton.jsx ~ line 89 ~ getProfileInfo ~ error',
+          error
+        );
         Sentry.captureException(error, {
           tags: {
-            page: location.pathname,
-          },
+            page: location.pathname
+          }
         });
         if (error?.response?.data?.error === 'user not found') {
           history.push('/404');
@@ -175,9 +176,9 @@ const Profile = ({ className, ...rest }) => {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getProfileInfo();
-  },[username])
+  }, [username]);
 
   const handleFollowClick = async (event) => {
     if (isFollowing === false) {
@@ -186,13 +187,15 @@ const Profile = ({ className, ...rest }) => {
         if (response.data.success === true) {
           setIsFollowing(true);
         }
-      }
-      catch (error) {
-        console.log("🚀 ~ file: ProfilePageSkeleton.jsx ~ line 119 ~ handleFollowClick ~ error", error)
+      } catch (error) {
+        console.log(
+          '🚀 ~ file: ProfilePageSkeleton.jsx ~ line 119 ~ handleFollowClick ~ error',
+          error
+        );
         Sentry.captureException(error, {
           tags: {
-            page: location.pathname,
-          },
+            page: location.pathname
+          }
         });
       }
     }
@@ -205,52 +208,37 @@ const Profile = ({ className, ...rest }) => {
         if (response.data.success === true) {
           setIsFollowing(false);
         }
-      }
-      catch (error) {
-        console.log("🚀 ~ file: ProfilePageSkeleton.jsx ~ line 138 ~ handleUnFollowClick ~ error", error)
+      } catch (error) {
+        console.log(
+          '🚀 ~ file: ProfilePageSkeleton.jsx ~ line 138 ~ handleUnFollowClick ~ error',
+          error
+        );
         Sentry.captureException(error, {
           tags: {
-            page: location.pathname,
-          },
+            page: location.pathname
+          }
         });
       }
     }
-  }
+  };
 
   return (
-    <div
-      className={clsx(classes.root, className)}
-      {...rest}
-    > 
+    <div className={clsx(classes.root, className)} {...rest}>
       <Container maxWidth="lg">
         <Grid container spacing={2}>
           <Grid item xs={12} lg={4}>
             <Card className={classes.card}>
-              <Box
-                display='flex'
-                justifyContent='center'
-              >
+              <Box display="flex" justifyContent="center">
                 <Avatar className={classes.avatar} src={imageURL} />
               </Box>
-              <Box 
-                marginTop={2}
-              >
-                <Box 
-                  display='flex'
-                  justifyContent='center'
-                  marginTop={1}
-                >
+              <Box marginTop={2}>
+                <Box display="flex" justifyContent="center" marginTop={1}>
                   <Box className={classes.bannedIcon}>
-                    {isBanned ? 
-                      <ErrorOutlineIcon 
-                        color="error"  
-                      />
-                    :
-                      <CheckCircleOutlineIcon 
-                        className={classes.checkCircle}
-                      />
-                    }
-                    
+                    {isBanned ? (
+                      <ErrorOutlineIcon color="error" />
+                    ) : (
+                      <CheckCircleOutlineIcon className={classes.checkCircle} />
+                    )}
                   </Box>
                   <Typography
                     className={classes.userName}
@@ -266,9 +254,7 @@ const Profile = ({ className, ...rest }) => {
                       className={classes.button}
                       size="large"
                       variant="text"
-                      onClick={(e) =>
-                        handleTabsChange(e, tabs.matches)
-                      }
+                      onClick={(e) => handleTabsChange(e, tabs.matches)}
                       startIcon={
                         <SvgIcon fontSize="small">
                           <MatchesIcon />
@@ -284,9 +270,7 @@ const Profile = ({ className, ...rest }) => {
                       className={classes.button}
                       size="large"
                       variant="text"
-                      onClick={(e) =>
-                        handleTabsChange(e, tabs.gamingNetworks)
-                      }
+                      onClick={(e) => handleTabsChange(e, tabs.gamingNetworks)}
                       startIcon={
                         <SvgIcon fontSize="small">
                           <NetworkIcon />
@@ -302,9 +286,7 @@ const Profile = ({ className, ...rest }) => {
                       className={classes.button}
                       size="large"
                       variant="text"
-                      onClick={(e) =>
-                        handleTabsChange(e, tabs.followers)
-                      }
+                      onClick={(e) => handleTabsChange(e, tabs.followers)}
                       startIcon={
                         <SvgIcon fontSize="small">
                           <FollowersIcon />
@@ -320,12 +302,10 @@ const Profile = ({ className, ...rest }) => {
                       className={classes.button}
                       size="large"
                       variant="text"
-                      onClick={(e) =>
-                        handleTabsChange(e, tabs.following)
-                      }
+                      onClick={(e) => handleTabsChange(e, tabs.following)}
                       startIcon={
                         <SvgIcon fontSize="small">
-                          <FollowingIcon/>
+                          <FollowingIcon />
                         </SvgIcon>
                       }
                     >
@@ -338,8 +318,10 @@ const Profile = ({ className, ...rest }) => {
           </Grid>
           <Grid item xs={12} lg={8}>
             <Card className={classes.card}>
-              <Box minWidth={300} >
-                {currentTab === tabs.matches && <MatchHistory />}
+              <Box minWidth={300}>
+                {currentTab === tabs.matches && (
+                  <MatchHistory username={username} />
+                )}
                 {currentTab === tabs.gamingNetworks && <GamingNetworks />}
                 {currentTab === tabs.followers && <Followers />}
                 {currentTab === tabs.following && <Following />}
@@ -357,4 +339,3 @@ Profile.propTypes = {
 };
 
 export default Profile;
-

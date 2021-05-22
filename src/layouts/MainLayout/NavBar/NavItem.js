@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import {
-  Button,
-  Collapse,
-  ListItem,
-  makeStyles
-} from '@material-ui/core';
+import { Button, Collapse, ListItem, makeStyles } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
@@ -98,25 +93,12 @@ const NavItem = ({
         key={title}
         {...rest}
       >
-        <Button
-          className={classes.button}
-          onClick={handleToggle}
-          style={style}
-        >
-          {Icon && (
-            <Icon
-              className={classes.icon}
-              size="20"
-            />
-          )}
-          <span className={classes.title}>
-            {title}
-          </span>
+        <Button className={classes.button} onClick={handleToggle} style={style}>
+          {Icon && <Icon className={classes.icon} size="20" />}
+          <span className={classes.title}>{title}</span>
           {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </Button>
-        <Collapse in={open}>
-          {children}
-        </Collapse>
+        <Collapse in={open}>{children}</Collapse>
       </ListItem>
     );
   }
@@ -128,24 +110,17 @@ const NavItem = ({
       key={title}
       {...rest}
     >
-      {isExternal ?
+      {isExternal ? (
         <Button
           className={clsx(classes.buttonLeaf, `depth-${depth}`)}
           style={style}
           href={href}
         >
-          {Icon && (
-            <Icon
-              className={classes.icon}
-              size="20"
-            />
-          )}
-          <span className={classes.title}>
-            {title}
-          </span>
+          {Icon && <Icon className={classes.icon} size="20" />}
+          <span className={classes.title}>{title}</span>
           {Info && <Info />}
         </Button>
-      :
+      ) : (
         <Button
           activeClassName={classes.active}
           className={clsx(classes.buttonLeaf, `depth-${depth}`)}
@@ -154,19 +129,11 @@ const NavItem = ({
           style={style}
           to={href}
         >
-          {Icon && (
-            <Icon
-              className={classes.icon}
-              size="20"
-            />
-          )}
-          <span className={classes.title}>
-            {title}
-          </span>
+          {Icon && <Icon className={classes.icon} size="20" />}
+          <span className={classes.title}>{title}</span>
           {Info && <Info />}
         </Button>
-      }
-      
+      )}
     </ListItem>
   );
 };

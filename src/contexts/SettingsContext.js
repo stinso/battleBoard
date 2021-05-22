@@ -1,8 +1,4 @@
-import React, {
-  createContext,
-  useEffect,
-  useState
-} from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import _ from 'lodash';
 import { THEMES } from '../constants';
 
@@ -34,11 +30,13 @@ export const storeSettings = (settings) => {
 
 const SettingsContext = createContext({
   settings: defaultSettings,
-  saveSettings: () => { }
+  saveSettings: () => {}
 });
 
 export const SettingsProvider = ({ settings, children }) => {
-  const [currentSettings, setCurrentSettings] = useState(settings || defaultSettings);
+  const [currentSettings, setCurrentSettings] = useState(
+    settings || defaultSettings
+  );
 
   const handleSaveSettings = (update = {}) => {
     const mergedSettings = _.merge({}, currentSettings, update);

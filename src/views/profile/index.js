@@ -16,12 +16,9 @@ const ProfileView = () => {
 
   return (
     <PerfectScrollbar>
-    <Page
-      className={classes.root}
-      title="Battle | Chain Games"
-    >
-      <Profile />
-    </Page>
+      <Page className={classes.root} title="Battle | Chain Games">
+        <Profile />
+      </Page>
     </PerfectScrollbar>
   );
 };

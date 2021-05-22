@@ -1,23 +1,23 @@
-import { AuthReducer } from "../reducer/reducer.js";
+import { AuthReducer } from '../reducer/reducer.js';
 
-import React, { createContext, useReducer, useEffect } from "react";
+import React, { createContext, useReducer, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
 const initialState = {
   user: {
-    isLoggedIn: false,
-  },
+    isLoggedIn: false
+  }
 };
 
 export const AuthContextProvider = (props) => {
   const [user, dispatch] = useReducer(AuthReducer, {}, () => {
     const localData =
-      global.localStorage && global.localStorage.getItem("user");
+      global.localStorage && global.localStorage.getItem('user');
     return localData ? JSON.parse(localData) : initialState;
   });
   useEffect(() => {
-    global.localStorage.setItem("user", JSON.stringify(user));
+    global.localStorage.setItem('user', JSON.stringify(user));
   }, [user]);
   return (
     <AuthContext.Provider value={{ user, dispatch }}>
@@ -25,5 +25,3 @@ export const AuthContextProvider = (props) => {
     </AuthContext.Provider>
   );
 };
-
-

@@ -1,12 +1,13 @@
-
 import React, { useState, useEffect, useContext, useMemo } from 'react';
-import { ApproveRedirectLink, DepositRedirectLink, RegisterEthAddressRedirectURL, MAX_APPROVED_BALANCE } from '../../config/constants.js';
-import { AuthContext } from "../../context/AuthContext";
+import {
+  ApproveRedirectLink,
+  DepositRedirectLink,
+  RegisterEthAddressRedirectURL,
+  MAX_APPROVED_BALANCE
+} from '../../config/constants.js';
+import { AuthContext } from '../../context/AuthContext';
 import { DO_NOT_SHOW_WIZARD } from '../../actions/actions.js';
-import { 
-  Link as RouterLink,
-  useLocation
-} from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -27,28 +28,36 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-import * as Sentry from "@sentry/react";
-import { getMyInfoService, getLinkedNetworkService } from '../../service/node.service.js'
-import { getBalance } from '../../utils/helpers.js'
+import * as Sentry from '@sentry/react';
+import {
+  getMyInfoService,
+  getLinkedNetworkService
+} from '../../service/node.service.js';
+import { getBalance } from '../../utils/helpers.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    width: '100%'
   },
   button: {
     marginTop: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   actionsContainer: {
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(2)
   },
   resetContainer: {
-    padding: theme.spacing(3),
-  },
+    padding: theme.spacing(3)
+  }
 }));
 
 function getSteps() {
-  return ['Link Web3 Wallet', 'Approve CHAIN for Esports Events', 'Deposit CHAIN', 'Link Gaming Network'];
+  return [
+    'Link Web3 Wallet',
+    'Approve CHAIN for Esports Events',
+    'Deposit CHAIN',
+    'Link Gaming Network'
+  ];
 }
 
 function getStepContent(step) {
@@ -96,13 +105,11 @@ function getStepButtonLink(step) {
   }
 }
 
-
 export default function Wizard({
   currentStep,
   showWizardModal,
   setShowWizardModal
 }) {
-    
   const { user, dispatch } = useContext(AuthContext);
   const username = user.user?.session?.username;
   const classes = useStyles();
@@ -123,57 +130,60 @@ export default function Wizard({
   };
 
   // Step 0/3
-  const getUserInfo = async ()=>{
+  const getUserInfo = async () => {
     try {
-      const {data} = await getMyInfoService({});
+      const { data } = await getMyInfoService({});
       if (data.success === true) {
         if (data.ethAddress) {
           handleNext();
-        }
-        else {
+        } else {
           setShowWizardModal(true);
         }
       }
-    }
-    catch(error){
-      console.log("🚀 ~ file: initialStepWizard.js ~ line 95 ~ getUserInfo ~ error", error)
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: initialStepWizard.js ~ line 95 ~ getUserInfo ~ error',
+        error
+      );
       Sentry.captureException(error, {
         tags: {
-          page: location.pathname,
-        },
+          page: location.pathname
+        }
       });
     }
-  }
+  };
 
   useEffect(() => {
-    if (activeStep === 0)
-      getUserInfo();
+    if (activeStep === 0) getUserInfo();
   }, [activeStep]);
 
   // Step 1/3
   const getApprovedBalance = async () => {
     try {
-      const { approvedBalance } = await getBalance(user.user?.session?.ethAddress);
-      if (approvedBalance >= MAX_APPROVED_BALANCE ) {
+      const { approvedBalance } = await getBalance(
+        user.user?.session?.ethAddress
+      );
+      if (approvedBalance >= MAX_APPROVED_BALANCE) {
         handleNext();
-      }
-      else {
+      } else {
         setShowWizardModal(true);
       }
-    }
-    catch(error) {
-      console.log("🚀 ~ file: initialStepWizard.js ~ line 123 ~ getApprovedBalance ~ error", error)
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: initialStepWizard.js ~ line 123 ~ getApprovedBalance ~ error',
+        error
+      );
       Sentry.captureException(error, {
         tags: {
-          page: location.pathname,
-        },
+          page: location.pathname
+        }
       });
     }
-  }
+  };
 
   useEffect(() => {
-    console.log('user')
-    console.log(user)
+    console.log('user');
+    console.log(user);
     if (user.user?.session?.ethAddress && activeStep === 1) {
       getApprovedBalance();
     }
@@ -182,23 +192,26 @@ export default function Wizard({
   // Step 2/3
   const getNetworkBalance = async () => {
     try {
-      const { networkBalance } = await getBalance(user.user?.session?.ethAddress);
-      if (networkBalance > 0 ) {
+      const { networkBalance } = await getBalance(
+        user.user?.session?.ethAddress
+      );
+      if (networkBalance > 0) {
         handleNext();
-      }
-      else {
+      } else {
         setShowWizardModal(true);
       }
-    }
-    catch(error) {
-      console.log("🚀 ~ file: initialStepWizard.js ~ line 143 ~ getNetworkBalance ~ error", error)
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: initialStepWizard.js ~ line 143 ~ getNetworkBalance ~ error',
+        error
+      );
       Sentry.captureException(error, {
         tags: {
-          page: location.pathname,
-        },
+          page: location.pathname
+        }
       });
     }
-  }
+  };
 
   useEffect(() => {
     if (user.user?.session?.ethAddress && activeStep === 2) {
@@ -209,25 +222,26 @@ export default function Wizard({
   // Step 3/3
   const getLinkedNetworks = async () => {
     try {
-      const {data} = await getLinkedNetworkService({username});
+      const { data } = await getLinkedNetworkService({ username });
       if (data.success === true) {
         if (data.linkedNetworks?.length > 0) {
           setShowWizardModal(false);
-        }
-        else {
+        } else {
           setShowWizardModal(true);
         }
       }
-    }
-    catch(error) {
-      console.log("🚀 ~ file: initialStepWizard.js ~ line 172 ~ getLinkedNetworks ~ error", error)
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: initialStepWizard.js ~ line 172 ~ getLinkedNetworks ~ error',
+        error
+      );
       Sentry.captureException(error, {
         tags: {
-          page: location.pathname,
-        },
+          page: location.pathname
+        }
       });
     }
-  }
+  };
 
   useEffect(() => {
     if (username && activeStep === 3) {
@@ -240,87 +254,88 @@ export default function Wizard({
   };
 
   return (
-    <Dialog 
+    <Dialog
       open={showWizardModal}
       onClose={handleClose}
       maxWidth="sm"
       fullWidth
     >
-    <DialogTitle disableTypography>
-      <Typography variant="h4">In order to get started with Chain Games, please follow these steps.</Typography>
-    </DialogTitle >
-    <DialogContent>
-      <div className={classes.root}>
-        <Stepper activeStep={activeStep} orientation="vertical">
-          {steps.map((label, index) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-              <StepContent>
-                <Typography>{getStepContent(index)}</Typography>
-                <div className={classes.actionsContainer}>
-                  <div>
-                    <Button
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      className={classes.button}
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={ (e) => {
-                        e.preventDefault();
-                        openInNewWindow(getStepButtonLink(index));
-                      }}
-                      className={classes.button}
-                    >
-                      {getStepButtonText(index)}
-                    </Button>
+      <DialogTitle disableTypography>
+        <Typography variant="h4">
+          In order to get started with Chain Games, please follow these steps.
+        </Typography>
+      </DialogTitle>
+      <DialogContent>
+        <div className={classes.root}>
+          <Stepper activeStep={activeStep} orientation="vertical">
+            {steps.map((label, index) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+                <StepContent>
+                  <Typography>{getStepContent(index)}</Typography>
+                  <div className={classes.actionsContainer}>
+                    <div>
+                      <Button
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                        className={classes.button}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          openInNewWindow(getStepButtonLink(index));
+                        }}
+                        className={classes.button}
+                      >
+                        {getStepButtonText(index)}
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </StepContent>
-            </Step>
-          ))}
-        </Stepper>
-        {activeStep === steps.length && (
-          <Paper square elevation={0} className={classes.resetContainer}>
-            <Typography>All steps completed - you&apos;re finished</Typography>
-            <Button onClick={handleReset} className={classes.button}>
-              Reset
-            </Button>
-          </Paper>
-        )}
-      </div>
-    </DialogContent>
-    <DialogActions>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleNext}
-        className={classes.button}
-      >
-        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-      </Button>
-      <Button
-        className={classes.button}
-        onClick={() => {
-          setShowWizardModal(false);
-          dispatch({
-              type: DO_NOT_SHOW_WIZARD,
-          })
-        }}
-      >
-        Do Not Ask Again
-      </Button>
-    </DialogActions>
+                </StepContent>
+              </Step>
+            ))}
+          </Stepper>
+          {activeStep === steps.length && (
+            <Paper square elevation={0} className={classes.resetContainer}>
+              <Typography>
+                All steps completed - you&apos;re finished
+              </Typography>
+              <Button onClick={handleReset} className={classes.button}>
+                Reset
+              </Button>
+            </Paper>
+          )}
+        </div>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleNext}
+          className={classes.button}
+        >
+          {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+        </Button>
+        <Button
+          className={classes.button}
+          onClick={() => {
+            setShowWizardModal(false);
+            dispatch({
+              type: DO_NOT_SHOW_WIZARD
+            });
+          }}
+        >
+          Do Not Ask Again
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 }
 
 function openInNewWindow(url) {
-  window.open(
-    url,
-    '_blank'
-  );
+  window.open(url, '_blank');
 }

@@ -14,13 +14,12 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
-import { changeUserPassword } from "../../service/node.service";
-import * as Sentry from "@sentry/react";
+import { changeUserPassword } from '../../service/node.service';
+import * as Sentry from '@sentry/react';
 import { AuthContext } from '../../context/AuthContext';
-import { LOGOUT_REQUEST } from "../../actions/actions";
+import { LOGOUT_REQUEST } from '../../actions/actions';
 
 const font = "'Saira', sans-serif";
-
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -44,8 +43,8 @@ const useStyles = makeStyles((theme) => ({
 const ChangePassword = ({ className, ...rest }) => {
   const classes = useStyles();
   const isMountedRef = useIsMountedRef();
-  const [alertMessage, setAlertMsg] = useState("");
-  const {dispatch} = useContext(AuthContext);
+  const [alertMessage, setAlertMsg] = useState('');
+  const { dispatch } = useContext(AuthContext);
   const location = useLocation();
   const history = useHistory();
 
@@ -60,57 +59,55 @@ const ChangePassword = ({ className, ...rest }) => {
       validationSchema={Yup.object().shape({
         oldPassword: Yup.string().max(255).required('Password is required'),
         newPassword: Yup.string().max(255).required('Password is required'),
-        confirmPassword: Yup.string().when("newPassword", {
-          is: val => (val && val.length > 0 ? true : false),
+        confirmPassword: Yup.string().when('newPassword', {
+          is: (val) => (val && val.length > 0 ? true : false),
           then: Yup.string().oneOf(
-            [Yup.ref("newPassword")],
-            "New Password and Confirm Password need to be the same"
+            [Yup.ref('newPassword')],
+            'New Password and Confirm Password need to be the same'
           )
         })
       })}
-      onSubmit={async (values, {
-        setErrors,
-        setStatus,
-        setSubmitting
-      }) => {
-        try{
+      onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+        try {
           let formData = {
             oldPassword: values.oldPassword,
             newPassword: values.newPassword
           };
-                    
+
           const response = await changeUserPassword(formData);
           const data = response.data;
           if (data.success === true) {
             dispatch({
               type: LOGOUT_REQUEST
-            })
+            });
             if (isMountedRef.current) {
               setStatus({ success: true });
               setSubmitting(false);
             }
             history.push('/login');
           } else {
-            return setAlertMsg("Something went wrong. Please try again");
+            return setAlertMsg('Something went wrong. Please try again');
           }
-        }
-        catch(error){
-          console.log("🚀 ~ file: ChangePassword.js ~ line 70 ~ handleChangePassword ~ error", error)
+        } catch (error) {
+          console.log(
+            '🚀 ~ file: ChangePassword.js ~ line 70 ~ handleChangePassword ~ error',
+            error
+          );
           Sentry.captureException(error, {
             tags: {
-              page: location.pathname,
-            },
+              page: location.pathname
+            }
           });
           if (isMountedRef.current) {
             setStatus({ success: false });
             setErrors({ submit: error.message });
             setSubmitting(false);
           }
-  
-          if(error.response){
+
+          if (error.response) {
             setAlertMsg(error.response.data.error);
           } else {
-            setAlertMsg("Something went wrong. Please try again");
+            setAlertMsg('Something went wrong. Please try again');
           }
         }
       }}
@@ -134,7 +131,7 @@ const ChangePassword = ({ className, ...rest }) => {
             className={classes.title}
             variant="h2"
             color="textPrimary"
-            >
+          >
             Change Password
           </Typography>
           <TextField
@@ -179,9 +176,7 @@ const ChangePassword = ({ className, ...rest }) => {
           />
           {errors.submit && (
             <Box mt={3}>
-              <FormHelperText error>
-                {errors.submit}
-              </FormHelperText>
+              <FormHelperText error>{errors.submit}</FormHelperText>
             </Box>
           )}
           <Box mt={2}>
@@ -197,13 +192,7 @@ const ChangePassword = ({ className, ...rest }) => {
             </Button>
           </Box>
           <Box mt={2}>
-            {alertMessage &&
-              <Alert
-                severity="info"
-              >
-                {alertMessage}
-              </Alert>
-            }
+            {alertMessage && <Alert severity="info">{alertMessage}</Alert>}
           </Box>
         </form>
       )}
@@ -214,5 +203,5 @@ const ChangePassword = ({ className, ...rest }) => {
 ChangePassword.propTypes = {
   className: PropTypes.string
 };
-    
+
 export default ChangePassword;

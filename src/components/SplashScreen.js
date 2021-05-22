@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  LinearProgress,
-  makeStyles
-} from '@material-ui/core';
+import { Box, LinearProgress, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,6 +28,6 @@ const SlashScreen = () => {
       </Box>
     </div>
   );
-}
+};
 
 export default SlashScreen;

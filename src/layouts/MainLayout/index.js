@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flex: '1 1 auto',
     overflow: 'hidden',
-    paddingTop: 64/* ,
+    paddingTop: 64 /* ,
     [theme.breakpoints.up('lg')]: {
       paddingRight: 256
     } */
@@ -40,15 +40,11 @@ const MainLayout = ({ children }) => {
 
   return (
     <div className={classes.root}>
-      <TopBar onNavOpen={() => setNavOpen(isNavOpen => !isNavOpen)} />
-      <NavBar
-        onOpen={isNavOpen}
-      />
+      <TopBar onNavOpen={() => setNavOpen((isNavOpen) => !isNavOpen)} />
+      <NavBar onOpen={isNavOpen} />
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
-          <div className={classes.content}>
-            {children}
-          </div>
+          <div className={classes.content}>{children}</div>
         </div>
       </div>
       <ToastContainer autoClose={3000} />

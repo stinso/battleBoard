@@ -16,12 +16,9 @@ const HomeView = () => {
 
   return (
     <PerfectScrollbar>
-    <Page
-      className={classes.root}
-      title="Chain Games Battleboard"
-    >
-      <Hero />
-    </Page>
+      <Page className={classes.root} title="Chain Games Battleboard">
+        <Hero />
+      </Page>
     </PerfectScrollbar>
   );
 };

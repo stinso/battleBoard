@@ -1,13 +1,5 @@
-import React, {
-  Suspense,
-  Fragment,
-  lazy
-} from 'react';
-import {
-  Switch,
-  Redirect,
-  Route
-} from 'react-router-dom';
+import React, { Suspense, Fragment, lazy } from 'react';
+import { Switch, Redirect, Route } from 'react-router-dom';
 import MainLayout from 'src/layouts/MainLayout';
 import HomeView from 'src/views/home/HomeView';
 import LoadingScreen from 'src/components/LoadingScreen';
@@ -122,10 +114,7 @@ const routes = [
       },
       {
         exact: true,
-        path: [
-          '/',
-          '/dashboard',
-        ],
+        path: ['/', '/dashboard'],
         component: HomeView
       },
       {

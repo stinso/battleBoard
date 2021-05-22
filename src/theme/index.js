@@ -1,12 +1,9 @@
 import _ from 'lodash';
-import {
-  colors,
-  createMuiTheme
-} from '@material-ui/core';
+import { colors, createMuiTheme } from '@material-ui/core';
 import { THEMES } from '../constants';
 import { softShadows, strongShadows } from './shadows';
 import typography from './typography';
-import green from "@material-ui/core/colors/green";
+import green from '@material-ui/core/colors/green';
 
 const baseOptions = {
   typography,
@@ -61,7 +58,7 @@ const themesOptions = [
       },
       success: {
         main: green[500],
-        contrastText: "#fff"
+        contrastText: '#fff'
       }
     },
     shadows: strongShadows
@@ -76,14 +73,7 @@ export const createTheme = (config = {}) => {
     [themeOptions] = themesOptions;
   }
 
-  let theme = createMuiTheme(
-    _.merge(
-      {},
-      baseOptions,
-      themeOptions
-    )
-  );
-
+  let theme = createMuiTheme(_.merge({}, baseOptions, themeOptions));
 
   return theme;
 };

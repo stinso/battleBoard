@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
   cardContainer: {
     paddingBottom: 80,
-    paddingTop: 80,
+    paddingTop: 80
   },
   cardContent: {
     padding: theme.spacing(4),
@@ -38,19 +38,9 @@ const VerifyEmailView = () => {
   const classes = useStyles();
 
   return (
-    <Page
-      className={classes.root}
-      title="Verify Email"
-    >
-      <Container
-        className={classes.cardContainer}
-        maxWidth="sm"
-      >
-        <Box
-          mb={8}
-          display="flex"
-          justifyContent="center"
-        >
+    <Page className={classes.root} title="Verify Email">
+      <Container className={classes.cardContainer} maxWidth="sm">
+        <Box mb={8} display="flex" justifyContent="center">
           <RouterLink to="/">
             <Logo className={classes.logo} />
           </RouterLink>
@@ -64,19 +54,12 @@ const VerifyEmailView = () => {
               mb={3}
             >
               <div>
-                <Typography
-                  color="textPrimary"
-                  gutterBottom
-                  variant="h2"
-                >
+                <Typography color="textPrimary" gutterBottom variant="h2">
                   Verify Email
                 </Typography>
               </div>
             </Box>
-            <Box
-              flexGrow={1}
-              mt={3}
-            >
+            <Box flexGrow={1} mt={3}>
               <VerifyEmail />
             </Box>
           </CardContent>

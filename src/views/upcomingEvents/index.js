@@ -16,12 +16,9 @@ const EventsView = () => {
 
   return (
     <PerfectScrollbar>
-    <Page
-      className={classes.root}
-      title="Battle | Chain Games"
-    >
-      <Events />
-    </Page>
+      <Page className={classes.root} title="Battle | Chain Games">
+        <Events />
+      </Page>
     </PerfectScrollbar>
   );
 };

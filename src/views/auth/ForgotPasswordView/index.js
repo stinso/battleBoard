@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
   cardContainer: {
     paddingBottom: 80,
-    paddingTop: 80,
+    paddingTop: 80
   },
   cardContent: {
     padding: theme.spacing(4),
@@ -63,19 +63,9 @@ const ForgotPasswordView = () => {
   const { method } = useAuth();
 
   return (
-    <Page
-      className={classes.root}
-      title="Forgot password"
-    >
-      <Container
-        className={classes.cardContainer}
-        maxWidth="sm"
-      >
-        <Box
-          mb={8}
-          display="flex"
-          justifyContent="center"
-        >
+    <Page className={classes.root} title="Forgot password">
+      <Container className={classes.cardContainer} maxWidth="sm">
+        <Box mb={8} display="flex" justifyContent="center">
           <RouterLink to="/">
             <Logo className={classes.logo} />
           </RouterLink>
@@ -89,25 +79,15 @@ const ForgotPasswordView = () => {
               mb={3}
             >
               <div>
-                <Typography
-                  color="textPrimary"
-                  gutterBottom
-                  variant="h2"
-                >
+                <Typography color="textPrimary" gutterBottom variant="h2">
                   Reset Password
                 </Typography>
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                >
+                <Typography variant="body2" color="textSecondary">
                   Fill the form to reset your password
                 </Typography>
               </div>
             </Box>
-            <Box
-              flexGrow={1}
-              mt={3}
-            >
+            <Box flexGrow={1} mt={3}>
               <ForgotPassword />
             </Box>
             <Box my={3}>

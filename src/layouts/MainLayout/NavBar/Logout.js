@@ -1,17 +1,13 @@
 import React, { useContext } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import {
-  Button,
-  ListItem,
-  makeStyles
-} from '@material-ui/core';
-import {AuthContext} from '../../../context/AuthContext';
-import {LOGOUT_REQUEST} from '../../../actions/actions.js';
+import { Button, ListItem, makeStyles } from '@material-ui/core';
+import { AuthContext } from '../../../context/AuthContext';
+import { LOGOUT_REQUEST } from '../../../actions/actions.js';
 import { logoutService } from '../../../service/node.service';
 import { useLocation, useHistory } from 'react-router-dom';
 import { LogOut as LogoutIcon } from 'react-feather';
-import * as Sentry from "@sentry/react";
+import * as Sentry from '@sentry/react';
 
 const useStyles = makeStyles((theme) => ({
   item: {
@@ -65,56 +61,48 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
 const Logout = () => {
   const classes = useStyles();
   const location = useLocation();
   const history = useHistory();
-  const { dispatch } = useContext(AuthContext)
+  const { dispatch } = useContext(AuthContext);
 
   let paddingLeft = 8;
 
   const style = { paddingLeft };
 
   const handleLogoutRequest = async () => {
-    try{
+    try {
       const response = await logoutService();
       const data = response.data;
       if (data.success === true) {
         history.push('/login');
         dispatch({
           type: LOGOUT_REQUEST
-        })
+        });
       }
-    }
-    catch(error){
-      console.log("🚀 ~ file: Logout.js ~ line 77 ~ handleLogoutRequest ~ error", error)
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: Logout.js ~ line 77 ~ handleLogoutRequest ~ error',
+        error
+      );
       Sentry.captureException(error, {
         tags: {
-          page: location.pathname,
-        },
+          page: location.pathname
+        }
       });
-    } 
-  }
+    }
+  };
 
   return (
-    <ListItem
-      className={classes.itemLeaf}
-      disableGutters
-      key={'logout'}
-    >
+    <ListItem className={classes.itemLeaf} disableGutters key={'logout'}>
       <Button
         className={clsx(classes.buttonLeaf, `depth-0`)}
         style={style}
         onClick={handleLogoutRequest}
       >
-        <LogoutIcon
-          className={classes.icon}
-          size="20"
-        />
-        <span className={classes.title}>
-          Logout
-        </span>
+        <LogoutIcon className={classes.icon} size="20" />
+        <span className={classes.title}>Logout</span>
       </Button>
     </ListItem>
   );

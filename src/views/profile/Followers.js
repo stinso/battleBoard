@@ -1,12 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Typography,
-  makeStyles
-} from '@material-ui/core';
+import { Typography, makeStyles } from '@material-ui/core';
 
 const font = "'Saira', sans-serif";
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,23 +19,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Followers = ({ className }) => {
-    const classes = useStyles();
+  const classes = useStyles();
 
-    return (
-      <div>
-        <Typography
-          className={classes.title}
-          variant="h2"
-          color="textPrimary"
-        >
-          Followers
-        </Typography>
-      </div>
-    );
+  return (
+    <div>
+      <Typography className={classes.title} variant="h2" color="textPrimary">
+        Followers
+      </Typography>
+    </div>
+  );
 };
 
 Followers.propTypes = {
   className: PropTypes.string
 };
-  
+
 export default Followers;

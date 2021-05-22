@@ -1,12 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Box,
-  Grid,
-  Paper,
-  makeStyles
-} from '@material-ui/core';
-
+import { Box, Grid, Paper, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -19,36 +13,16 @@ const Info = ({ className }) => {
   const classes = useStyles();
 
   return (
-    <Grid
-      container
-      spacing={2}
-    >
-      <Grid
-        item
-        xs={4}
-      >
-        <Paper className={classes.price}>
-
-        </Paper>
+    <Grid container spacing={2}>
+      <Grid item xs={4}>
+        <Paper className={classes.price}></Paper>
       </Grid>
-      <Grid
-        item
-        xs={4}
-      >
-        <Paper className={classes.price}>
-          
-        </Paper>
+      <Grid item xs={4}>
+        <Paper className={classes.price}></Paper>
       </Grid>
-      <Grid
-        item
-        xs={4}
-      >
-        <Paper className={classes.price}>
-          
-        </Paper>
+      <Grid item xs={4}>
+        <Paper className={classes.price}></Paper>
       </Grid>
-      
-      
     </Grid>
   );
 };

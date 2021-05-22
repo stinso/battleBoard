@@ -1,7 +1,7 @@
 import Page from 'src/components/Page';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import GameSectionOne from "./GameSectionOne";
-import Lobby from "./Lobby";
+import GameSectionOne from './GameSectionOne';
+import Lobby from './Lobby';
 import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.dark,
     minHeight: '100%',
     minWidth: '100%',
-    paddingBottom: theme.spacing(3),
+    paddingBottom: theme.spacing(3)
   }
 }));
 
@@ -18,10 +18,7 @@ const GameLandingPage = () => {
 
   return (
     <PerfectScrollbar>
-      <Page
-        className={classes.root}
-        title="Action Game Page"
-      >
+      <Page className={classes.root} title="Action Game Page">
         <GameSectionOne />
         <Lobby />
       </Page>

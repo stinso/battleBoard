@@ -1,11 +1,8 @@
 import { useLocation } from 'react-router-dom';
-import { 
-  Paper,
-  makeStyles 
-} from '@material-ui/core';
+import { Paper, makeStyles } from '@material-ui/core';
 import COD_Image from '../../assets/img/COD_Background.jpg';
-import Madden_Image from '../../assets/img/Madden_Background.jpg'; 
-import Fifa_Image from '../../assets/img/fifa-background-image.jpg'
+import Madden_Image from '../../assets/img/Madden_Background.jpg';
+import Fifa_Image from '../../assets/img/fifa-background-image.jpg';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -13,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     elevation: 10
   }
 }));
-  
+
 const GameSectionOne = () => {
   const classes = useStyles();
   const location = useLocation();
@@ -27,13 +24,10 @@ const GameSectionOne = () => {
       case '/actionGamePage/fifa':
         return Fifa_Image;
     }
-  }
+  };
   return (
-    <Paper className={classes.paper} >
-      <img
-        alt="Presentation"
-        src={ getImage()}
-      />      
+    <Paper className={classes.paper}>
+      <img alt="Presentation" src={getImage()} />
     </Paper>
   );
 };

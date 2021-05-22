@@ -28,29 +28,32 @@ import {
 } from 'react-feather';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
-import NavItem  from './NavItem';
+import NavItem from './NavItem';
 import NumberFormat from 'react-number-format';
 import { useSelector } from 'src/store';
-import Logout from './Logout'
-import * as Sentry from "@sentry/react";
-import { AuthContext } from "../../../context/AuthContext";
+import Logout from './Logout';
+import * as Sentry from '@sentry/react';
+import { AuthContext } from '../../../context/AuthContext';
 import {
   ApproveRedirectLink,
   DepositRedirectLink,
   RedirectURL,
-  RegisterEthAddressRedirectURL,
-} from "../../../config/constants";
+  RegisterEthAddressRedirectURL
+} from '../../../config/constants';
 import { getBalance, formatInCHAIN } from '../../../utils/helpers.js';
-import {getTotalEventsService, getTotalWinningsService, getBalanceFromCS} from '../../../service/node.service'
+import {
+  getTotalEventsService,
+  getTotalWinningsService,
+  getBalanceFromCS
+} from '../../../service/node.service';
 import { MAX_APPROVED_BALANCE } from '../../../config/constants';
-
 
 const WizardEnums = {
   AccountLink: 1,
   Approve: 2,
   Deposit: 3,
-  ConsoleLink: 4,
-}
+  ConsoleLink: 4
+};
 
 const mySections = [
   {
@@ -108,11 +111,7 @@ const sections = [
   }
 ];
 
-function renderNavItems({
-  items,
-  pathname,
-  depth = 0
-}) {
+function renderNavItems({ items, pathname, depth = 0 }) {
   return (
     <List disablePadding>
       {items.reduce(
@@ -123,12 +122,7 @@ function renderNavItems({
   );
 }
 
-function reduceChildRoutes({
-  acc,
-  pathname,
-  item,
-  depth
-}) {
+function reduceChildRoutes({ acc, pathname, item, depth }) {
   const key = item.title;
 
   if (item.items) {
@@ -171,8 +165,7 @@ function reduceChildRoutes({
   return acc;
 }
 
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   mobileDrawer: {
     width: 256
   },
@@ -211,7 +204,7 @@ const NavBar = ({ onOpen }) => {
   const classes = useStyles();
   const location = useLocation();
   const { user } = useContext(AuthContext);
-  const  account = user.user?.session?.ethAddress;
+  const account = user.user?.session?.ethAddress;
   const [showNotification, setShowNotification] = useState(false);
   const [showWizardModal, setShowWizardModal] = useState(false);
   const [chainNetworkBalance, setChainNetworkBalance] = useState(0);
@@ -221,12 +214,14 @@ const NavBar = ({ onOpen }) => {
   const [totalEvents, setTotalEvents] = useState(0);
   const [currentStep, setCurrentStep] = useState(WizardEnums.AccountLink);
   const [username, setUsername] = useState('');
-  const profileNavItem = [{
-    title: 'Profile',
-    icon: UserIcon,
-    href: '/profile/' + username,
-    isExternal: false
-  }]
+  const profileNavItem = [
+    {
+      title: 'Profile',
+      icon: UserIcon,
+      href: '/profile/' + username,
+      isExternal: false
+    }
+  ];
 
   useEffect(() => {
     if (!user.user.session?.ethAddress) {
@@ -242,11 +237,11 @@ const NavBar = ({ onOpen }) => {
 
   const getInfoFromAPI = async () => {
     try {
-      const [winnings, events, balanceInfo] = await Promise.all(
-        [getTotalWinningsService({}),
-          getTotalEventsService({}),
-          getBalanceFromCS({}),
-        ])
+      const [winnings, events, balanceInfo] = await Promise.all([
+        getTotalWinningsService({}),
+        getTotalEventsService({}),
+        getBalanceFromCS({})
+      ]);
       if (winnings.data?.success) {
         setTotalWinnings(winnings.data.winnings);
       }
@@ -255,8 +250,12 @@ const NavBar = ({ onOpen }) => {
       }
       if (balanceInfo.data.success) {
         setFiatBalance(balanceInfo.data.fiat);
-        const allowanceFormatInChain = formatInCHAIN(balanceInfo.data.token.allowance);
-        const networkFormatInChain = formatInCHAIN(balanceInfo.data.token.total);
+        const allowanceFormatInChain = formatInCHAIN(
+          balanceInfo.data.token.allowance
+        );
+        const networkFormatInChain = formatInCHAIN(
+          balanceInfo.data.token.total
+        );
 
         setApprovedBalance(allowanceFormatInChain);
         setChainNetworkBalance(networkFormatInChain);
@@ -264,30 +263,28 @@ const NavBar = ({ onOpen }) => {
           if (MAX_APPROVED_BALANCE > allowanceFormatInChain) {
             setCurrentStep(WizardEnums.Approve);
             setShowWizardModal(true);
-          }
-          else if (networkFormatInChain <= 0) {
+          } else if (networkFormatInChain <= 0) {
             setCurrentStep(WizardEnums.Deposit);
             setShowWizardModal(true);
-          }
-          else {
+          } else {
             setCurrentStep(WizardEnums.ConsoleLink);
             setShowWizardModal(true);
           }
-        }
-        else {
-          setCurrentStep(WizardEnums.AccountLink)
+        } else {
+          setCurrentStep(WizardEnums.AccountLink);
           setShowWizardModal(true);
         }
       }
-      
-    }
-    catch (error) {
-      console.log("🚀 ~ file: DashboardSectionOne.js ~ line 102 ~ getInfoFromAPI ~ error", error)
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: DashboardSectionOne.js ~ line 102 ~ getInfoFromAPI ~ error',
+        error
+      );
       Sentry.captureException(error, {
         tags: {
-          page: location.pathname,
-        },
-    });
+          page: location.pathname
+        }
+      });
     }
   };
 
@@ -297,46 +294,35 @@ const NavBar = ({ onOpen }) => {
     getInfoFromAPI();
   }, []);
 
-
   const content = (
-    <Box
-      height='100%'
-      display='flex'
-      flexDirection='column'
-    >
+    <Box height="100%" display="flex" flexDirection="column">
       <PerfectScrollbar options={{ suppressScrollX: true }}>
         <Box p={2}>
-          <Box
-            display='flex'
-            justifyContent='center'
-          >
-            <Avatar className={classes.avatar} src="/static/images/panda.png">
-            </Avatar>
+          <Box display="flex" justifyContent="center">
+            <Avatar
+              className={classes.avatar}
+              src="/static/images/panda.png"
+            ></Avatar>
           </Box>
         </Box>
-        <Box display="flex" flexDirection="row" alignItems="stretch" padding={1}>
-          <Paper className={classes.paper} elevation={3} >
-            <Box
-              textAlign="center"
-            >
-              <Typography
-                display="inline"
-                variant="body1"
-                color="textPrimary"
-              >
+        <Box
+          display="flex"
+          flexDirection="row"
+          alignItems="stretch"
+          padding={1}
+        >
+          <Paper className={classes.paper} elevation={3}>
+            <Box textAlign="center">
+              <Typography display="inline" variant="body1" color="textPrimary">
                 $
-                <NumberFormat 
-                  value={fiatBalance.toFixed(2)} 
-                  displayType={'text'} 
-                  thousandSeparator={true} 
+                <NumberFormat
+                  value={fiatBalance.toFixed(2)}
+                  displayType={'text'}
+                  thousandSeparator={true}
                 />
               </Typography>
             </Box>
-            <Box
-              justifyContent='center'
-              display='flex'
-              mt={1}
-            >
+            <Box justifyContent="center" display="flex" mt={1}>
               <Button
                 className={classes.button}
                 size="small"
@@ -348,32 +334,20 @@ const NavBar = ({ onOpen }) => {
               >
                 +Add Cash
               </Button>
-            </Box>    
+            </Box>
           </Paper>
           <Box flexGrow={1} />
-          <Paper className={classes.paper}
-            elevation={3}
-          >
-            <Box
-              textAlign="center"
-            >
-            <Typography
-              display="inline"
-              variant="body1"
-              color="textPrimary"
-            >
-              <NumberFormat 
-                value={chainNetworkBalance ? chainNetworkBalance : 0} 
-                displayType={'text'} 
-                thousandSeparator={true} 
-              />
-            </Typography>
+          <Paper className={classes.paper} elevation={3}>
+            <Box textAlign="center">
+              <Typography display="inline" variant="body1" color="textPrimary">
+                <NumberFormat
+                  value={chainNetworkBalance ? chainNetworkBalance : 0}
+                  displayType={'text'}
+                  thousandSeparator={true}
+                />
+              </Typography>
             </Box>
-            <Box
-              mt={1}
-              display="flex"
-              justifyContent='center'
-            >
+            <Box mt={1} display="flex" justifyContent="center">
               <Button
                 className={classes.button}
                 size="small"
@@ -389,45 +363,33 @@ const NavBar = ({ onOpen }) => {
         </Box>
         <Box alignItems="center" padding={1}>
           <Paper className={classes.paperApprove} elevation={3}>
-            <Box
-              textAlign="center"
-            >
-              {MAX_APPROVED_BALANCE <= approveBalance ?
-
-                <CheckCircleOutlineIcon 
-                  className={classes.checkCircle}
-                />
-              :
-                <ErrorOutlineIcon 
-                  color="error"  
-                />
-              }
+            <Box textAlign="center">
+              {MAX_APPROVED_BALANCE <= approveBalance ? (
+                <CheckCircleOutlineIcon className={classes.checkCircle} />
+              ) : (
+                <ErrorOutlineIcon color="error" />
+              )}
             </Box>
-            <Box
-              justifyContent='center'
-              display='flex'
-            >
+            <Box justifyContent="center" display="flex">
               <Button
                 className={classes.button}
                 size="small"
                 color="secondary"
                 variant="outlined"
                 to={ApproveRedirectLink}
-                disabled={
-                  MAX_APPROVED_BALANCE <= approveBalance
-                }
+                disabled={MAX_APPROVED_BALANCE <= approveBalance}
                 fullWidth
               >
-                {MAX_APPROVED_BALANCE <= approveBalance ? 'Approved' : 'Approve'}
+                {MAX_APPROVED_BALANCE <= approveBalance
+                  ? 'Approved'
+                  : 'Approve'}
               </Button>
-            </Box>    
+            </Box>
           </Paper>
         </Box>
         <Box p={2}>
-          {mySections.map(section => (
-            <List
-              key={'walletSection'}
-            >
+          {mySections.map((section) => (
+            <List key={'walletSection'}>
               {renderNavItems({
                 items: section.items,
                 pathname: location.pathname
@@ -441,15 +403,13 @@ const NavBar = ({ onOpen }) => {
             items: profileNavItem,
             pathname: location.pathname
           })}
-          {sections.map(section => (
-            <List
-              key={'personalSection'}
-            >
+          {sections.map((section) => (
+            <List key={'personalSection'}>
               {renderNavItems({
                 items: section.items,
                 pathname: location.pathname
               })}
-              <Logout/>
+              <Logout />
             </List>
           ))}
         </Box>

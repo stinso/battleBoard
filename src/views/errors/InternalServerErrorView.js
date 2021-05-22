@@ -35,30 +35,19 @@ const InternalServerErrorView = () => {
   const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <Page
-      className={classes.root}
-      title="500: Internal Server Error"
-    >
+    <Page className={classes.root} title="500: Internal Server Error">
       <Container maxWidth="lg">
         <Typography
           align="center"
           variant={mobileDevice ? 'h4' : 'h1'}
           color="textPrimary"
         >
-          500: Internal Server Error 
+          500: Internal Server Error
         </Typography>
-        <Typography
-          align="center"
-          variant="subtitle2"
-          color="textSecondary"
-        >
+        <Typography align="center" variant="subtitle2" color="textSecondary">
           We are sorry. This was unexpected.
         </Typography>
-        <Box
-          mt={6}
-          display="flex"
-          justifyContent="center"
-        >
+        <Box mt={6} display="flex" justifyContent="center">
           <Button
             color="secondary"
             component={RouterLink}

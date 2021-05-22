@@ -16,12 +16,9 @@ const userAccountSettingView = () => {
 
   return (
     <PerfectScrollbar>
-    <Page
-      className={classes.root}
-      title="Battle | Chain Games"
-    >
-      <UserAccountSetting />
-    </Page>
+      <Page className={classes.root} title="Battle | Chain Games">
+        <UserAccountSetting />
+      </Page>
     </PerfectScrollbar>
   );
 };

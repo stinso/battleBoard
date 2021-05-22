@@ -18,16 +18,9 @@ import {
 const SubmitResultModal = ({
   setShowSubmitResultModal,
   showSubmitResultModal,
-  submitResult,
+  submitResult
 }) => {
-
-
-  return (
-    <Dialog open={showSubmitResultModal}>
-      SubmitResult Modal
-    </Dialog>
-  );
+  return <Dialog open={showSubmitResultModal}>SubmitResult Modal</Dialog>;
 };
-
 
 export default SubmitResultModal;

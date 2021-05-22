@@ -13,9 +13,9 @@ import {
   useMediaQuery,
   makeStyles
 } from '@material-ui/core';
-import Linking from './Linking'
-import ChangePassword from './ChangePassword'
-import { AuthContext } from "../../context/AuthContext";
+import Linking from './Linking';
+import ChangePassword from './ChangePassword';
+import { AuthContext } from '../../context/AuthContext';
 
 const font = "'Saira', sans-serif";
 
@@ -23,7 +23,6 @@ const tabs = {
   linking: 1,
   changePassword: 2
 };
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 0
   },
   paper: {
-    minHeight: "200px",
+    minHeight: '200px',
     padding: theme.spacing(4)
   },
   avatar: {
@@ -87,27 +86,19 @@ const userAccountSetting = ({ className, ...rest }) => {
   };
 
   return (
-    <div
-      className={clsx(classes.root, className)}
-      {...rest}
-    > 
+    <div className={clsx(classes.root, className)} {...rest}>
       <Container maxWidth="md">
         <Grid container spacing={2}>
           <Grid item xs={12} lg={4}>
             <Paper className={classes.paper}>
-              <Box
-                display='flex'
-                justifyContent='center'
-              >
-                <Avatar className={classes.avatar} src="/static/images/panda.png" />
+              <Box display="flex" justifyContent="center">
+                <Avatar
+                  className={classes.avatar}
+                  src="/static/images/panda.png"
+                />
               </Box>
-              <Box 
-                marginTop={2}
-              >
-                <Box 
-                  display='flex'
-                  justifyContent='center'
-                >
+              <Box marginTop={2}>
+                <Box display="flex" justifyContent="center">
                   <Button
                     className={classes.button}
                     size="small"
@@ -117,15 +108,8 @@ const userAccountSetting = ({ className, ...rest }) => {
                     Change avatar
                   </Button>
                 </Box>
-                <Box 
-                  display='flex'
-                  justifyContent='center'
-                  marginTop={1}
-                >
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                  >
+                <Box display="flex" justifyContent="center" marginTop={1}>
+                  <Typography variant="body2" color="textSecondary">
                     User profile image updated
                   </Typography>
                 </Box>
@@ -136,9 +120,7 @@ const userAccountSetting = ({ className, ...rest }) => {
                     color="secondary"
                     variant="outlined"
                     fullWidth
-                    onClick={(e) =>
-                      handleTabsChange(e, tabs.linking)
-                    }
+                    onClick={(e) => handleTabsChange(e, tabs.linking)}
                   >
                     account linking
                   </Button>
@@ -150,9 +132,7 @@ const userAccountSetting = ({ className, ...rest }) => {
                     color="secondary"
                     variant="outlined"
                     fullWidth
-                    onClick={(e) =>
-                      handleTabsChange(e, tabs.changePassword)
-                    }
+                    onClick={(e) => handleTabsChange(e, tabs.changePassword)}
                   >
                     Change password
                   </Button>
@@ -162,7 +142,9 @@ const userAccountSetting = ({ className, ...rest }) => {
           </Grid>
           <Grid item xs={12} lg={8}>
             <Paper className={classes.paper}>
-              {currentTab === tabs.linking && <Linking username={user.user?.session?.username}/>}
+              {currentTab === tabs.linking && (
+                <Linking username={user.user?.session?.username} />
+              )}
               {currentTab === tabs.changePassword && <ChangePassword />}
             </Paper>
           </Grid>

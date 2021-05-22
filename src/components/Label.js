@@ -55,11 +55,13 @@ const Label = ({
 
   return (
     <span
-      className={
-        clsx(classes.root, {
+      className={clsx(
+        classes.root,
+        {
           [classes[color]]: color
-        }, className)
-      }
+        },
+        className
+      )}
       {...rest}
     >
       {children}
@@ -71,7 +73,13 @@ Label.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   style: PropTypes.object,
-  color: PropTypes.oneOf(['primary', 'secondary', 'error', 'warning', 'success'])
+  color: PropTypes.oneOf([
+    'primary',
+    'secondary',
+    'error',
+    'warning',
+    'success'
+  ])
 };
 
 export default Label;

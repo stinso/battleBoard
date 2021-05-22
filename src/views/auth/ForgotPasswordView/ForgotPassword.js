@@ -4,12 +4,7 @@ import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { Formik } from 'formik';
-import {
-  Box,
-  Button,
-  TextField,
-  makeStyles
-} from '@material-ui/core';
+import { Box, Button, TextField, makeStyles } from '@material-ui/core';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
 import { recoverPassword } from '../../../service/node.service';
 
@@ -29,13 +24,12 @@ const ForgotPassword = ({ className, ...rest }) => {
         submit: null
       }}
       validationSchema={Yup.object().shape({
-        email: Yup.string().email('Must be a valid email').max(255).required('Email is required')
+        email: Yup.string()
+          .email('Must be a valid email')
+          .max(255)
+          .required('Email is required')
       })}
-      onSubmit={async (values, {
-        setErrors,
-        setStatus,
-        setSubmitting
-      }) => {
+      onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
           const { data } = await recoverPassword({
             email: values.email,
@@ -44,9 +38,8 @@ const ForgotPassword = ({ className, ...rest }) => {
 
           if (data && data.success) {
             //setShowModal(true);
-            history.push('/dashboard')
-          }
-          else {
+            history.push('/dashboard');
+          } else {
             setStatus({ success: false });
             setErrors({ submit: data.error });
             setSubmitting(false);
@@ -91,7 +84,7 @@ const ForgotPassword = ({ className, ...rest }) => {
             type="email"
             value={values.email}
             variant="outlined"
-          />          
+          />
           <Box mt={2}>
             <Button
               color="secondary"

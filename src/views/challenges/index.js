@@ -16,12 +16,9 @@ const ChallengesView = () => {
 
   return (
     <PerfectScrollbar>
-    <Page
-      className={classes.root}
-      title="Battle | Chain Games"
-    >
-      <Challenges />
-    </Page>
+      <Page className={classes.root} title="Battle | Chain Games">
+        <Challenges />
+      </Page>
     </PerfectScrollbar>
   );
 };

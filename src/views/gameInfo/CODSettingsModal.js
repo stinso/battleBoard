@@ -19,14 +19,7 @@ const CODSettingsModal = ({
   setShowCODSettingsModal,
   showCODSettingsModal
 }) => {
-
-
-  return (
-    <Dialog open={showCODSettingsModal.show}>
-      CODSettings Modal
-    </Dialog>
-  );
+  return <Dialog open={showCODSettingsModal.show}>CODSettings Modal</Dialog>;
 };
-
 
 export default CODSettingsModal;

@@ -26,16 +26,9 @@ const FaceBookStepsModal = ({
   setShowFacebookModal,
   showFacebookModal,
   facebookNotification,
-  isLoading,
+  isLoading
 }) => {
-
-
-  return (
-    <Dialog open={showFacebookModal}>
-      Facebook Modal
-    </Dialog>
-  );
+  return <Dialog open={showFacebookModal}>Facebook Modal</Dialog>;
 };
-
 
 export default FaceBookStepsModal;

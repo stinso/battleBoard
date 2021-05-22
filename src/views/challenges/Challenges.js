@@ -30,46 +30,44 @@ const font = "'Saira', sans-serif";
 const challenges = [
   {
     id: 1,
-    opponentName: "mukki@chaingames.io",
-    opponentAvatar: "/static/images/panda.png",
-    game: "Madden NFL 21",
-    gameFormat: "Max Score", 
-    startTime: "27th Mar 21:00 CET",
-    duration: "30 Min",
+    opponentName: 'mukki@chaingames.io',
+    opponentAvatar: '/static/images/panda.png',
+    game: 'Madden NFL 21',
+    gameFormat: 'Max Score',
+    startTime: '27th Mar 21:00 CET',
+    duration: '30 Min',
     betAmount: 5,
-    status: "Accepted",
-    eventDetails: "Event",
-    result: "Won"
+    status: 'Accepted',
+    eventDetails: 'Event',
+    result: 'Won'
   },
   {
     id: 2,
-    opponentName: "mukki@chaingames.io",
-    opponentAvatar: "/static/images/panda.png",
-    game: "Madden NFL 21",
-    gameFormat: "Max Score", 
-    startTime: "24th Mar 21:00 CET",
-    duration: "30 Min",
+    opponentName: 'mukki@chaingames.io',
+    opponentAvatar: '/static/images/panda.png',
+    game: 'Madden NFL 21',
+    gameFormat: 'Max Score',
+    startTime: '24th Mar 21:00 CET',
+    duration: '30 Min',
     betAmount: 25,
-    status: "Accepted",
-    eventDetails: "Event",
-    result: "Won"
+    status: 'Accepted',
+    eventDetails: 'Event',
+    result: 'Won'
   },
   {
     id: 3,
-    opponentName: "mukki@chaingames.io",
-    opponentAvatar: "/static/images/panda.png",
-    game: "Madden NFL 21",
-    gameFormat: "Max Score", 
-    startTime: "21th Mar 21:00 CET",
-    duration: "30 Min",
+    opponentName: 'mukki@chaingames.io',
+    opponentAvatar: '/static/images/panda.png',
+    game: 'Madden NFL 21',
+    gameFormat: 'Max Score',
+    startTime: '21th Mar 21:00 CET',
+    duration: '30 Min',
     betAmount: 1,
-    status: "Accepted",
-    eventDetails: "Event",
-    result: "Lost"
+    status: 'Accepted',
+    eventDetails: 'Event',
+    result: 'Lost'
   }
-]
-
-
+];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -138,40 +136,34 @@ const Challenges = ({ className, ...rest }) => {
   };
 
   return (
-    <div
-      className={clsx(classes.root, className)}
-      {...rest}
-    > 
+    <div className={clsx(classes.root, className)} {...rest}>
       <Container maxWidth="lg">
-        <Grid
-            container
-            justify="space-between"
-          >
-            <Grid item>
-              <Typography
-                className={classes.title}
-                variant="h1"
-                color="textPrimary"
-              >
-                My Challenges
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Button
-                color="secondary"
-                variant="contained"
-                /* onClick={onAddClick} */
-                startIcon={
-                  <SvgIcon fontSize="small">
-                    <PlusCircleIcon />
-                  </SvgIcon>
-                }
-              >
-                New Challenge
-              </Button>
-            </Grid>
+        <Grid container justify="space-between">
+          <Grid item>
+            <Typography
+              className={classes.title}
+              variant="h1"
+              color="textPrimary"
+            >
+              My Challenges
+            </Typography>
           </Grid>
-        
+          <Grid item>
+            <Button
+              color="secondary"
+              variant="contained"
+              /* onClick={onAddClick} */
+              startIcon={
+                <SvgIcon fontSize="small">
+                  <PlusCircleIcon />
+                </SvgIcon>
+              }
+            >
+              New Challenge
+            </Button>
+          </Grid>
+        </Grid>
+
         <Box mt={3}>
           <Box mt={1} mb={3}>
             <Tabs
@@ -182,17 +174,13 @@ const Challenges = ({ className, ...rest }) => {
               variant="scrollable"
             >
               {tabs.map((tab) => (
-                <Tab
-                  key={tab.value}
-                  label={tab.label}
-                  value={tab.value}
-                />
+                <Tab key={tab.value} label={tab.label} value={tab.value} />
               ))}
             </Tabs>
             <Divider />
           </Box>
           <Card>
-            <Box minWidth={300} >
+            <Box minWidth={300}>
               <Button
                 className={classes.statusesButton}
                 aria-controls="menu-shooter"
@@ -206,73 +194,41 @@ const Challenges = ({ className, ...rest }) => {
               </Button>
               <Table>
                 <TableHead>
-                  <TableRow >
-                    <TableCell>
-                      Opponent
-                    </TableCell>
-                    <TableCell>
-                      Game
-                    </TableCell>
-                    <TableCell>
-                      Game Format
-                    </TableCell>
-                    <TableCell>
-                      Start Time
-                    </TableCell>
-                    <TableCell>
-                      Duration
-                    </TableCell>
-                    <TableCell>
-                      Bet Amount
-                    </TableCell>
-                    <TableCell>
-                      Status
-                    </TableCell>
-                    <TableCell>
-                      Event Details
-                    </TableCell>
-                    <TableCell>
-                      Result
-                    </TableCell>
+                  <TableRow>
+                    <TableCell>Opponent</TableCell>
+                    <TableCell>Game</TableCell>
+                    <TableCell>Game Format</TableCell>
+                    <TableCell>Start Time</TableCell>
+                    <TableCell>Duration</TableCell>
+                    <TableCell>Bet Amount</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Event Details</TableCell>
+                    <TableCell>Result</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {paginatedChallenges.map((entry) => {
                     return (
-                      <TableRow
-                        spacing={0}
-                        hover
-                        key={entry.id}
-                      >
+                      <TableRow spacing={0} hover key={entry.id}>
                         <TableCell className={classes.imageCell}>
                           <Box display="flex" alignItems="center">
-                            <Avatar className={classes.avatar} src={entry.opponentAvatar}/>
+                            <Avatar
+                              className={classes.avatar}
+                              src={entry.opponentAvatar}
+                            />
                             <Box marginLeft={1}>
                               <Typography variant="body2">
                                 {entry.opponentName}
                               </Typography>
                             </Box>
-                            
                           </Box>
                         </TableCell>
-                        <TableCell>
-                          {entry.game}
-                        </TableCell>
-                        <TableCell>
-                          {entry.gameFormat}
-                        </TableCell>
-                        <TableCell>
-                          {entry.startTime}
-                        </TableCell>
-                        <TableCell>
-                          {entry.duration}
-                        </TableCell>
-                        <TableCell>
-                          {entry.betAmount}
-                        </TableCell>
-                        <TableCell>
-                          {entry.status}
-                        </TableCell>
+                        <TableCell>{entry.game}</TableCell>
+                        <TableCell>{entry.gameFormat}</TableCell>
+                        <TableCell>{entry.startTime}</TableCell>
+                        <TableCell>{entry.duration}</TableCell>
+                        <TableCell>{entry.betAmount}</TableCell>
+                        <TableCell>{entry.status}</TableCell>
                         <TableCell>
                           <Link
                             color="secondary"
@@ -284,7 +240,11 @@ const Challenges = ({ className, ...rest }) => {
                         </TableCell>
                         <TableCell>
                           <Typography
-                            className={entry.result == 'Won' ? classes.resultWon : classes.resultLost}
+                            className={
+                              entry.result == 'Won'
+                                ? classes.resultWon
+                                : classes.resultLost
+                            }
                             variant="body2"
                           >
                             {entry.result}
