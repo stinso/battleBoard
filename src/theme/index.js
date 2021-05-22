@@ -23,6 +23,16 @@ const baseOptions = {
       root: {
         backgroundColor: 'rgba(0,0,0,0.075)'
       }
+    },
+    MuiStepIcon: {
+      root: {
+        '&$completed': {
+          color: '#f5542a',
+        },
+        '&$active': {
+          color: '#f5542a',
+        },
+      },
     }
   }
 };

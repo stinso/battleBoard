@@ -311,10 +311,8 @@ const Hero = ({ className, ...rest }) => {
         if (account) {
           if (MAX_APPROVED_BALANCE > allowanceFormatInChain) {
             setCurrentStep(WizardEnums.Approve);
-            console.log('1');
             setShowWizardModal(true);
           } else if (networkFormatInChain <= 0) {
-            console.log('2');
             setCurrentStep(WizardEnums.Deposit);
             setShowWizardModal(true);
           } else {

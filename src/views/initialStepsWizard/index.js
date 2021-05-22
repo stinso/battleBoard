@@ -182,8 +182,6 @@ export default function Wizard({
   };
 
   useEffect(() => {
-    console.log('user');
-    console.log(user);
     if (user.user?.session?.ethAddress && activeStep === 1) {
       getApprovedBalance();
     }
@@ -279,12 +277,14 @@ export default function Wizard({
                         disabled={activeStep === 0}
                         onClick={handleBack}
                         className={classes.button}
+                        variant="outlined"
+                        color="secondary"
                       >
                         Back
                       </Button>
                       <Button
                         variant="contained"
-                        color="primary"
+                        color="secondary"
                         onClick={(e) => {
                           e.preventDefault();
                           openInNewWindow(getStepButtonLink(index));
@@ -314,14 +314,22 @@ export default function Wizard({
       <DialogActions>
         <Button
           variant="contained"
-          color="primary"
-          onClick={handleNext}
+          color="secondary"
+          onClick={() => {
+            if (activeStep === steps.length - 1) {
+              setShowWizardModal(false);
+            } else {
+              handleNext();
+            }
+          }}
           className={classes.button}
         >
           {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
         </Button>
         <Button
           className={classes.button}
+          color="secondary"
+          variant="contained"
           onClick={() => {
             setShowWizardModal(false);
             dispatch({
