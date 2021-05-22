@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useHistory, useParams } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -10,6 +10,8 @@ import {
   Container,
   Divider,
   Grid,
+  List,
+  ListItem,
   SvgIcon,
   Typography,
   makeStyles
@@ -56,6 +58,11 @@ const useStyles = makeStyles((theme) => ({
     },
     margin: 0
   },
+  item: {
+    display: 'block',
+    paddingTop: 0,
+    paddingBottom: 0
+  },
   card: {
     minHeight: "200px",
     padding: theme.spacing(4)
@@ -77,9 +84,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2)
   },
   button: {
-    marginLeft: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-    marginTop: theme.spacing(1),
+    color: theme.palette.text.secondary,
+    padding: '10px 8px',
+    justifyContent: 'flex-start',
+    textTransform: 'none',
+    letterSpacing: 0,
+    width: '100%',
+    marginTop: theme.spacing(1)
   },
   bannedIcon: {
     marginTop: '4px',
@@ -110,8 +121,7 @@ const Profile = ({ className, ...rest }) => {
   // new
   const {user, dispatch} = useContext(AuthContext)
   //const router = useRouter()
-  //const { username } = router.query
-  const username = "mukki"
+  const { username } = useParams();
   const wrapper = useRef('wrapper');
   //const [profileTabs, setProfileTabs] = useState(TabsEnum.MatchHistory);
   const [imageURL, setImageURL] = useState(defaultAvatar);
@@ -135,10 +145,6 @@ const Profile = ({ className, ...rest }) => {
           checkIsFollowingService({ username }),
           getBalanceFromCS({}),
         ])
-  
-        console.log(userInfo)
-        console.log(checkFollowing)
-        console.log(balanceInfo)
         
         if(checkFollowing?.data?.success === true){
           setIsFollowing(checkFollowing.data.isFollowing)
@@ -198,16 +204,16 @@ const Profile = ({ className, ...rest }) => {
         const response = await unFollowService({ username });
         if (response.data.success === true) {
           setIsFollowing(false);
-          }
         }
-        catch (error) {
-          console.log("🚀 ~ file: ProfilePageSkeleton.jsx ~ line 138 ~ handleUnFollowClick ~ error", error)
-          Sentry.captureException(error, {
-            tags: {
-              page: location.pathname,
-            },
-          });
-        }
+      }
+      catch (error) {
+        console.log("🚀 ~ file: ProfilePageSkeleton.jsx ~ line 138 ~ handleUnFollowClick ~ error", error)
+        Sentry.captureException(error, {
+          tags: {
+            page: location.pathname,
+          },
+        });
+      }
     }
   }
 
@@ -237,13 +243,11 @@ const Profile = ({ className, ...rest }) => {
                   <Box className={classes.bannedIcon}>
                     {isBanned ? 
                       <ErrorOutlineIcon 
-                        fontSize="medium"
                         color="error"  
                       />
                     :
                       <CheckCircleOutlineIcon 
                         className={classes.checkCircle}
-                        fontSize="medium"
                       />
                     }
                     
@@ -256,77 +260,79 @@ const Profile = ({ className, ...rest }) => {
                     {getFormattedUserName(name?.toUpperCase(), 9)}
                   </Typography>
                 </Box>
-                <Box mt={4} mb={1}>
-                  <Button
-                    className={classes.button}
-                    size="large"
-                    variant="text"
-                    onClick={(e) =>
-                      handleTabsChange(e, tabs.matches)
-                    }
-                    startIcon={
-                      <SvgIcon fontSize="small">
-                        <MatchesIcon />
-                      </SvgIcon>
-                    }
-                  >
-                    Matches
-                  </Button>
-                </Box>
-                <Divider />
-                <Box>
-                  <Button
-                    className={classes.button}
-                    size="large"
-                    variant="text"
-                    onClick={(e) =>
-                      handleTabsChange(e, tabs.gamingNetworks)
-                    }
-                    startIcon={
-                      <SvgIcon fontSize="small">
-                        <NetworkIcon />
-                      </SvgIcon>
-                    }
-                  >
-                    Gaming Networks
-                  </Button>
-                </Box>
-                <Divider />
-                <Box>
-                  <Button
-                    className={classes.button}
-                    size="large"
-                    variant="text"
-                    onClick={(e) =>
-                      handleTabsChange(e, tabs.followers)
-                    }
-                    startIcon={
-                      <SvgIcon fontSize="small">
-                        <FollowersIcon />
-                      </SvgIcon>
-                    }
-                  >
-                    Followers
-                  </Button>
-                </Box>
-                <Divider />
-                <Box>
-                  <Button
-                    className={classes.button}
-                    size="large"
-                    variant="text"
-                    onClick={(e) =>
-                      handleTabsChange(e, tabs.following)
-                    }
-                    startIcon={
-                      <SvgIcon fontSize="small">
-                        <FollowingIcon/>
-                      </SvgIcon>
-                    }
-                  >
-                    Following
-                  </Button>
-                </Box>
+                <List>
+                  <ListItem className={classes.item}>
+                    <Button
+                      className={classes.button}
+                      size="large"
+                      variant="text"
+                      onClick={(e) =>
+                        handleTabsChange(e, tabs.matches)
+                      }
+                      startIcon={
+                        <SvgIcon fontSize="small">
+                          <MatchesIcon />
+                        </SvgIcon>
+                      }
+                    >
+                      Matches
+                    </Button>
+                  </ListItem>
+                  <Divider />
+                  <ListItem className={classes.item}>
+                    <Button
+                      className={classes.button}
+                      size="large"
+                      variant="text"
+                      onClick={(e) =>
+                        handleTabsChange(e, tabs.gamingNetworks)
+                      }
+                      startIcon={
+                        <SvgIcon fontSize="small">
+                          <NetworkIcon />
+                        </SvgIcon>
+                      }
+                    >
+                      Gaming Networks
+                    </Button>
+                  </ListItem>
+                  <Divider />
+                  <ListItem className={classes.item}>
+                    <Button
+                      className={classes.button}
+                      size="large"
+                      variant="text"
+                      onClick={(e) =>
+                        handleTabsChange(e, tabs.followers)
+                      }
+                      startIcon={
+                        <SvgIcon fontSize="small">
+                          <FollowersIcon />
+                        </SvgIcon>
+                      }
+                    >
+                      Followers
+                    </Button>
+                  </ListItem>
+                  <Divider />
+                  <ListItem className={classes.item}>
+                    <Button
+                      className={classes.button}
+                      size="large"
+                      variant="text"
+                      onClick={(e) =>
+                        handleTabsChange(e, tabs.following)
+                      }
+                      startIcon={
+                        <SvgIcon fontSize="small">
+                          <FollowingIcon/>
+                        </SvgIcon>
+                      }
+                    >
+                      Following
+                    </Button>
+                  </ListItem>
+                </List>
               </Box>
             </Card>
           </Grid>

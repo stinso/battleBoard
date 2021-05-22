@@ -26,6 +26,8 @@ import {
   Award as AwardIcon,
   Calendar as CalendarIcon
 } from 'react-feather';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import NavItem  from './NavItem';
 import NumberFormat from 'react-number-format';
 import { useSelector } from 'src/store';
@@ -72,12 +74,6 @@ const mySections = [
 const sections = [
   {
     items: [
-      {
-        title: 'Profile',
-        icon: UserIcon,
-        href: '/profile',
-        isExternal: false
-      },
       {
         title: 'My Wallet',
         icon: CreditcardIcon,
@@ -133,7 +129,7 @@ function reduceChildRoutes({
   item,
   depth
 }) {
-  const key = item.title + depth;
+  const key = item.title;
 
   if (item.items) {
     const open = matchPath(pathname, {
@@ -205,6 +201,9 @@ const useStyles = makeStyles(theme => ({
   button: {
     textTransform: 'none',
     borderRadius: 3
+  },
+  checkCircle: {
+    color: '#388e3c'
   }
 }));
 
@@ -221,12 +220,23 @@ const NavBar = ({ onOpen }) => {
   const [totalWinnings, setTotalWinnings] = useState(0);
   const [totalEvents, setTotalEvents] = useState(0);
   const [currentStep, setCurrentStep] = useState(WizardEnums.AccountLink);
+  const [username, setUsername] = useState('');
+  const profileNavItem = [{
+    title: 'Profile',
+    icon: UserIcon,
+    href: '/profile/' + username,
+    isExternal: false
+  }]
 
   useEffect(() => {
     if (!user.user.session?.ethAddress) {
       setShowNotification(true);
     } else {
       setShowNotification(false);
+    }
+
+    if (user.user?.session?.username) {
+      setUsername(user.user?.session?.username);
     }
   }, [user.user.session]);
 
@@ -306,7 +316,7 @@ const NavBar = ({ onOpen }) => {
         </Box>
         <Box display="flex" flexDirection="row" alignItems="stretch" padding={1}>
           <Paper className={classes.paper} elevation={3} >
-            <Box className={classes.overview}
+            <Box
               textAlign="center"
             >
               <Typography
@@ -344,7 +354,7 @@ const NavBar = ({ onOpen }) => {
           <Paper className={classes.paper}
             elevation={3}
           >
-            <Box className={classes.overview}
+            <Box
               textAlign="center"
             >
             <Typography
@@ -379,25 +389,23 @@ const NavBar = ({ onOpen }) => {
         </Box>
         <Box alignItems="center" padding={1}>
           <Paper className={classes.paperApprove} elevation={3}>
-            <Box className={classes.overview}
+            <Box
               textAlign="center"
             >
-              <Typography
-                display="inline"
-                variant="body1"
-                color="textPrimary"
-              >
-                {MAX_APPROVED_BALANCE <= approveBalance ?
-                  'success icon'
-                    :
-                  'failure icon'
-                }
-              </Typography>
+              {MAX_APPROVED_BALANCE <= approveBalance ?
+
+                <CheckCircleOutlineIcon 
+                  className={classes.checkCircle}
+                />
+              :
+                <ErrorOutlineIcon 
+                  color="error"  
+                />
+              }
             </Box>
             <Box
               justifyContent='center'
               display='flex'
-              mt={1}
             >
               <Button
                 className={classes.button}
@@ -410,7 +418,7 @@ const NavBar = ({ onOpen }) => {
                 }
                 fullWidth
               >
-                Approve
+                {MAX_APPROVED_BALANCE <= approveBalance ? 'Approved' : 'Approve'}
               </Button>
             </Box>    
           </Paper>
@@ -418,7 +426,7 @@ const NavBar = ({ onOpen }) => {
         <Box p={2}>
           {mySections.map(section => (
             <List
-              key={section.subheader}
+              key={'walletSection'}
             >
               {renderNavItems({
                 items: section.items,
@@ -429,17 +437,13 @@ const NavBar = ({ onOpen }) => {
         </Box>
         <Divider />
         <Box p={2}>
+          {renderNavItems({
+            items: profileNavItem,
+            pathname: location.pathname
+          })}
           {sections.map(section => (
             <List
-              key={section.subheader}
-              subheader={(
-                <ListSubheader
-                  disableGutters
-                  disableSticky
-                >
-                  {section.subheader}
-                </ListSubheader>
-              )}
+              key={'personalSection'}
             >
               {renderNavItems({
                 items: section.items,
