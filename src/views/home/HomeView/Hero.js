@@ -24,7 +24,9 @@ import {
   TablePagination,
   TableRow,
   Tabs,
-  makeStyles
+  makeStyles,
+  useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
 import Carousel from './Carousel'
 import { AuthContext } from "../../../context/AuthContext";
@@ -135,7 +137,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   media: {
-    height: '100%'
+    height: '100%',
   },
   tournamentBox: {
     width: '100%'
@@ -145,7 +147,7 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: 60,
     paddingLeft: 40,
     paddingBottom: 20,
-    marginBottom: 60
+    marginBottom: 40
   },
   MediaCaption: {
     position: 'absolute',
@@ -175,7 +177,7 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0.8,
 
     width: '100%',
-    height: '24%'    
+    height: '24%'
   },
   viewButtonRight: {
     position: 'absolute',
@@ -215,6 +217,9 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: font,
     fontSize: 20,
     color: theme.palette.secondary.main
+  },
+  hiddenText: {
+    overflow: 'hidden'
   }
 }));
 
@@ -275,6 +280,9 @@ const Hero = ({ className, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [events, setEvents] = useState([]);
   const location = useLocation();
+  const theme = useTheme();
+  const mediumDevice = useMediaQuery(theme.breakpoints.down('md'));
+  const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { user } = useContext(AuthContext);
   const account = user.user?.session?.ethAddress;
@@ -421,10 +429,11 @@ const Hero = ({ className, ...rest }) => {
       {showNotification && (
         <Notification />
       )}
+      {!mobileDevice &&
       <Paper className={classes.paper}>
         <Box className={classes.tournamentBox}>
           <Grid container spacing={1}>
-            <Grid item xs={6} >
+            <Grid item xs={mediumDevice ? 12 : 6} >
               <Card raised className={classes.cardLeft}>
                 <Typography
                   variant="h6"
@@ -437,7 +446,7 @@ const Hero = ({ className, ...rest }) => {
                 <CardMedia
                   className={classes.media}
                   image="/static/images/games/cod_coldWar.jpg"
-                  title="title"
+                  title="cod"
                 >
                   <Box className={classes.MediaCaptionLeft}>
                     <Grid container spacing={3}>
@@ -481,74 +490,77 @@ const Hero = ({ className, ...rest }) => {
                 </CardMedia>
               </Card>
             </Grid>
-            <Grid item container xs={6} spacing={1}>
-            {
-              tournaments.map((tournament) => {
-                return(
-                  <Grid item xs={6} key={tournament.id}>
-                    <Card raised className={classes.cardRight}>
-                    <Typography
-                      variant="h6"
-                      color="secondary"
-                      className={classes.pricePoolRight}
-                      fontFamily={font}
-                    >
-                      {tournament.entry}
-                    </Typography>
-                      <CardMedia
-                        className={classes.media}
-                        image={tournament.image}
-                        title={tournament.game}
+            {!mediumDevice &&
+              <Grid item container xs={6} spacing={1}>
+              {
+                tournaments.map((tournament) => {
+                  return(
+                    <Grid item xs={6} key={tournament.id}>
+                      <Card raised className={classes.cardRight}>
+                      <Typography
+                        variant="h6"
+                        color="secondary"
+                        className={classes.pricePoolRight}
+                        fontFamily={font}
                       >
-                        <Box className={classes.MediaCaption}>
-                          <Grid container spacing={1}>
-                            <Grid item xs={9} >
-                              <Grid item xs={12} >
-                                <Typography
-                                  variant="body2"
-                                  color="secondary"
-                                >
-                                  {tournament.tournamentStyle}
-                                </Typography>
-                              </Grid>
-                              <Grid item xs={12} >
-                                <Typography
-                                  variant="body2"
-                                  color="textPrimary"
-                                >
-                                  {tournament.date}
-                                </Typography>
-                              </Grid>
-                              <Grid item xs={12} >
-                                <Typography
-                                  variant="body1"
-                                  color="textPrimary"
-                                >
-                                  {tournament.description}
-                                </Typography>
+                        {tournament.entry}
+                      </Typography>
+                        <CardMedia
+                          className={classes.media}
+                          image={tournament.image}
+                          title={tournament.game}
+                        >
+                          <Box className={classes.MediaCaption}>
+                            <Grid container spacing={1}>
+                              <Grid item xs={9} >
+                                <Grid item xs={12} >
+                                  <Typography
+                                    variant="body2"
+                                    color="secondary"
+                                  >
+                                    {tournament.tournamentStyle}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={12} >
+                                  <Typography
+                                    variant="body2"
+                                    color="textPrimary"
+                                  >
+                                    {tournament.date}
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={12} >
+                                  <Typography
+                                    variant="body1"
+                                    color="textPrimary"
+                                  >
+                                    {tournament.description}
+                                  </Typography>
+                                </Grid>
                               </Grid>
                             </Grid>
-                          </Grid>
-                        </Box>
-                        <Button className={classes.viewButtonRight}
-                          variant="outlined"
-                          size="small"
-                          color="secondary"
-                        >
-                          VIEW
-                        </Button>
-                      </CardMedia>
-                    </Card>
-                  </Grid>
-                )
-              })
+                          </Box>
+                          <Button className={classes.viewButtonRight}
+                            variant="outlined"
+                            size="small"
+                            color="secondary"
+                          >
+                            VIEW
+                          </Button>
+                        </CardMedia>
+                      </Card>
+                    </Grid>
+                  )
+                })
+              }
+              </Grid>
             }
-            </Grid>
           </Grid>
         </Box>
       </Paper>
+      }
       <Container maxWidth="lg">
-        <Box mb={3} ml={2}>
+        <Box mt={3} mb={3} ml={2}>
           <Typography
             variant="h1"
             color="textPrimary"
