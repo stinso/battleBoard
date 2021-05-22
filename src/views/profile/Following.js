@@ -7,11 +7,9 @@ import {
   getFollowingService,
   unFollowService
 } from '../../service/node.service';
-import { generateImageURL, getFormattedUserName } from '../../utils/helpers.js';
+import { getFormattedUserName } from '../../utils/helpers.js';
 import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
 import * as Sentry from '@sentry/react';
-
-const font = "'Saira', sans-serif";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,6 +52,27 @@ const Following = ({ username, isOwnProfile }) => {
   useEffect(() => {
     getFollowing();
   }, [username]);
+
+  const handleUnFollowClick = async (username) => {
+    try {
+      const response = await unFollowService({ username });
+      if (response.data.success === true) {
+        setFollowingUsers((prevState) => {
+          return prevState.filter((row) => row.username !== username);
+        });
+      }
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: Following.jsx ~ line 57 ~ handleUnFollowClick ~ error',
+        error
+      );
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname
+        }
+      });
+    }
+  };
 
   return (
     <div>

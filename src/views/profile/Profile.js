@@ -26,6 +26,7 @@ import MatchHistory from './MatchHistory';
 import Followers from './Followers';
 import Following from './Following';
 import GamingNetworks from './GamingNetworks';
+import TournamentHistory from './TournamentHistory';
 import defaultAvatar from '../../assets/img/placeholder.jpg';
 import {
   userInfoService,
@@ -99,9 +100,10 @@ const useStyles = makeStyles((theme) => ({
 
 const tabs = {
   matches: 1,
-  gamingNetworks: 2,
-  followers: 3,
-  following: 4
+  tournaments: 2,
+  gamingNetworks: 3,
+  followers: 4,
+  following: 5
 };
 
 const Profile = ({ className, ...rest }) => {
@@ -109,6 +111,8 @@ const Profile = ({ className, ...rest }) => {
   const location = useLocation();
   const history = useHistory();
   const [currentTab, setCurrentTab] = useState(tabs.matches);
+
+  console.log(currentTab);
 
   const handleTabsChange = (event, value) => {
     setCurrentTab(value);
@@ -270,6 +274,22 @@ const Profile = ({ className, ...rest }) => {
                       className={classes.button}
                       size="large"
                       variant="text"
+                      onClick={(e) => handleTabsChange(e, tabs.tournaments)}
+                      startIcon={
+                        <SvgIcon fontSize="small">
+                          <MatchesIcon />
+                        </SvgIcon>
+                      }
+                    >
+                      Tournaments
+                    </Button>
+                  </ListItem>
+                  <Divider />
+                  <ListItem className={classes.item}>
+                    <Button
+                      className={classes.button}
+                      size="large"
+                      variant="text"
                       onClick={(e) => handleTabsChange(e, tabs.gamingNetworks)}
                       startIcon={
                         <SvgIcon fontSize="small">
@@ -322,7 +342,12 @@ const Profile = ({ className, ...rest }) => {
                 {currentTab === tabs.matches && (
                   <MatchHistory username={username} />
                 )}
-                {currentTab === tabs.gamingNetworks && <GamingNetworks />}
+                {currentTab === tabs.tournaments && (
+                  <TournamentHistory username={username} />
+                )}
+                {currentTab === tabs.gamingNetworks && (
+                  <GamingNetworks username={username} />
+                )}
                 {currentTab === tabs.followers && (
                   <Followers username={username} />
                 )}

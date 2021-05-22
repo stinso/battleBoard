@@ -199,6 +199,7 @@ const MatchHistory = ({ className, username }) => {
 
   return (
     <div>
+      {showModal && generateModal()}
       <Typography variant="h6" color="textPrimary">
         Match History
       </Typography>
