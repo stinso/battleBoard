@@ -3,7 +3,11 @@ import { useLocation, useHistory, useParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import PropTypes from 'prop-types';
 import {
+  Box,
   Button,
+  FormControl,
+  MenuItem,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -13,12 +17,12 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import {
   AllSupportedGamesNames,
   AllSupportedGamesWithOtherAttributes
 } from '../../config/constants.js';
 import { getHistoricalEventsService } from '../../service/node.service';
+import { getTimeFromEpoch, getDateFromEpoch, formatEventStatus, getGameFormatFromIndex } from "../../utils/helpers";
 
 const font = "'Saira', sans-serif";
 
@@ -109,6 +113,10 @@ const useStyles = makeStyles((theme) => ({
   },
   waiting: {
     color: '#388e3c'
+  },
+  formControl: {
+    minWidth: 180,
+    padding: 0
   }
 }));
 
@@ -121,6 +129,7 @@ const MatchHistory = ({ className, username }) => {
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   const location = useLocation();
+  const history = useHistory();
 
   const [games, setGames] = useState(['All Games', ...AllSupportedGamesNames]);
   const [selectedGame, setSelectedGame] = useState('All Games');
@@ -170,59 +179,134 @@ const MatchHistory = ({ className, username }) => {
     getMatchHistory();
   }, [username]);
 
+  const generateModal = () => {
+    return (
+      <Dialog
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle disableTypography>
+          <Typography variant="h4">Match Status</Typography>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This event has been {selectedRow.eventStatus}.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setShowModal(false);
+            }}
+            className={classes.button}
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
+  const onDropdownClick = (event) => {
+    setSelectedGame(event.target.value);
+    if (event.target.value === "All Games") {
+      setGames([...allSupportedGames]);
+    } else {
+      setGames([event.target.value]);
+    }
+  };
+
   return (
     <div>
       <Typography className={classes.title} variant="h2" color="textPrimary">
         Match History
       </Typography>
-      <Button
-        className={classes.statusesButton}
-        aria-controls="menu-shooter"
-        aria-haspopup="true"
-        color="secondary"
-        variant="outlined"
-        /* onClick={handleMenuShooter} */
-      >
-        All Statuses
-        <ArrowDropDownIcon />
-      </Button>
+      <Box mt={2}>
+        <FormControl variant="outlined" className={classes.formControl}>
+          <Select
+            id="select-game"
+            value={selectedGame}
+            onChange={onDropdownClick
+            }
+          >
+            {allSupportedGames.map((row, index) => (
+              <MenuItem key={index} value={row}>
+                {row}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Game</TableCell>
             <TableCell>Event Name</TableCell>
+            <TableCell>Game</TableCell>
             <TableCell>Game Format</TableCell>
             <TableCell>Entry</TableCell>
-            <TableCell>Status</TableCell>
             <TableCell>Start Time</TableCell>
+            <TableCell>Status</TableCell>
             <TableCell>Result</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {paginatedEvents.map((entry) => {
+          {data.filter((row)=> games.includes(row.game)).map((row, index)=>{
             return (
-              <TableRow spacing={0} hover key={entry.id}>
-                <TableCell>{entry.game}</TableCell>
-                <TableCell>{entry.eventName}</TableCell>
-                <TableCell>{entry.format}</TableCell>
+              <TableRow 
+                spacing={0} 
+                hover 
+                key={entry.id}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (row.eventStatus === 'Cancelled' || 
+                    row.eventStatus === 'Deleted'
+                  )
+                  {
+                    setSelectedRow(row);
+                    setShowModal(true);
+                  }
+                  else {
+                    history.push(`/gameInformationPage/${row.id}`)
+                  }
+                }}
+              >
+                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.gameShortName}</TableCell>
+                <TableCell>{getGameFormatFromIndex(row.game, row.gameFormat)}</TableCell>
                 <TableCell>
                   <Typography
-                    color={entry.entry == 'Free' && 'secondary'}
+                    color={row.sponsored ? 'secondary' : ''}
                     variant="body2"
                   >
-                    {entry.entry}
+                    {row.sponsored ? 'Free' : `$${(row.betAmount).toFixed(2)}`}
+                  </Typography>
+                </TableCell>
+                <TableCell>{getDateFromEpoch(row.startTime)}{' '}{getTimeFromEpoch(row.startTime)}</TableCell>
+                <TableCell>
+                  <Typography
+                    className={classes.waiting}
+                    variant="body2"
+                  >
+                    {formatEventStatus(row.eventStatus)}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography
-                    className={entry.status == 'Waiting' && classes.waiting}
-                    variant="body2"
-                  >
-                    {entry.status}
-                  </Typography>
+                  {
+                    (['WinnersDeclared'].includes(row.eventStatus))
+                      ?
+                      (row.rank
+                        ?
+                        (`Won : Ranked ${row.rank}`)
+                        :
+                        `Lost`)
+                      :
+                      (`--`)
+                  }
                 </TableCell>
-                <TableCell>{entry.startTime}</TableCell>
-                <TableCell>{entry.result}</TableCell>
               </TableRow>
             );
           })}
