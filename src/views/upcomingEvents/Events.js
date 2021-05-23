@@ -1,55 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
   Box,
   Card,
   Container,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
+  Divider,
+  Tab,
+  Tabs,
   Typography,
   Paper,
   makeStyles
 } from '@material-ui/core';
+import Countdown from "react-countdown";
+//import path4 from "../../assets/img/path4.png";
+import { AuthContext } from "../../context/AuthContext";
+import { getMyEventsService } from '../../service/node.service';
+import {
+  formatEventStatus,
+  getGameFormatFromIndex,
+} from "../../utils/helpers";
+//import { AfterCounterEndsComponent } from '../gameComponents/GameLobby';
+import { AllSupportedGamesWithOtherAttributes } from '../../config/constants';
+import { getMyTournamentsService } from '../../service/tournaments.service.js';
+import EventsTable from './EventsTable'
+import TournamentsTable from './TournamentsTable'
+import * as Sentry from "@sentry/react";
 
 const font = "'Saira', sans-serif";
-
-const events = [
-  {
-    id: '1',
-    game: 'COD - MW',
-    eventName: 'Free MW',
-    format: 'Warzone - Max Kills',
-    entry: 'Free',
-    status: 'Waiting',
-    participants: '12',
-    startTime: '00:00:04:23'
-  },
-  {
-    id: '2',
-    game: 'COD - MW',
-    eventName: 'Free MW',
-    format: 'Warzone - Max Kills',
-    entry: 'Free',
-    status: 'Waiting',
-    participants: '12',
-    startTime: '00:00:05:23'
-  },
-  {
-    id: '3',
-    game: 'COD - MW',
-    eventName: 'Free MW',
-    format: 'Warzone - Max Kills',
-    entry: 'Free',
-    status: 'Waiting',
-    participants: '12',
-    startTime: '00:01:04:23'
-  }
-];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,88 +55,99 @@ const applyPagination = (list, page, limit) => {
   return list.slice(page * limit, page * limit + limit);
 };
 
-const Events = ({ className, ...rest }) => {
+const Events = ({ className }) => {
   const classes = useStyles();
-  const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const location = useLocation();
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+  const [events, setEvents] = useState([]);
+  const [tournaments, setTournaments] = useState([]);
+  const [currentTab, setCurrentTab] = useState('events');
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useContext(AuthContext);
+
+  const username = user.user?.session?.username;
+
+  const tabs = [
+    { value: 'events', label: 'Events' },
+    { value: 'tournaments', label: 'Tournaments' }
+  ];
+
+  const handleTabsChange = (event, value) => {
+    setCurrentTab(value);
   };
 
-  const handleLimitChange = (event) => {
-    setLimit(parseInt(event.target.value));
-  };
+  async function getUpcomingEvents(currentTab) {
+    setIsLoading(true);
+      if(username){
+        try {
+          let service = getMyEventsService;
 
-  const paginatedEvents = applyPagination(events, page, limit);
+          if (currentTab === 'tournaments') {
+            service = getMyTournamentsService;
+          }
+            const {data} = await service({username: username })
+          if (data.success === true && data.events?.length > 0) {
+            
+            const editedData = data.events.map((eventInfo) => {
+              const game = AllSupportedGamesWithOtherAttributes.find((row)=> 
+              {
+                
+                if (row.name === eventInfo.game) {
+              
+                  return row
+                }
+              })
+                return {...eventInfo, gameShortName: game.shortName}
+            })
+            
+            if (currentTab === 'events') {
+              setEvents(editedData.reverse());
+            }
+            else {
+              setTournaments(editedData.reverse());
+            }
+            } 
+          }
+          catch(error){
+            console.log("🚀 ~ file: index.js ~ line 117 ~ getUpcomingEvents ~ error", error)
+            Sentry.captureException(error, {
+              tags: {
+                  page: location.pathname,
+              },
+            });
+          }
+      }
+      setIsLoading(false);
+  }
+  
+  useEffect(() => {
+    getUpcomingEvents(currentTab)
+  }, [username, currentTab]);
 
   return (
-    <div className={clsx(classes.root, className)} {...rest}>
+    <div className={classes.root}>
       <Container maxWidth="lg">
-        <Typography className={classes.title} variant="h1" color="textPrimary">
-          Upcoming Events
-        </Typography>
         <Box mt={3}>
-          <Paper>
-            <Card>
-              <Box minWidth={300}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Game</TableCell>
-                      <TableCell>Event Name</TableCell>
-                      <TableCell>Game Format</TableCell>
-                      <TableCell>Entry</TableCell>
-                      <TableCell>Status</TableCell>
-                      <TableCell>Participants</TableCell>
-                      <TableCell>Start Time</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {paginatedEvents.map((entry) => {
-                      return (
-                        <TableRow spacing={0} hover key={entry.id}>
-                          <TableCell>{entry.game}</TableCell>
-                          <TableCell>{entry.eventName}</TableCell>
-                          <TableCell>{entry.format}</TableCell>
-                          <TableCell>
-                            <Typography
-                              color={entry.entry == 'Free' && 'secondary'}
-                              variant="body2"
-                            >
-                              {entry.entry}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography
-                              className={
-                                entry.status == 'Waiting' && classes.waiting
-                              }
-                              variant="body2"
-                            >
-                              {entry.status}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{entry.participants}</TableCell>
-                          <TableCell>{entry.startTime}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-                <TablePagination
-                  component="div"
-                  count={events.length}
-                  labelRowsPerPage={'Rows per page'}
-                  onChangePage={handlePageChange}
-                  onChangeRowsPerPage={handleLimitChange}
-                  page={page}
-                  rowsPerPage={limit}
-                  rowsPerPageOptions={[5, 10, 25]}
-                />
-              </Box>
-            </Card>
-          </Paper>
+          <Tabs
+            onChange={handleTabsChange}
+            scrollButtons="auto"
+            textColor="secondary"
+            value={currentTab}
+            variant="scrollable"
+          >
+            {tabs.map((tab) => (
+              <Tab
+                key={tab.value}
+                label={tab.label}
+                value={tab.value}
+              />
+            ))}
+          </Tabs>
+        </Box>
+        <Divider />
+        <Box mt={3}>
+          {currentTab === 'events' && <EventsTable events={events} isLoading={isLoading} />}
+          {currentTab === 'tournaments' && <TournamentsTable tournaments={tournaments} isLoading={isLoading} />}
         </Box>
       </Container>
     </div>

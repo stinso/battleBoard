@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useHistory, useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import PropTypes from 'prop-types';
 import {
@@ -96,19 +96,17 @@ const applyPagination = (list, page, limit) => {
   return list.slice(page * limit, page * limit + limit);
 };
 
-const MatchHistory = ({ className, username }) => {
+const EventsTable = ({ events, isLoading }) => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
-  const location = useLocation();
   const history = useHistory();
 
-  const [games, setGames] = useState(['All Games', ...AllSupportedGamesNames]);
   const [selectedGame, setSelectedGame] = useState('All Games');
   const allSupportedGames = ['All Games', ...AllSupportedGamesNames];
-  const [data, setData] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedRow, setSelectedRow] = useState();
+
+  console.log(events)
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -119,83 +117,10 @@ const MatchHistory = ({ className, username }) => {
   };
 
   const paginatedEvents = applyPagination(
-    data.filter((row) => games.includes(row.game)),
+    events,
     page,
     limit
   );
-
-  async function getMatchHistory() {
-    try {
-      const response = await getHistoricalEventsService({ username });
-      if (response.data?.success === true && response.data.events?.length > 0) {
-        const editedData = response.data.events.map((eventInfo) => {
-          const game = AllSupportedGamesWithOtherAttributes.find((row) => {
-            if (row.name === eventInfo.game) {
-              return row;
-            }
-          });
-          return { ...eventInfo, gameShortName: game.shortName };
-        });
-        setData(editedData.reverse());
-      }
-    } catch (error) {
-      console.log(
-        '🚀 ~ file: MatchHistory.js ~ line 140 ~ getMatchHistory ~ error',
-        error
-      );
-      Sentry.captureException(error, {
-        tags: {
-          page: location.pathname
-        }
-      });
-    }
-  }
-
-  useEffect(() => {
-    getMatchHistory();
-  }, [username]);
-
-  const generateModal = () => {
-    return (
-      <Dialog
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle disableTypography>
-          <Typography variant="h4">Match Status</Typography>
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            This event has been {selectedRow.eventStatus}.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              setShowModal(false);
-            }}
-            className={classes.button}
-          >
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  };
-
-  const onDropdownClick = (event) => {
-    setSelectedGame(event.target.value);
-    setPage(0);
-    if (event.target.value === 'All Games') {
-      setGames([...allSupportedGames]);
-    } else {
-      setGames([event.target.value]);
-    }
-  };
 
   return (
     <div>
@@ -203,21 +128,6 @@ const MatchHistory = ({ className, username }) => {
       <Typography variant="h6" color="textPrimary">
         Match History
       </Typography>
-      <Box mt={2}>
-        <FormControl variant="outlined" className={classes.formControl}>
-          <Select
-            id="select-game"
-            value={selectedGame}
-            onChange={onDropdownClick}
-          >
-            {allSupportedGames.map((row, index) => (
-              <MenuItem key={index} value={row}>
-                {row}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
       <Table>
         <TableHead>
           <TableRow>
@@ -286,7 +196,7 @@ const MatchHistory = ({ className, username }) => {
       </Table>
       <TablePagination
         component="div"
-        count={data.filter((row) => games.includes(row.game)).length}
+        count={events.length}
         labelRowsPerPage={'Rows per page'}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
@@ -298,8 +208,9 @@ const MatchHistory = ({ className, username }) => {
   );
 };
 
-MatchHistory.propTypes = {
-  className: PropTypes.string
+EventsTable.propTypes = {
+  events: PropTypes.array,
+  isLoading: PropTypes.bool
 };
 
-export default MatchHistory;
+export default EventsTable;
