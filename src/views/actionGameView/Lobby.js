@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -239,6 +239,11 @@ const LobbyView = () => {
     getLobbyData();
   }, []);
 
+  const history = useHistory();
+  const handleRowClick = (id) => {
+    history.push('/gameInformationPage/' + id);
+  } 
+
   return (
     <div>
       <Container maxWidth="lg">
@@ -286,9 +291,7 @@ const LobbyView = () => {
                     <TableRow
                       hover
                       key={entry.id}
-                      component={RouterLink}
-                      to={`/gameInformationPage/${entry.id}`}
-                      style={{ textDecoration: 'none' }}
+                      onClick={()=> handleRowClick(entry.id)}
                     >
                       <TableCell className={classes.rankCell}>
                         {entry.game}
