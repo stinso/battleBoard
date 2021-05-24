@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
@@ -20,54 +21,33 @@ import {
   TableRow,
   Tabs,
   Typography,
-  makeStyles
+  makeStyles,
+  Dialog
 } from '@material-ui/core';
 import { PlusCircle as PlusCircleIcon } from 'react-feather';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-const font = "'Saira', sans-serif";
+import { AuthContext } from '../../context/AuthContext';
+import { SET_CHALLENGE_TAB } from '../../actions/actions.js';
+import classnames from 'classnames';
+//import ChallengeModal from './ChallengeModal';
+import {
+  cancelChallengeService,
+  getChallengeService,
+  acceptChallengeService,
+  rejectChallengeService
+} from '../../service/node.service';
+import SentChallenges from './SentChallenges';
+import CompletedChallenges from './CompletedChallenges';
+import AcceptedChallenges from './AcceptedChallenges';
+import ReceivedChallenges from './ReceivedChallenges';
+import moment from 'moment';
+import { getDuration } from '../../utils/helpers';
+import { AllSupportedGamesWithOtherAttributes } from '../../config/constants.js';
+import * as Sentry from '@sentry/react';
+import { ChallengesEnums } from './constants';
 
-const challenges = [
-  {
-    id: 1,
-    opponentName: 'mukki@chaingames.io',
-    opponentAvatar: '/static/images/panda.png',
-    game: 'Madden NFL 21',
-    gameFormat: 'Max Score',
-    startTime: '27th Mar 21:00 CET',
-    duration: '30 Min',
-    betAmount: 5,
-    status: 'Accepted',
-    eventDetails: 'Event',
-    result: 'Won'
-  },
-  {
-    id: 2,
-    opponentName: 'mukki@chaingames.io',
-    opponentAvatar: '/static/images/panda.png',
-    game: 'Madden NFL 21',
-    gameFormat: 'Max Score',
-    startTime: '24th Mar 21:00 CET',
-    duration: '30 Min',
-    betAmount: 25,
-    status: 'Accepted',
-    eventDetails: 'Event',
-    result: 'Won'
-  },
-  {
-    id: 3,
-    opponentName: 'mukki@chaingames.io',
-    opponentAvatar: '/static/images/panda.png',
-    game: 'Madden NFL 21',
-    gameFormat: 'Max Score',
-    startTime: '21th Mar 21:00 CET',
-    duration: '30 Min',
-    betAmount: 1,
-    status: 'Accepted',
-    eventDetails: 'Event',
-    result: 'Lost'
-  }
-];
+const font = "'Saira', sans-serif";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -104,35 +84,222 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const SafeMinutes = 5;
+
+const checkSafeMinutes = (startTime) => {
+  if (startTime > moment().add(SafeMinutes, 'm').unix()) {
+    return true;
+  }
+  return false;
+};
+
 const applyPagination = (list, page, limit) => {
   return list.slice(page * limit, page * limit + limit);
 };
 
 const Challenges = ({ className, ...rest }) => {
   const classes = useStyles();
-  const [currentTab, setCurrentTab] = useState('sent');
-  const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const [currentTab, setCurrentTab] = useState(ChallengesEnums.Sent);
+
+  const { user, dispatch } = useContext(AuthContext);
+  const [fetchDataInfo, setFetchDataInfo] = useState({ fetch: false });
+  const [sentChallenges, setSentChallenges] = useState([]);
+  const [acceptedChallenges, setAcceptedChallenges] = useState([]);
+  const [receivedChallenges, setReceivedChallenges] = useState([]);
+  const [completedChallenges, setCompletedChallenges] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showChallengeModal, setShowChallengeModal] = useState(false);
+  const location = useLocation();
+  let { tab } = useParams();
+  tab = parseInt(tab);
 
   const tabs = [
-    { value: 'sent', label: 'Sent' },
-    { value: 'received', label: 'Received' },
-    { value: 'accepted', label: 'Accepted' },
-    { value: 'completed', label: 'Completed' }
+    { value: ChallengesEnums.Sent, label: 'Sent' },
+    { value: ChallengesEnums.Received, label: 'Received' },
+    { value: ChallengesEnums.Accepted, label: 'Accepted' },
+    { value: ChallengesEnums.Completed, label: 'Completed' }
   ];
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleLimitChange = (event) => {
-    setLimit(parseInt(event.target.value));
-  };
-
-  const paginatedChallenges = applyPagination(challenges, page, limit);
-
   const handleTabsChange = (event, value) => {
+    setFetchDataInfo({ fetch: true, state: value });
+    dispatch({
+      type: SET_CHALLENGE_TAB,
+      payload: {
+        selectedTab: value
+      }
+    });
     setCurrentTab(value);
+  };
+
+  const generateModal = () => {
+    return <Dialog>test</Dialog>;
+  };
+
+  useEffect(() => {
+    let previousSelectedTab;
+    if (tab) {
+      previousSelectedTab = tab;
+    } else {
+      previousSelectedTab = user.user?.challenges?.selectedTab
+        ? user.user?.challenges?.selectedTab
+        : ChallengesEnums.Sent;
+    }
+    setCurrentTab(previousSelectedTab);
+    setFetchDataInfo({ fetch: true, state: previousSelectedTab });
+    return () => {
+      // dispatch({
+      //   type: SET_CHALLENGE_TAB,
+      //   payload: {
+      //     selectedTab: tabs,
+      //   },
+      // })
+    };
+  }, []);
+
+  const toggleTabs = (e, index) => {
+    e.preventDefault();
+    dispatch({
+      type: SET_CHALLENGE_TAB,
+      payload: {
+        selectedTab: index
+      }
+    });
+    setCurrentTab(index);
+  };
+
+  useEffect(() => {
+    if (fetchDataInfo.fetch) {
+      fetchChallenges(fetchDataInfo.state);
+    }
+  }, [fetchDataInfo]);
+
+  const fetchChallenges = async (state) => {
+    setIsLoading(true);
+    try {
+      const response = await getChallengeService({ state: state });
+      if (response.data.success === true) {
+        const editedData = response.data.challenges.map((ChallengeInfo) => {
+          const game = AllSupportedGamesWithOtherAttributes.find((row) => {
+            if (row.name === ChallengeInfo.game) {
+              return row;
+            }
+          });
+          return {
+            ...ChallengeInfo,
+            duration: getDuration(
+              ChallengeInfo.startTime,
+              ChallengeInfo.endTime
+            ),
+            gameShortName: game.shortName
+          };
+        });
+        switch (state) {
+          case ChallengesEnums.Sent:
+            setSentChallenges(editedData);
+            break;
+          case ChallengesEnums.Received:
+            setReceivedChallenges(editedData);
+            break;
+          case ChallengesEnums.Accepted:
+            setAcceptedChallenges(editedData);
+            break;
+          case ChallengesEnums.Completed:
+            setCompletedChallenges(editedData);
+            break;
+        }
+        setFetchDataInfo({ fetch: false });
+      }
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: Challenges.js ~ line 261 ~ fetchChallenges ~ error',
+        error
+      );
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname
+        }
+      });
+    }
+    setIsLoading(false);
+  };
+
+  const rejectChallenge = async (body, state, startTime) => {
+    if (checkSafeMinutes(startTime)) {
+      try {
+        const response = await rejectChallengeService(body);
+        if (response.data.success === true) {
+          setReceivedChallenges((prevValue) => {
+            return prevValue.filter((row) => row.id !== body.challengeID);
+          });
+        }
+      } catch (error) {
+        console.log(
+          '🚀 ~ file: Challenges.js ~ line 202 ~ rejectChallenge ~ error',
+          error
+        );
+        Sentry.captureException(error, {
+          tags: {
+            page: location.pathname
+          }
+        });
+      }
+    } else {
+      setShowModal(true);
+    }
+  };
+
+  const cancelChallenge = async (body, state, startTime) => {
+    if (checkSafeMinutes(startTime)) {
+      try {
+        const response = await cancelChallengeService(body);
+        if (response.data.success === true) {
+          if (ChallengesEnums.Sent === state) {
+            setSentChallenges((prevValue) => {
+              return prevValue.filter((row) => row.id !== body.challengeID);
+            });
+          } else if (ChallengesEnums.Accepted === state) {
+            setAcceptedChallenges((prevValue) => {
+              return prevValue.filter((row) => row.id !== body.challengeID);
+            });
+          }
+        }
+      } catch (error) {
+        console.log(
+          '🚀 ~ file: Challenges.js ~ line 234 ~ cancelChallenge ~ error',
+          error
+        );
+        Sentry.captureException(error, {
+          tags: {
+            page: location.pathname
+          }
+        });
+      }
+    } else {
+      setShowModal(true);
+    }
+  };
+
+  const acceptChallenge = async (body, state, startTime) => {
+    if (checkSafeMinutes(startTime)) {
+      try {
+        const response = await acceptChallengeService(body);
+        if (response.data.success === true) {
+          setReceivedChallenges((prevValue) => {
+            return prevValue.filter((row) => row.id !== body.challengeID);
+          });
+          return;
+        }
+      } catch (error) {
+        console.log(
+          '🚀 ~ file: Challenges.js ~ line 364 ~ acceptChallenge ~ error',
+          error
+        );
+        return error?.response?.data?.error;
+      }
+    } else {
+      setShowModal(true);
+    }
   };
 
   return (
@@ -179,94 +346,37 @@ const Challenges = ({ className, ...rest }) => {
             </Tabs>
             <Divider />
           </Box>
-          <Card>
-            <Box minWidth={300}>
-              <Button
-                className={classes.statusesButton}
-                aria-controls="menu-shooter"
-                aria-haspopup="true"
-                color="secondary"
-                variant="outlined"
-                /* onClick={handleMenuShooter} */
-              >
-                All Statuses
-                <ArrowDropDownIcon />
-              </Button>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Opponent</TableCell>
-                    <TableCell>Game</TableCell>
-                    <TableCell>Game Format</TableCell>
-                    <TableCell>Start Time</TableCell>
-                    <TableCell>Duration</TableCell>
-                    <TableCell>Bet Amount</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell>Event Details</TableCell>
-                    <TableCell>Result</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {paginatedChallenges.map((entry) => {
-                    return (
-                      <TableRow spacing={0} hover key={entry.id}>
-                        <TableCell className={classes.imageCell}>
-                          <Box display="flex" alignItems="center">
-                            <Avatar
-                              className={classes.avatar}
-                              src={entry.opponentAvatar}
-                            />
-                            <Box marginLeft={1}>
-                              <Typography variant="body2">
-                                {entry.opponentName}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </TableCell>
-                        <TableCell>{entry.game}</TableCell>
-                        <TableCell>{entry.gameFormat}</TableCell>
-                        <TableCell>{entry.startTime}</TableCell>
-                        <TableCell>{entry.duration}</TableCell>
-                        <TableCell>{entry.betAmount}</TableCell>
-                        <TableCell>{entry.status}</TableCell>
-                        <TableCell>
-                          <Link
-                            color="secondary"
-                            to={entry.eventDetails}
-                            underline="always"
-                          >
-                            Event
-                          </Link>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            className={
-                              entry.result == 'Won'
-                                ? classes.resultWon
-                                : classes.resultLost
-                            }
-                            variant="body2"
-                          >
-                            {entry.result}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-              <TablePagination
-                component="div"
-                count={challenges.length}
-                labelRowsPerPage={'Rows per page'}
-                onChangePage={handlePageChange}
-                onChangeRowsPerPage={handleLimitChange}
-                page={page}
-                rowsPerPage={limit}
-                rowsPerPageOptions={[5, 10, 25]}
-              />
-            </Box>
-          </Card>
+          {currentTab === ChallengesEnums.Sent && (
+            <SentChallenges
+              data={sentChallenges}
+              isLoading={isLoading}
+              cancelChallenge={cancelChallenge}
+            />
+          )}
+          {currentTab === ChallengesEnums.Accepted && (
+            <AcceptedChallenges
+              isLoading={isLoading}
+              data={acceptedChallenges}
+              cancelChallenge={cancelChallenge}
+            />
+          )}
+          {currentTab === ChallengesEnums.Received && (
+            <ReceivedChallenges
+              isLoading={isLoading}
+              setReceivedChallenges={setReceivedChallenges}
+              data={receivedChallenges}
+              acceptChallenge={acceptChallenge}
+              rejectChallenge={rejectChallenge}
+              user={user}
+            />
+          )}
+          {currentTab === ChallengesEnums.Completed && (
+            <CompletedChallenges
+              data={completedChallenges}
+              isLoading={isLoading}
+              user={user}
+            />
+          )}
         </Box>
       </Container>
     </div>
