@@ -13,20 +13,16 @@ import {
   Paper,
   makeStyles
 } from '@material-ui/core';
-import Countdown from "react-countdown";
+import Countdown from 'react-countdown';
 //import path4 from "../../assets/img/path4.png";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from '../../context/AuthContext';
 import { getMyEventsService } from '../../service/node.service';
-import {
-  formatEventStatus,
-  getGameFormatFromIndex,
-} from "../../utils/helpers";
 //import { AfterCounterEndsComponent } from '../gameComponents/GameLobby';
 import { AllSupportedGamesWithOtherAttributes } from '../../config/constants';
 import { getMyTournamentsService } from '../../service/tournaments.service.js';
-import EventsTable from './EventsTable'
-import TournamentsTable from './TournamentsTable'
-import * as Sentry from "@sentry/react";
+import EventsTable from './EventsTable';
+import TournamentsTable from './TournamentsTable';
+import * as Sentry from '@sentry/react';
 
 const font = "'Saira', sans-serif";
 
@@ -78,50 +74,47 @@ const Events = ({ className }) => {
 
   async function getUpcomingEvents(currentTab) {
     setIsLoading(true);
-      if(username){
-        try {
-          let service = getMyEventsService;
+    if (username) {
+      try {
+        let service = getMyEventsService;
 
-          if (currentTab === 'tournaments') {
-            service = getMyTournamentsService;
-          }
-            const {data} = await service({username: username })
-          if (data.success === true && data.events?.length > 0) {
-            
-            const editedData = data.events.map((eventInfo) => {
-              const game = AllSupportedGamesWithOtherAttributes.find((row)=> 
-              {
-                
-                if (row.name === eventInfo.game) {
-              
-                  return row
-                }
-              })
-                return {...eventInfo, gameShortName: game.shortName}
-            })
-            
-            if (currentTab === 'events') {
-              setEvents(editedData.reverse());
-            }
-            else {
-              setTournaments(editedData.reverse());
-            }
-            } 
-          }
-          catch(error){
-            console.log("🚀 ~ file: index.js ~ line 117 ~ getUpcomingEvents ~ error", error)
-            Sentry.captureException(error, {
-              tags: {
-                  page: location.pathname,
-              },
+        if (currentTab === 'tournaments') {
+          service = getMyTournamentsService;
+        }
+        const { data } = await service({ username: username });
+        if (data.success === true && data.events?.length > 0) {
+          const editedData = data.events.map((eventInfo) => {
+            const game = AllSupportedGamesWithOtherAttributes.find((row) => {
+              if (row.name === eventInfo.game) {
+                return row;
+              }
             });
+            return { ...eventInfo, gameShortName: game.shortName };
+          });
+
+          if (currentTab === 'events') {
+            setEvents(editedData.reverse());
+          } else {
+            setTournaments(editedData.reverse());
           }
+        }
+      } catch (error) {
+        console.log(
+          '🚀 ~ file: index.js ~ line 117 ~ getUpcomingEvents ~ error',
+          error
+        );
+        Sentry.captureException(error, {
+          tags: {
+            page: location.pathname
+          }
+        });
       }
-      setIsLoading(false);
+    }
+    setIsLoading(false);
   }
-  
+
   useEffect(() => {
-    getUpcomingEvents(currentTab)
+    getUpcomingEvents(currentTab);
   }, [username, currentTab]);
 
   return (
@@ -136,18 +129,18 @@ const Events = ({ className }) => {
             variant="scrollable"
           >
             {tabs.map((tab) => (
-              <Tab
-                key={tab.value}
-                label={tab.label}
-                value={tab.value}
-              />
+              <Tab key={tab.value} label={tab.label} value={tab.value} />
             ))}
           </Tabs>
         </Box>
         <Divider />
         <Box mt={3}>
-          {currentTab === 'events' && <EventsTable events={events} isLoading={isLoading} />}
-          {currentTab === 'tournaments' && <TournamentsTable tournaments={tournaments} isLoading={isLoading} />}
+          {currentTab === 'events' && (
+            <EventsTable events={events} isLoading={isLoading} />
+          )}
+          {currentTab === 'tournaments' && (
+            <TournamentsTable tournaments={tournaments} isLoading={isLoading} />
+          )}
         </Box>
       </Container>
     </div>
