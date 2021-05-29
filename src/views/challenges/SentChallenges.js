@@ -68,7 +68,7 @@ const applyPagination = (list, page, limit) => {
   return list.slice(page * limit, page * limit + limit);
 };
 
-const SentChallenges = ({ data, isLoading, cancelChallenge }) => {
+const SentChallenges = ({ data, isLoading, cancelChallenge, ChallengesEnums }) => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -97,13 +97,11 @@ const SentChallenges = ({ data, isLoading, cancelChallenge }) => {
               <TableCell>Start Time</TableCell>
               <TableCell>Duration</TableCell>
               <TableCell>Bet Amount</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Event Details</TableCell>
-              <TableCell>Result</TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedChallenges.map((entry) => {
+            {paginatedChallenges.map((entry, index) => {
               return (
                 <TableRow spacing={0} hover key={entry.id}>
                   <TableCell className={classes.imageCell}>
@@ -135,34 +133,22 @@ const SentChallenges = ({ data, isLoading, cancelChallenge }) => {
                   </TableCell>
                   <TableCell>{entry.duration} Min.</TableCell>
                   <TableCell>${entry.betAmount}</TableCell>
-                  <TableCell>{entry.status}</TableCell>
                   <TableCell>
-                    <Typography
+                    <Button 
+                      variant="outlined"
+                      id={'Cancel' + index}
                       color="secondary"
-                      to={`/gameInformationPage/${entry.eventID}`}
-                      underline="always"
-                      component={RouterLink}
+                      onClick={async (e) => {
+                          e.preventDefault();
+                          await cancelChallenge(
+                              { challengeID: entry.id, },
+                              ChallengesEnums.Sent,
+                              entry.startTime,
+                          )
+                      }}
                     >
-                      Event
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      className={
-                        entry.winner
-                          ? entry.winner === username
-                            ? classes.resultWon
-                            : classes.resultLost
-                          : classes.resultLost
-                      }
-                      variant="body2"
-                    >
-                      {entry.winner
-                        ? entry.winner === username
-                          ? 'Won'
-                          : 'Lost'
-                        : '--'}
-                    </Typography>
+                      CANCEL
+                    </Button>
                   </TableCell>
                 </TableRow>
               );

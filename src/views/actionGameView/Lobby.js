@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -16,8 +16,6 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-
-// new
 import * as Sentry from '@sentry/react';
 import { getEventsService } from '../../service/node.service';
 import {

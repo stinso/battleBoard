@@ -1,30 +1,22 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { useLocation, useParams, Link as RouterLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import {
   Avatar,
   Box,
-  Button,
   Card,
-  Container,
-  Divider,
-  Grid,
-  Link,
-  SvgIcon,
-  Tab,
+  IconButton,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
-  Tabs,
   Typography,
   makeStyles,
   Dialog
 } from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 
 import {
   getDateFromEpoch,
@@ -68,13 +60,10 @@ const applyPagination = (list, page, limit) => {
   return list.slice(page * limit, page * limit + limit);
 };
 
-const AcceptedChallenges = ({ data, isLoading, cancelChallenge }) => {
+const AcceptedChallenges = ({ data, isLoading, cancelChallenge, ChallengesEnums }) => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
-  const [allStatus, setAllStatus] = useState([]);
-  const [statuses, setStatuses] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState([]);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -97,13 +86,12 @@ const AcceptedChallenges = ({ data, isLoading, cancelChallenge }) => {
               <TableCell>Start Time</TableCell>
               <TableCell>Duration</TableCell>
               <TableCell>Bet Amount</TableCell>
-              <TableCell>Status</TableCell>
               <TableCell>Event Details</TableCell>
               <TableCell>Result</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedChallenges.map((entry) => {
+            {paginatedChallenges.map((entry, index) => {
               return (
                 <TableRow spacing={0} hover key={entry.id}>
                   <TableCell className={classes.imageCell}>
@@ -135,7 +123,6 @@ const AcceptedChallenges = ({ data, isLoading, cancelChallenge }) => {
                   </TableCell>
                   <TableCell>{entry.duration} Min.</TableCell>
                   <TableCell>${entry.betAmount}</TableCell>
-                  <TableCell>{entry.status}</TableCell>
                   <TableCell>
                     <Typography
                       color="secondary"
@@ -147,14 +134,22 @@ const AcceptedChallenges = ({ data, isLoading, cancelChallenge }) => {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    {/* <Typography
-                            className={
-                              entry.winner ? entry.winner === username ? classes.resultWon : classes.resultLost : classes.resultLost 
-                            }
-                            variant="body2"
-                          >
-                            {entry.winner ? entry.winner === username ? 'Won' : 'Lost' : '--' }
-                          </Typography> */}
+                    <IconButton 
+                      color="secondary" 
+                      aria-label="reject" 
+                      component="span"
+                      id={'Cancel' + index}
+                      onClick={(e)=>{
+                        e.preventDefault();
+                        cancelChallenge(
+                            { challengeID: entry.id, },
+                            ChallengesEnums.Accepted,
+                            entry.startTime,
+                        )
+                    }}
+                    >
+                      <CloseOutlinedIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               );

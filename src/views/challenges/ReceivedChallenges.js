@@ -11,6 +11,7 @@ import {
   Divider,
   Grid,
   Link,
+  IconButton,
   SvgIcon,
   Tab,
   Table,
@@ -24,7 +25,10 @@ import {
   makeStyles,
   Dialog
 } from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+
+import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
+import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 
 import {
   getDateFromEpoch,
@@ -74,15 +78,21 @@ const ReceivedChallenges = ({
   rejectChallenge,
   isLoading,
   setReceivedChallenges,
-  user
+  user,
+  ChallengesEnums
 }) => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
-  const username = user.user?.session?.username;
-  const [allStatus, setAllStatus] = useState([]);
-  const [statuses, setStatuses] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState([]);
+  const account = user.user?.session?.ethAddress;
+  const [showChallengeModal, setShowChallengeModal] = useState(false);
+  const [showConsoleSelectModal, setShowConsoleSelectModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState({});
+  const [consoleSelectedValue, setConsoleValue] = useState('');
+  const [deviceID, setDeviceID] = useState(0);
+  const [errMsg, setErrMsg] = useState('');
+  const [isFetchingBalance, setIsFetchingBalance] = useState(false);
+  const [currency, setCurrency] = useState('');
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -105,13 +115,11 @@ const ReceivedChallenges = ({
               <TableCell>Start Time</TableCell>
               <TableCell>Duration</TableCell>
               <TableCell>Bet Amount</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Event Details</TableCell>
-              <TableCell>Result</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedChallenges.map((entry) => {
+            {paginatedChallenges.map((entry, index) => {
               return (
                 <TableRow spacing={0} hover key={entry.id}>
                   <TableCell className={classes.imageCell}>
@@ -143,34 +151,52 @@ const ReceivedChallenges = ({
                   </TableCell>
                   <TableCell>{entry.duration} Min.</TableCell>
                   <TableCell>${entry.betAmount}</TableCell>
-                  <TableCell>{entry.status}</TableCell>
                   <TableCell>
-                    <Typography
-                      color="secondary"
-                      to={`/gameInformationPage/${entry.eventID}`}
-                      underline="always"
-                      component={RouterLink}
+                    <IconButton 
+                      color="secondary" 
+                      aria-label="accept" 
+                      component="span"
+                      id={'Accept' + index}
+                      onClick={(e)=>{
+                        e.preventDefault();
+                        rejectChallenge(
+                            { challengeID: entry.id, },
+                            ChallengesEnums.Received,
+                            entry.startTime,
+                        )
+                    }}
                     >
-                      Event
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      className={
-                        entry.winner
-                          ? entry.winner === username
-                            ? classes.resultWon
-                            : classes.resultLost
-                          : classes.resultLost
-                      }
-                      variant="body2"
+                      <CheckOutlinedIcon />
+                    </IconButton> 
+                    <IconButton 
+                      color="secondary" 
+                      aria-label="reject" 
+                      component="span"
+                      id={'Reject' + index}
+                      onClick={(e)=>{
+                        e.preventDefault();
+                        rejectChallenge(
+                            { challengeID: entry.id, },
+                            ChallengesEnums.Received,
+                            entry.startTime,
+                        )
+                    }}
                     >
-                      {entry.winner
-                        ? entry.winner === username
-                          ? 'Won'
-                          : 'Lost'
-                        : '--'}
-                    </Typography>
+                      <CloseOutlinedIcon />
+                    </IconButton> 
+                    <IconButton 
+                      color="secondary" 
+                      aria-label="modify" 
+                      component="span"
+                      id={'Modify' + index}
+                      onClick={(e)=>{
+                        e.preventDefault();
+                        setSelectedRow(entry);
+                        setShowChallengeModal(true);
+                      }}
+                    >
+                      <SettingsOutlinedIcon />
+                    </IconButton> 
                   </TableCell>
                 </TableRow>
               );

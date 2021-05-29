@@ -351,6 +351,7 @@ const Challenges = ({ className, ...rest }) => {
               data={sentChallenges}
               isLoading={isLoading}
               cancelChallenge={cancelChallenge}
+              ChallengesEnums={ChallengesEnums}
             />
           )}
           {currentTab === ChallengesEnums.Accepted && (
@@ -358,6 +359,7 @@ const Challenges = ({ className, ...rest }) => {
               isLoading={isLoading}
               data={acceptedChallenges}
               cancelChallenge={cancelChallenge}
+              ChallengesEnums={ChallengesEnums}
             />
           )}
           {currentTab === ChallengesEnums.Received && (
@@ -368,6 +370,7 @@ const Challenges = ({ className, ...rest }) => {
               acceptChallenge={acceptChallenge}
               rejectChallenge={rejectChallenge}
               user={user}
+              ChallengesEnums={ChallengesEnums}
             />
           )}
           {currentTab === ChallengesEnums.Completed && (

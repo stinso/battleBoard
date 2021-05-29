@@ -60,7 +60,12 @@ let networkName = '',
         gameNetworksWithNameAndID[0],
         gameNetworksWithNameAndID[2]
       ]
-    }
+    },
+    {
+      name: "NBA 2K21", id: 4,
+      shortName: 'NBA',
+      supportedNetworks: [gameNetworksWithNameAndID[0], gameNetworksWithNameAndID[2]],
+    },
   ],
   captchaSiteKey = '6LdEPt8ZAAAAAJjKZNsmiHFPewM53OowRotwL-HL',
   baseApiURLBS = `http://127.0.0.1:8080/v1/`,
@@ -210,7 +215,10 @@ export const GameFormat = {
     // { name: "Warzone - Max K/D", index: 3 },
   ],
   [allSupportedGames[1].name]: [{ name: 'Max Score', index: 0 }],
-  [allSupportedGames[2].name]: [{ name: 'Max Score', index: 0 }]
+  [allSupportedGames[2].name]: [{ name: 'Max Score', index: 0 }],
+  [allSupportedGames[3].name] : [
+    { name: "Max Score", index: 0 },
+  ],
 };
 export const passwordRegex =
   /^(?=.*\d)(?=.*[!@#$%^&*()_+=,.\\\/;':"-])(?=.*[a-z])(?=.*[A-Z]).{6,30}$/;
