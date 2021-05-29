@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {
   Avatar,
   Box,
+  Button,
   Card,
   IconButton,
   Table,
@@ -134,10 +135,9 @@ const AcceptedChallenges = ({ data, isLoading, cancelChallenge, ChallengesEnums 
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <IconButton 
+                    <Button 
                       color="secondary" 
-                      aria-label="reject" 
-                      component="span"
+                      variant="outlined"
                       id={'Cancel' + index}
                       onClick={(e)=>{
                         e.preventDefault();
@@ -148,8 +148,8 @@ const AcceptedChallenges = ({ data, isLoading, cancelChallenge, ChallengesEnums 
                         )
                     }}
                     >
-                      <CloseOutlinedIcon />
-                    </IconButton>
+                      Cancel
+                    </Button>
                   </TableCell>
                 </TableRow>
               );

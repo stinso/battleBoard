@@ -21,6 +21,7 @@ import {
   TablePagination,
   TableRow,
   Tabs,
+  Tooltip,
   Typography,
   makeStyles,
   Dialog
@@ -71,6 +72,8 @@ const useStyles = makeStyles((theme) => ({
 const applyPagination = (list, page, limit) => {
   return list.slice(page * limit, page * limit + limit);
 };
+
+const BalanceNotEnoughErrorMessage = 'Balance Not Enough.';
 
 const ReceivedChallenges = ({
   data,
@@ -152,51 +155,55 @@ const ReceivedChallenges = ({
                   <TableCell>{entry.duration} Min.</TableCell>
                   <TableCell>${entry.betAmount}</TableCell>
                   <TableCell>
-                    <IconButton 
-                      color="secondary" 
-                      aria-label="accept" 
-                      component="span"
-                      id={'Accept' + index}
-                      onClick={(e)=>{
-                        e.preventDefault();
-                        rejectChallenge(
-                            { challengeID: entry.id, },
-                            ChallengesEnums.Received,
-                            entry.startTime,
-                        )
-                    }}
-                    >
-                      <CheckOutlinedIcon />
-                    </IconButton> 
-                    <IconButton 
-                      color="secondary" 
-                      aria-label="reject" 
-                      component="span"
-                      id={'Reject' + index}
-                      onClick={(e)=>{
-                        e.preventDefault();
-                        rejectChallenge(
-                            { challengeID: entry.id, },
-                            ChallengesEnums.Received,
-                            entry.startTime,
-                        )
-                    }}
-                    >
-                      <CloseOutlinedIcon />
-                    </IconButton> 
-                    <IconButton 
-                      color="secondary" 
-                      aria-label="modify" 
-                      component="span"
-                      id={'Modify' + index}
-                      onClick={(e)=>{
-                        e.preventDefault();
-                        setSelectedRow(entry);
-                        setShowChallengeModal(true);
+                    <Tooltip title="Accept">
+                      <IconButton 
+                        color="secondary" 
+                        aria-label="accept" 
+                        component="span"
+                        id={'Accept' + index}
+                        onClick={(e)=>{
+                          e.preventDefault();
+                          setSelectedRow(entry);
+                          setErrMsg('');
+                          setShowConsoleSelectModal(true);
+                        }}
+                      >
+                        <CheckOutlinedIcon />
+                      </IconButton> 
+                    </Tooltip>
+                    <Tooltip title="Reject">
+                      <IconButton 
+                        color="secondary" 
+                        aria-label="reject" 
+                        component="span"
+                        id={'Reject' + index}
+                        onClick={(e)=>{
+                          e.preventDefault();
+                          rejectChallenge(
+                              { challengeID: entry.id, },
+                              ChallengesEnums.Received,
+                              entry.startTime,
+                          )
                       }}
-                    >
-                      <SettingsOutlinedIcon />
-                    </IconButton> 
+                      >
+                        <CloseOutlinedIcon />
+                      </IconButton> 
+                    </Tooltip>
+                    <Tooltip title="Modify">
+                      <IconButton 
+                        color="secondary" 
+                        aria-label="modify" 
+                        component="span"
+                        id={'Modify' + index}
+                        onClick={(e)=>{
+                          e.preventDefault();
+                          setSelectedRow(entry);
+                          setShowChallengeModal(true);
+                        }}
+                      >
+                        <SettingsOutlinedIcon />
+                      </IconButton> 
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               );
