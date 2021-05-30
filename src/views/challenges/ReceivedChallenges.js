@@ -109,6 +109,8 @@ const ReceivedChallenges = ({
   return (
     <Card>
       <Box minWidth={300}>
+      {paginatedChallenges.length > 0 ? (
+        <>
         <Table>
           <TableHead>
             <TableRow>
@@ -220,6 +222,14 @@ const ReceivedChallenges = ({
           rowsPerPage={limit}
           rowsPerPageOptions={[5, 10, 25]}
         />
+        </>
+        ) : (
+          <Box className={classes.noChallengesBox}>
+            <Typography>
+              No Challenges Found.
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Card>
   );

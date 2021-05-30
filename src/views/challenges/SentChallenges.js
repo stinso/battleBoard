@@ -88,6 +88,8 @@ const SentChallenges = ({ data, isLoading, cancelChallenge, ChallengesEnums }) =
   return (
     <Card>
       <Box minWidth={300}>
+      {paginatedChallenges.length > 0 ? (
+        <>
         <Table>
           <TableHead>
             <TableRow>
@@ -165,6 +167,14 @@ const SentChallenges = ({ data, isLoading, cancelChallenge, ChallengesEnums }) =
           rowsPerPage={limit}
           rowsPerPageOptions={[5, 10, 25]}
         />
+        </>
+        ) : (
+          <Box className={classes.noChallengesBox}>
+            <Typography>
+              No Challenges Found.
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Card>
   );

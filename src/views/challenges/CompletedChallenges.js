@@ -100,6 +100,8 @@ const CompletedChallenges = ({ data, isLoading, user }) => {
           All Statuses
           <ArrowDropDownIcon />
         </Button>
+        {paginatedChallenges.length > 0 ? (
+        <>
         <Table>
           <TableHead>
             <TableRow>
@@ -191,6 +193,14 @@ const CompletedChallenges = ({ data, isLoading, user }) => {
           rowsPerPage={limit}
           rowsPerPageOptions={[5, 10, 25]}
         />
+        </>
+        ) : (
+          <Box className={classes.noChallengesBox}>
+            <Typography>
+              No Challenges Found.
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Card>
   );

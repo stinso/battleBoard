@@ -54,6 +54,11 @@ const useStyles = makeStyles((theme) => ({
   },
   statusesButton: {
     margin: theme.spacing(2)
+  },
+  noChallengesBox: {
+    display: "flex",
+    justifyContent: "center",
+    padding: theme.spacing(4)
   }
 }));
 
@@ -78,6 +83,8 @@ const AcceptedChallenges = ({ data, isLoading, cancelChallenge, ChallengesEnums 
   return (
     <Card>
       <Box minWidth={300}>
+      {paginatedChallenges.length > 0 ? (
+        <>
         <Table>
           <TableHead>
             <TableRow>
@@ -153,7 +160,8 @@ const AcceptedChallenges = ({ data, isLoading, cancelChallenge, ChallengesEnums 
                   </TableCell>
                 </TableRow>
               );
-            })}
+            })
+          }
           </TableBody>
         </Table>
         <TablePagination
@@ -166,6 +174,14 @@ const AcceptedChallenges = ({ data, isLoading, cancelChallenge, ChallengesEnums 
           rowsPerPage={limit}
           rowsPerPageOptions={[5, 10, 25]}
         />
+        </>
+  ) : (
+    <Box className={classes.noChallengesBox}>
+      <Typography>
+        No Challenges Found.
+      </Typography>
+    </Box>
+  )}
       </Box>
     </Card>
   );
