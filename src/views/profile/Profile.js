@@ -95,6 +95,9 @@ const useStyles = makeStyles((theme) => ({
   },
   checkCircle: {
     color: '#388e3c'
+  },
+  active: {
+    color: theme.palette.secondary.main
   }
 }));
 
@@ -255,7 +258,9 @@ const Profile = ({ className, ...rest }) => {
                 <List>
                   <ListItem className={classes.item}>
                     <Button
-                      className={classes.button}
+                      className={`${classes.button} ${
+                        currentTab === tabs.matches && classes.active
+                      }`}
                       size="large"
                       variant="text"
                       onClick={(e) => handleTabsChange(e, tabs.matches)}
@@ -287,7 +292,9 @@ const Profile = ({ className, ...rest }) => {
                   <Divider /> */}
                   <ListItem className={classes.item}>
                     <Button
-                      className={classes.button}
+                      className={`${classes.button} ${
+                        currentTab === tabs.gamingNetworks && classes.active
+                      }`}
                       size="large"
                       variant="text"
                       onClick={(e) => handleTabsChange(e, tabs.gamingNetworks)}
@@ -303,7 +310,9 @@ const Profile = ({ className, ...rest }) => {
                   <Divider />
                   <ListItem className={classes.item}>
                     <Button
-                      className={classes.button}
+                      className={`${classes.button} ${
+                        currentTab === tabs.followers && classes.active
+                      }`}
                       size="large"
                       variant="text"
                       onClick={(e) => handleTabsChange(e, tabs.followers)}
@@ -319,7 +328,9 @@ const Profile = ({ className, ...rest }) => {
                   <Divider />
                   <ListItem className={classes.item}>
                     <Button
-                      className={classes.button}
+                      className={`${classes.button} ${
+                        currentTab === tabs.following && classes.active
+                      }`}
                       size="large"
                       variant="text"
                       onClick={(e) => handleTabsChange(e, tabs.following)}
