@@ -114,6 +114,11 @@ const routes = [
       },
       {
         exact: true,
+        path: '/reportIssue',
+        component: lazy(() => import('src/views/reportIssue'))
+      },
+      {
+        exact: true,
         path: ['/', '/dashboard'],
         component: HomeView
       },

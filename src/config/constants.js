@@ -87,7 +87,9 @@ let networkName = '',
     storageBucket: 'chat-6c999.appspot.com',
     messagingSenderId: '74450210365',
     appId: '1:74450210365:web:a1a23a859e12d665f6a454'
-  };
+  },
+  publicVapidKey =
+    'BBwedotvAwaP3nu5P4IYoWXs3r_ModlYBdEVZ4CUPoI5jvbW1-5I67N1dPC9PglFxD4JzyTQviwmbvNH9JKJJQU';
 
 //const ENV = process.env.REACT_APP_ETH_PROVIDER;
 const ENV = 'goerli';
@@ -122,6 +124,7 @@ switch (ENV) {
     cookieName = 'CS_ISACTIVE';
     baseApiURLBS = `https://battle.chaingames.io:8080/v1/`;
     baseApiURLCS = `https://wallet.chaingames.io:8000/v1/`;
+    publicVapidKey = '';
     captchaSiteKey = '6Lcuge8ZAAAAAOvMI6arX-0GgRPcwsyUBabgK6v8';
     firebaseConfig = {
       databaseURL: 'https://battle-dash-98c0aeurope-west.firebasedatabase.app',
@@ -157,6 +160,8 @@ switch (ENV) {
     baseApiURLCS = `http://139.59.35.142:8000/v1/`; */
     /* baseApiURLBS = `https://battle.testnet.chaingames.io:8080/v1/`;
     baseApiURLCS = `https://wallet.testnet.chaingames.io:8000/v1/`; */
+    publicVapidKey =
+      'BCU5sE8oaZtY0ybJ5Wmt1eHP6S-4Y_wryla0ykKyjx2FHgNAqG9iOXJVKDnMvCyEb8HNX559K_U34VCmD6uDvMw';
     break;
   default:
     etherscan = 'https://etherscan.io/tx/';
@@ -260,3 +265,11 @@ export const Devices = devices;
 export const HoursAfterWhichCanSubmitEvidence = 12;
 export const MinutesAfterWhichCanSubmitResult = 15;
 export const FirebaseConfig = firebaseConfig;
+export const PublicVapidKey = publicVapidKey;
+export const SUPPORTED_FORMATS = [
+  'image/jpg',
+  'image/jpeg',
+  'image/png',
+  'application/pdf',
+  'application/zip'
+];

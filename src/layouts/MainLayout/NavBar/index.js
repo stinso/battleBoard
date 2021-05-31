@@ -98,7 +98,7 @@ const sections = [
       {
         title: 'Report Issue',
         icon: PhoneIcon,
-        href: '/app/',
+        href: '/reportIssue',
         isExternal: false
       },
       {
