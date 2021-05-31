@@ -983,8 +983,8 @@ const BattleView = () => {
           </Tabs>
           <Divider />
         </Box>
-        {currentTab === 'info' && <Info />}
-        {currentTab === 'howToPlay' && <HowToPlay />}
+        {currentTab === 'info' && <Info eventData={eventData} />}
+        {currentTab === 'howToPlay' && <HowToPlay eventData={eventData} />}
         {currentTab === 'rules' && (
           <Rules
             questionAnswers={
