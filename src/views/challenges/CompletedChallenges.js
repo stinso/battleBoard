@@ -9,8 +9,12 @@ import {
   Card,
   Container,
   Divider,
+  FormControl,
   Grid,
   Link,
+  InputLabel,
+  MenuItem,
+  Select,
   SvgIcon,
   Tab,
   Table,
@@ -66,12 +70,20 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     padding: theme.spacing(4)
+  },
+  formControl: {
+    minWidth: 180,
+    padding: 0,
+    marginLeft: theme.spacing(2),
+    marginTop: theme.spacing(2)
   }
 }));
 
 const applyPagination = (list, page, limit) => {
   return list.slice(page * limit, page * limit + limit);
 };
+
+const AllStatus = 'All Statuses';
 
 const CompletedChallenges = ({ data, isLoading, user }) => {
   const classes = useStyles();
@@ -82,6 +94,25 @@ const CompletedChallenges = ({ data, isLoading, user }) => {
   const [statuses, setStatuses] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState([]);
 
+  useEffect(() => {
+    data.sort(function (a, b) {
+      return b.startTime - a.startTime;
+    });
+    setSelectedStatus(AllStatus);
+    const allPossibleStatus = data.map((row) => row.status);
+    setAllStatus([AllStatus, ...new Set(allPossibleStatus)]);
+    setStatuses([AllStatus, ...new Set(allPossibleStatus)]);
+  }, [data]);
+
+  const onStatusDropdownClick = (row) => {
+    setSelectedStatus(row.target.value);
+    if (row.target.value === AllStatus) {
+      setStatuses([...allStatus]);
+    } else {
+      setStatuses([row.target.value]);
+    }
+  };
+
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
@@ -90,21 +121,32 @@ const CompletedChallenges = ({ data, isLoading, user }) => {
     setLimit(parseInt(event.target.value));
   };
 
-  const paginatedChallenges = applyPagination(data, page, limit);
+  const paginatedChallenges = applyPagination(
+    data.filter((row) => statuses.includes(row.status)),
+    page,
+    limit
+  );
   return (
     <Card>
       <Box minWidth={300}>
-        <Button
-          className={classes.statusesButton}
-          aria-controls="menu-shooter"
-          aria-haspopup="true"
-          color="secondary"
-          variant="outlined"
-          /* onClick={handleMenuShooter} */
-        >
-          All Statuses
-          <ArrowDropDownIcon />
-        </Button>
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel htmlFor="select-status-label">Select Status</InputLabel>
+          <Select
+            labelId="select-status-label"
+            id="select-status"
+            label="Select Status"
+            value={selectedStatus}
+            onChange={(e) => {
+              onStatusDropdownClick(e);
+            }}
+          >
+            {allStatus.map((row, index) => (
+              <MenuItem key={index} value={row}>
+                {row}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         {paginatedChallenges.length > 0 ? (
           <>
             <Table>
