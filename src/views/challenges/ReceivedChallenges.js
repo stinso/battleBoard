@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { useLocation, useParams, Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -26,17 +26,21 @@ import {
   makeStyles,
   Dialog
 } from '@material-ui/core';
-
 import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-
 import {
   getDateFromEpoch,
   getFormattedUserName,
   getGameFormatFromIndex,
-  getTimeFromEpoch
+  getTimeFromEpoch,
+  isBalanceEnough,
+  getDeviceName,
+  checkGameRequiresManualResult
 } from '../../utils/helpers';
+import { Devices } from '../../config/constants';
+import moment from 'moment';
+import ChallengeModal from './ChallengeModal';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,6 +70,11 @@ const useStyles = makeStyles((theme) => ({
   },
   statusesButton: {
     margin: theme.spacing(2)
+  },
+  noChallengesBox: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: theme.spacing(4)
   }
 }));
 
@@ -106,132 +115,243 @@ const ReceivedChallenges = ({
   };
 
   const paginatedChallenges = applyPagination(data, page, limit);
+
+  useEffect(() => {
+    if (deviceID) {
+      handleConsoleOnChange({
+        id: deviceID === Devices.PS4.id || deviceID === Devices.PS5.id ? 2 : 0
+      }); //4 and 5 represents PS consoles and 2 stands for PSN and 0 stands for Xbox Live
+    }
+  }, [deviceID]);
+
+  /* const consoleSelectModal = () => {
   return (
-    <Card>
-      <Box minWidth={300}>
-      {paginatedChallenges.length > 0 ? (
-        <>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Opponent</TableCell>
-              <TableCell>Game</TableCell>
-              <TableCell>Game Format</TableCell>
-              <TableCell>Start Time</TableCell>
-              <TableCell>Duration</TableCell>
-              <TableCell>Bet Amount</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedChallenges.map((entry, index) => {
-              return (
-                <TableRow spacing={0} hover key={entry.id}>
-                  <TableCell className={classes.imageCell}>
-                    <Box display="flex" alignItems="center">
-                      <Avatar
-                        className={classes.avatar}
-                        src={entry.opponent.dpHigh}
-                      />
-                      <Box marginLeft={1}>
-                        <Typography
-                          variant="body2"
-                          color="textPrimary"
-                          component={RouterLink}
-                          to={`/profile/${entry.opponent.username}`}
-                        >
-                          {getFormattedUserName(entry.opponent.username, 9)}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </TableCell>
-                  <TableCell>{entry.gameShortName}</TableCell>
-                  <TableCell>
-                    {getGameFormatFromIndex(entry.game, entry.gameFormat)}
-                  </TableCell>
-                  <TableCell>
-                    {getDateFromEpoch(entry.startTime)}
-                    <br />
-                    {getTimeFromEpoch(entry.startTime)}
-                  </TableCell>
-                  <TableCell>{entry.duration} Min.</TableCell>
-                  <TableCell>${entry.betAmount}</TableCell>
-                  <TableCell>
-                    <Tooltip title="Accept">
-                      <IconButton 
-                        color="secondary" 
-                        aria-label="accept" 
-                        component="span"
-                        id={'Accept' + index}
-                        onClick={(e)=>{
-                          e.preventDefault();
-                          setSelectedRow(entry);
+  <div>
+      <Modal isOpen={showConsoleSelectModal}>
+      <ModalHeader>Accept { `${selectedRow.opponent.username.toUpperCase()}'s Challenge` }</ModalHeader>
+      <ModalBody>
+          <GameConsoleSelection
+              consoleSelectedValue={consoleSelectedValue}
+              handleConsoleOnChange={handleConsoleOnChange}
+              game={selectedRow.game}
+              handleCurrencyOnChange={handleCurrencyOnChange}
+              currency={currency}
+              isChallenge={true}
+              setDeviceID={setDeviceID}
+          />
+                  {errMsg !== '' && <p className='text-center text-danger'>
+                      {errMsg}
+                  </p>}
+      </ModalBody>
+      <ModalFooter>
+                  <Button color="warning"
+                      disabled={!(consoleSelectedValue !== '' && currency !== '' && !isFetchingBalance)}
+                      onClick={async () => {
+                          setIsFetchingBalance(true);
                           setErrMsg('');
-                          setShowConsoleSelectModal(true);
-                        }}
-                      >
-                        <CheckOutlinedIcon />
-                      </IconButton> 
-                    </Tooltip>
-                    <Tooltip title="Reject">
-                      <IconButton 
-                        color="secondary" 
-                        aria-label="reject" 
-                        component="span"
-                        id={'Reject' + index}
-                        onClick={(e)=>{
-                          e.preventDefault();
-                          rejectChallenge(
-                              { challengeID: entry.id, },
-                              ChallengesEnums.Received,
-                              entry.startTime,
-                          )
+                          if (checkGameRequiresManualResult(selectedRow.game) && deviceID !== selectedRow.deviceID) {
+                              setIsFetchingBalance(false);
+                              return setErrMsg(`This game can only be played with 
+                              ${getDeviceName(selectedRow.deviceID)}`)
+                          }
+                          const balanceCheck = await isBalanceEnough(selectedRow.betAmount, currency)
+                          if (balanceCheck) {
+                              const response = await acceptChallenge({
+                                  challengeID: selectedRow.id,
+                                  networkID: consoleSelectedValue,
+                                  currency: currency,
+                                  deviceID,
+                              },
+                                  ChallengesEnums.Received,
+                                  selectedRow.startTime,
+                              )
+                              
+                              if (response) {
+                                  setErrMsg(response);
+                              }
+                              else {
+                                  setShowConsoleSelectModal(false)
+                                  setConsoleValue('');
+                                  setCurrency('');
+                              }
+                          }
+                          else {
+                              setErrMsg(BalanceNotEnoughErrorMessage);
+                          }
+                          setIsFetchingBalance(false)
                       }}
-                      >
-                        <CloseOutlinedIcon />
-                      </IconButton> 
-                    </Tooltip>
-                    <Tooltip title="Modify">
-                      <IconButton 
-                        color="secondary" 
-                        aria-label="modify" 
-                        component="span"
-                        id={'Modify' + index}
-                        onClick={(e)=>{
-                          e.preventDefault();
-                          setSelectedRow(entry);
-                          setShowChallengeModal(true);
-                        }}
-                      >
-                        <SettingsOutlinedIcon />
-                      </IconButton> 
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        <TablePagination
-          component="div"
-          count={data.length}
-          labelRowsPerPage={'Rows per page'}
-          onChangePage={handlePageChange}
-          onChangeRowsPerPage={handleLimitChange}
-          page={page}
-          rowsPerPage={limit}
-          rowsPerPageOptions={[5, 10, 25]}
-        />
-        </>
-        ) : (
-          <Box className={classes.noChallengesBox}>
-            <Typography>
-              No Challenges Found.
-            </Typography>
-          </Box>
-        )}
-      </Box>
-    </Card>
+                  >
+                      Accept
+      </Button>{" "}
+          <Button color="warning" onClick={() => {
+              setShowConsoleSelectModal(false)
+              setConsoleValue('')
+          }}>
+          Cancel
+      </Button>
+      </ModalFooter>
+  </Modal>
+  </div>
+);
+}; */
+
+  const generateChallengeModal = useCallback(() => {
+    return (
+      <ChallengeModal
+        showChallengeModal={showChallengeModal}
+        username={
+          selectedRow?.opponent?.username && selectedRow.opponent.username
+        }
+        setShowChallengeModal={setShowChallengeModal}
+        challengeID={selectedRow.id && selectedRow.id}
+        modify={true}
+        setReceivedChallenges={setReceivedChallenges}
+        initialValues={{
+          gameName: selectedRow.game && selectedRow.game,
+          gameFormat:
+            selectedRow.game &&
+            getGameFormatFromIndex(selectedRow.game, selectedRow.gameFormat),
+          betAmount: selectedRow.betAmount && Number(selectedRow.betAmount),
+          duration: selectedRow.duration && selectedRow.duration
+        }}
+        startDateTimeInitialValue={
+          selectedRow.startTime && moment(selectedRow.startTime * 1000)
+        }
+      />
+    );
+  }, [showChallengeModal]);
+
+  return (
+    <>
+      {showChallengeModal && generateChallengeModal()}
+      {showConsoleSelectModal && consoleSelectModal()}
+      <Card>
+        <Box minWidth={300}>
+          {paginatedChallenges.length > 0 ? (
+            <>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Opponent</TableCell>
+                    <TableCell>Game</TableCell>
+                    <TableCell>Game Format</TableCell>
+                    <TableCell>Start Time</TableCell>
+                    <TableCell>Duration</TableCell>
+                    <TableCell>Bet Amount</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {paginatedChallenges.map((entry, index) => {
+                    return (
+                      <TableRow spacing={0} hover key={entry.id}>
+                        <TableCell className={classes.imageCell}>
+                          <Box display="flex" alignItems="center">
+                            <Avatar
+                              className={classes.avatar}
+                              src={entry.opponent.dpHigh}
+                            />
+                            <Box marginLeft={1}>
+                              <Typography
+                                variant="body2"
+                                color="textPrimary"
+                                component={RouterLink}
+                                to={`/profile/${entry.opponent.username}`}
+                              >
+                                {getFormattedUserName(
+                                  entry.opponent.username,
+                                  9
+                                )}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </TableCell>
+                        <TableCell>{entry.gameShortName}</TableCell>
+                        <TableCell>
+                          {getGameFormatFromIndex(entry.game, entry.gameFormat)}
+                        </TableCell>
+                        <TableCell>
+                          {getDateFromEpoch(entry.startTime)}
+                          <br />
+                          {getTimeFromEpoch(entry.startTime)}
+                        </TableCell>
+                        <TableCell>{entry.duration} Min.</TableCell>
+                        <TableCell>${entry.betAmount}</TableCell>
+                        <TableCell>
+                          <Tooltip title="Accept">
+                            <IconButton
+                              color="secondary"
+                              aria-label="accept"
+                              component="span"
+                              id={'Accept' + index}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setSelectedRow(entry);
+                                setErrMsg('');
+                                setShowConsoleSelectModal(true);
+                              }}
+                            >
+                              <CheckOutlinedIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Reject">
+                            <IconButton
+                              color="secondary"
+                              aria-label="reject"
+                              component="span"
+                              id={'Reject' + index}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                rejectChallenge(
+                                  { challengeID: entry.id },
+                                  ChallengesEnums.Received,
+                                  entry.startTime
+                                );
+                              }}
+                            >
+                              <CloseOutlinedIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Modify">
+                            <IconButton
+                              color="secondary"
+                              aria-label="modify"
+                              component="span"
+                              id={'Modify' + index}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setSelectedRow(entry);
+                                setShowChallengeModal(true);
+                              }}
+                            >
+                              <SettingsOutlinedIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                component="div"
+                count={data.length}
+                labelRowsPerPage={'Rows per page'}
+                onChangePage={handlePageChange}
+                onChangeRowsPerPage={handleLimitChange}
+                page={page}
+                rowsPerPage={limit}
+                rowsPerPageOptions={[5, 10, 25]}
+              />
+            </>
+          ) : (
+            <Box className={classes.noChallengesBox}>
+              <Typography>No Challenges Found.</Typography>
+            </Box>
+          )}
+        </Box>
+      </Card>
+    </>
   );
 };
 

@@ -25,14 +25,20 @@ const useStyles = makeStyles((theme) => ({
   formControlBox: {
     marginTop: theme.spacing(2)
   },
-  formControl: {
-    minWidth: 250
-  },
   button: {
     marginTop: theme.spacing(2),
     minWidth: 250
   }
 }));
+
+/* consoleSelectedValue={consoleSelectedValue}
+handleConsoleOnChange={handleConsoleOnChange}
+setConsoleValue={setConsoleValue}
+game={values.gameName}
+handleCurrencyOnChange={handleCurrencyOnChange}
+currency={currency}
+isChallenge={true}
+setDeviceID={setDeviceID} */
 
 const GameConsoleSelection = ({
   isSponsoredEvent = false,
@@ -120,12 +126,13 @@ const GameConsoleSelection = ({
     <>
       <div>
         {isChallenge && ['Madden NFL 21', 'Fifa'].includes(game) && (
-          <Box>
-            <FormControl variant="outlined" className={classes.formControl}>
+          <Box className={classes.formControlBox}>
+            <FormControl fullWidth variant="outlined" color="secondary">
               <InputLabel htmlFor="select-device-label">
                 Select Console
               </InputLabel>
               <Select
+                fullWidth
                 labelId="select-device-label"
                 id="select-device"
                 value={device}
@@ -134,11 +141,10 @@ const GameConsoleSelection = ({
                 }}
                 label="Select Console"
               >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
                 {getDevicesArray().map((device) => (
-                  <MenuItem value={device.id}>{device.name}</MenuItem>
+                  <MenuItem key={device.id} value={device.id}>
+                    {device.name}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -146,8 +152,8 @@ const GameConsoleSelection = ({
         )}
 
         {!isSponsoredEvent && (
-          <Box>
-            <FormControl variant="outlined" className={classes.formControl}>
+          <Box className={classes.formControlBox}>
+            <FormControl variant="outlined" fullWidth color="secondary">
               <InputLabel htmlFor="select-currency-label">
                 Select Currency
               </InputLabel>
@@ -161,11 +167,8 @@ const GameConsoleSelection = ({
                 }}
                 label="Select Currency"
               >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
                 {SupportedCurrency.map((row) => (
-                  <MenuItem key={row.currency} value={row.currency}>
+                  <MenuItem key={row.currency} value={row}>
                     {row.currency}
                   </MenuItem>
                 ))}
@@ -176,11 +179,16 @@ const GameConsoleSelection = ({
         {!deviceID && !['Madden NFL 21', 'Fifa'].includes(game) && (
           <>
             <Box className={classes.formControlBox}>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel htmlFor="select-network-label">
+              <FormControl
+                variant="outlined"
+                className={classes.formControl}
+                fullWidth
+              >
+                <InputLabel htmlFor="select-network-label" color="secondary">
                   Select linked acc.
                 </InputLabel>
                 <Select
+                  color="secondary"
                   labelId="select-network-label"
                   id="select-network"
                   value={network}
@@ -190,12 +198,9 @@ const GameConsoleSelection = ({
                   }}
                   label="Select linked acc."
                 >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
                   {linkedNetworks &&
                     linkedNetworks.map((network) => (
-                      <MenuItem key={network.id} value={network.id}>
+                      <MenuItem key={network.id} value={network}>
                         {network.label}
                       </MenuItem>
                     ))}
@@ -208,6 +213,7 @@ const GameConsoleSelection = ({
               color="secondary"
               component={RouterLink}
               to="/userAccountSetting"
+              fullWidth
             >
               Link Account
             </Button>

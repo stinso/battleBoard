@@ -30,7 +30,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { AuthContext } from '../../context/AuthContext';
 import { SET_CHALLENGE_TAB } from '../../actions/actions.js';
 import classnames from 'classnames';
-//import ChallengeModal from './ChallengeModal';
+import ChallengeModal from './ChallengeModal';
 import {
   cancelChallengeService,
   getChallengeService,
@@ -304,6 +304,13 @@ const Challenges = ({ className, ...rest }) => {
 
   return (
     <div className={clsx(classes.root, className)} {...rest}>
+      <ChallengeModal
+        showChallengeModal={showChallengeModal}
+        setShowChallengeModal={setShowChallengeModal}
+        shouldEnterUsername={true}
+        setFetchDataInfo={setFetchDataInfo}
+        ChallengesEnums={ChallengesEnums}
+      />
       <Container maxWidth="lg">
         <Grid container justify="space-between">
           <Grid item>
@@ -319,7 +326,10 @@ const Challenges = ({ className, ...rest }) => {
             <Button
               color="secondary"
               variant="contained"
-              /* onClick={onAddClick} */
+              onClick={(e) => {
+                e.preventDefault();
+                setShowChallengeModal(true);
+              }}
               startIcon={
                 <SvgIcon fontSize="small">
                   <PlusCircleIcon />

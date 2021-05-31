@@ -34,6 +34,11 @@ const baseOptions = {
         }
       }
     }
+    /* MuiPickersModal: {
+      dialogAction: {
+        color: lightBlue["400"],
+      },
+    }, */
   }
 };
 
@@ -57,7 +62,8 @@ const themesOptions = [
       },
       divider: 'rgba(255, 255, 255, 0.12)',
       primary: {
-        main: '#80260f'
+        //main: '#80260f'
+        main: '#f5542a'
       },
       secondary: {
         main: '#f5542a'

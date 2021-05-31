@@ -240,7 +240,7 @@ const LobbyView = () => {
   const history = useHistory();
   const handleRowClick = (id) => {
     history.push('/gameInformationPage/' + id);
-  } 
+  };
 
   return (
     <div>
@@ -289,7 +289,7 @@ const LobbyView = () => {
                     <TableRow
                       hover
                       key={entry.id}
-                      onClick={()=> handleRowClick(entry.id)}
+                      onClick={() => handleRowClick(entry.id)}
                     >
                       <TableCell className={classes.rankCell}>
                         {entry.game}

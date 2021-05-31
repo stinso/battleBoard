@@ -61,6 +61,11 @@ const useStyles = makeStyles((theme) => ({
   },
   statusesButton: {
     margin: theme.spacing(2)
+  },
+  noChallengesBox: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: theme.spacing(4)
   }
 }));
 
@@ -101,104 +106,102 @@ const CompletedChallenges = ({ data, isLoading, user }) => {
           <ArrowDropDownIcon />
         </Button>
         {paginatedChallenges.length > 0 ? (
-        <>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Opponent</TableCell>
-              <TableCell>Game</TableCell>
-              <TableCell>Game Format</TableCell>
-              <TableCell>Start Time</TableCell>
-              <TableCell>Duration</TableCell>
-              <TableCell>Bet Amount</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Event Details</TableCell>
-              <TableCell>Result</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedChallenges.map((entry) => {
-              return (
-                <TableRow spacing={0} hover key={entry.id}>
-                  <TableCell className={classes.imageCell}>
-                    <Box display="flex" alignItems="center">
-                      <Avatar
-                        className={classes.avatar}
-                        src={entry.opponent.dpHigh}
-                      />
-                      <Box marginLeft={1}>
-                        <Typography
-                          variant="body2"
-                          color="textPrimary"
-                          component={RouterLink}
-                          to={`/profile/${entry.opponent.username}`}
-                        >
-                          {getFormattedUserName(entry.opponent.username, 9)}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </TableCell>
-                  <TableCell>{entry.gameShortName}</TableCell>
-                  <TableCell>
-                    {getGameFormatFromIndex(entry.game, entry.gameFormat)}
-                  </TableCell>
-                  <TableCell>
-                    {getDateFromEpoch(entry.startTime)}
-                    <br />
-                    {getTimeFromEpoch(entry.startTime)}
-                  </TableCell>
-                  <TableCell>{entry.duration} Min.</TableCell>
-                  <TableCell>${entry.betAmount}</TableCell>
-                  <TableCell>{entry.status}</TableCell>
-                  <TableCell>
-                    <Typography
-                      color="secondary"
-                      to={`/gameInformationPage/${entry.eventID}`}
-                      underline="always"
-                      component={RouterLink}
-                    >
-                      Event
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      className={
-                        entry.winner
-                          ? entry.winner === username
-                            ? classes.resultWon
-                            : classes.resultLost
-                          : classes.resultLost
-                      }
-                      variant="body2"
-                    >
-                      {entry.winner
-                        ? entry.winner === username
-                          ? 'Won'
-                          : 'Lost'
-                        : '--'}
-                    </Typography>
-                  </TableCell>
+          <>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Opponent</TableCell>
+                  <TableCell>Game</TableCell>
+                  <TableCell>Game Format</TableCell>
+                  <TableCell>Start Time</TableCell>
+                  <TableCell>Duration</TableCell>
+                  <TableCell>Bet Amount</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Event Details</TableCell>
+                  <TableCell>Result</TableCell>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        <TablePagination
-          component="div"
-          count={data.length}
-          labelRowsPerPage={'Rows per page'}
-          onChangePage={handlePageChange}
-          onChangeRowsPerPage={handleLimitChange}
-          page={page}
-          rowsPerPage={limit}
-          rowsPerPageOptions={[5, 10, 25]}
-        />
-        </>
+              </TableHead>
+              <TableBody>
+                {paginatedChallenges.map((entry) => {
+                  return (
+                    <TableRow spacing={0} hover key={entry.id}>
+                      <TableCell className={classes.imageCell}>
+                        <Box display="flex" alignItems="center">
+                          <Avatar
+                            className={classes.avatar}
+                            src={entry.opponent.dpHigh}
+                          />
+                          <Box marginLeft={1}>
+                            <Typography
+                              variant="body2"
+                              color="textPrimary"
+                              component={RouterLink}
+                              to={`/profile/${entry.opponent.username}`}
+                            >
+                              {getFormattedUserName(entry.opponent.username, 9)}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </TableCell>
+                      <TableCell>{entry.gameShortName}</TableCell>
+                      <TableCell>
+                        {getGameFormatFromIndex(entry.game, entry.gameFormat)}
+                      </TableCell>
+                      <TableCell>
+                        {getDateFromEpoch(entry.startTime)}
+                        <br />
+                        {getTimeFromEpoch(entry.startTime)}
+                      </TableCell>
+                      <TableCell>{entry.duration} Min.</TableCell>
+                      <TableCell>${entry.betAmount}</TableCell>
+                      <TableCell>{entry.status}</TableCell>
+                      <TableCell>
+                        <Typography
+                          color="secondary"
+                          to={`/gameInformationPage/${entry.eventID}`}
+                          underline="always"
+                          component={RouterLink}
+                        >
+                          Event
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography
+                          className={
+                            entry.winner
+                              ? entry.winner === username
+                                ? classes.resultWon
+                                : classes.resultLost
+                              : classes.resultLost
+                          }
+                          variant="body2"
+                        >
+                          {entry.winner
+                            ? entry.winner === username
+                              ? 'Won'
+                              : 'Lost'
+                            : '--'}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+            <TablePagination
+              component="div"
+              count={data.length}
+              labelRowsPerPage={'Rows per page'}
+              onChangePage={handlePageChange}
+              onChangeRowsPerPage={handleLimitChange}
+              page={page}
+              rowsPerPage={limit}
+              rowsPerPageOptions={[5, 10, 25]}
+            />
+          </>
         ) : (
           <Box className={classes.noChallengesBox}>
-            <Typography>
-              No Challenges Found.
-            </Typography>
+            <Typography>No Challenges Found.</Typography>
           </Box>
         )}
       </Box>

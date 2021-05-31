@@ -61,6 +61,11 @@ const useStyles = makeStyles((theme) => ({
   },
   statusesButton: {
     margin: theme.spacing(2)
+  },
+  noChallengesBox: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: theme.spacing(4)
   }
 }));
 
@@ -68,7 +73,12 @@ const applyPagination = (list, page, limit) => {
   return list.slice(page * limit, page * limit + limit);
 };
 
-const SentChallenges = ({ data, isLoading, cancelChallenge, ChallengesEnums }) => {
+const SentChallenges = ({
+  data,
+  isLoading,
+  cancelChallenge,
+  ChallengesEnums
+}) => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -88,91 +98,89 @@ const SentChallenges = ({ data, isLoading, cancelChallenge, ChallengesEnums }) =
   return (
     <Card>
       <Box minWidth={300}>
-      {paginatedChallenges.length > 0 ? (
-        <>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Opponent</TableCell>
-              <TableCell>Game</TableCell>
-              <TableCell>Game Format</TableCell>
-              <TableCell>Start Time</TableCell>
-              <TableCell>Duration</TableCell>
-              <TableCell>Bet Amount</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedChallenges.map((entry, index) => {
-              return (
-                <TableRow spacing={0} hover key={entry.id}>
-                  <TableCell className={classes.imageCell}>
-                    <Box display="flex" alignItems="center">
-                      <Avatar
-                        className={classes.avatar}
-                        src={entry.opponent.dpHigh}
-                      />
-                      <Box marginLeft={1}>
-                        <Typography
-                          variant="body2"
-                          color="textPrimary"
-                          component={RouterLink}
-                          to={`/profile/${entry.opponent.username}`}
-                        >
-                          {getFormattedUserName(entry.opponent.username, 9)}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </TableCell>
-                  <TableCell>{entry.gameShortName}</TableCell>
-                  <TableCell>
-                    {getGameFormatFromIndex(entry.game, entry.gameFormat)}
-                  </TableCell>
-                  <TableCell>
-                    {getDateFromEpoch(entry.startTime)}
-                    <br />
-                    {getTimeFromEpoch(entry.startTime)}
-                  </TableCell>
-                  <TableCell>{entry.duration} Min.</TableCell>
-                  <TableCell>${entry.betAmount}</TableCell>
-                  <TableCell>
-                    <Button 
-                      variant="outlined"
-                      id={'Cancel' + index}
-                      color="secondary"
-                      onClick={async (e) => {
-                          e.preventDefault();
-                          await cancelChallenge(
-                              { challengeID: entry.id, },
-                              ChallengesEnums.Sent,
-                              entry.startTime,
-                          )
-                      }}
-                    >
-                      CANCEL
-                    </Button>
-                  </TableCell>
+        {paginatedChallenges.length > 0 ? (
+          <>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Opponent</TableCell>
+                  <TableCell>Game</TableCell>
+                  <TableCell>Game Format</TableCell>
+                  <TableCell>Start Time</TableCell>
+                  <TableCell>Duration</TableCell>
+                  <TableCell>Bet Amount</TableCell>
+                  <TableCell>Action</TableCell>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        <TablePagination
-          component="div"
-          count={data.length}
-          labelRowsPerPage={'Rows per page'}
-          onChangePage={handlePageChange}
-          onChangeRowsPerPage={handleLimitChange}
-          page={page}
-          rowsPerPage={limit}
-          rowsPerPageOptions={[5, 10, 25]}
-        />
-        </>
+              </TableHead>
+              <TableBody>
+                {paginatedChallenges.map((entry, index) => {
+                  return (
+                    <TableRow spacing={0} hover key={entry.id}>
+                      <TableCell className={classes.imageCell}>
+                        <Box display="flex" alignItems="center">
+                          <Avatar
+                            className={classes.avatar}
+                            src={entry.opponent.dpHigh}
+                          />
+                          <Box marginLeft={1}>
+                            <Typography
+                              variant="body2"
+                              color="textPrimary"
+                              component={RouterLink}
+                              to={`/profile/${entry.opponent.username}`}
+                            >
+                              {getFormattedUserName(entry.opponent.username, 9)}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </TableCell>
+                      <TableCell>{entry.gameShortName}</TableCell>
+                      <TableCell>
+                        {getGameFormatFromIndex(entry.game, entry.gameFormat)}
+                      </TableCell>
+                      <TableCell>
+                        {getDateFromEpoch(entry.startTime)}
+                        <br />
+                        {getTimeFromEpoch(entry.startTime)}
+                      </TableCell>
+                      <TableCell>{entry.duration} Min.</TableCell>
+                      <TableCell>${entry.betAmount}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outlined"
+                          id={'Cancel' + index}
+                          color="secondary"
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            await cancelChallenge(
+                              { challengeID: entry.id },
+                              ChallengesEnums.Sent,
+                              entry.startTime
+                            );
+                          }}
+                        >
+                          CANCEL
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+            <TablePagination
+              component="div"
+              count={data.length}
+              labelRowsPerPage={'Rows per page'}
+              onChangePage={handlePageChange}
+              onChangeRowsPerPage={handleLimitChange}
+              page={page}
+              rowsPerPage={limit}
+              rowsPerPageOptions={[5, 10, 25]}
+            />
+          </>
         ) : (
           <Box className={classes.noChallengesBox}>
-            <Typography>
-              No Challenges Found.
-            </Typography>
+            <Typography>No Challenges Found.</Typography>
           </Box>
         )}
       </Box>
