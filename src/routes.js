@@ -119,6 +119,11 @@ const routes = [
       },
       {
         exact: true,
+        path: '/admin',
+        component: lazy(() => import('src/views/admin'))
+      },
+      {
+        exact: true,
         path: ['/', '/dashboard'],
         component: HomeView
       },

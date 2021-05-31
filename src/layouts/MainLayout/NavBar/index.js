@@ -102,6 +102,12 @@ const sections = [
         isExternal: false
       },
       {
+        title: 'Admin Panel',
+        icon: ToolIcon,
+        href: '/admin',
+        isExternal: false
+      },
+      {
         title: 'Account Settings',
         icon: ToolIcon,
         href: '/userAccountSetting',
@@ -222,6 +228,8 @@ const NavBar = ({ onOpen }) => {
       isExternal: false
     }
   ];
+
+  console.log(user);
 
   useEffect(() => {
     if (!user.user.session?.ethAddress) {
