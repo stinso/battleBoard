@@ -229,8 +229,6 @@ const NavBar = ({ onOpen }) => {
     }
   ];
 
-  console.log(user);
-
   useEffect(() => {
     if (!user.user.session?.ethAddress) {
       setShowNotification(true);
