@@ -8,6 +8,7 @@ import {
   DialogActions,
   DialogTitle,
   Divider,
+  Grid,
   IconButton,
   Tab,
   Tabs,
@@ -262,36 +263,35 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
         open={showMoreInfo}
         onClose={() => setShowMoreInfoModal(false)}
         minWidth="md"
+        fullWidth
       >
         <DialogTitle>Event Info</DialogTitle>
         <DialogContent>
-          {Object.keys(selectedRow).map(function (key, index) {
-            if (
-              key === 'startTime' ||
-              key === 'endTime' ||
-              key === 'dontScheduleAfter' ||
-              key === 'dontScheduleBefore'
-            ) {
-              return (
-                <div key={index + 1}>
-                  <p>{key}</p>
-                  <p>
-                    {getDateFromEpoch(selectedRow[key])}
-                    {'  '}
-                    {getTimeFromEpoch(selectedRow[key])}
-                  </p>
-                </div>
-              );
-            } else {
-              return (
-                <div key={index + 1}>
-                  <p>{key}</p>
-                  <p>{selectedRow[key].toString()}</p>
-                </div>
-              );
-            }
-          })}
-          {errMsg !== '' && <p>{errMsg}</p>}
+          <Grid container>
+            {Object.keys(selectedRow).map((key, index) => (
+              <Grid item xs={6}>
+                {key === 'startTime' ||
+                key === 'endTime' ||
+                key === 'dontScheduleAfter' ||
+                key === 'dontScheduleBefore' ? (
+                  <Box key={index + 1}>
+                    <Typography color="secondary">{key}</Typography>
+                    <Typography>
+                      {getDateFromEpoch(selectedRow[key])}
+                      {'  '}
+                      {getTimeFromEpoch(selectedRow[key])}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Box key={index + 1}>
+                    <Typography color="secondary">{key}</Typography>
+                    <Typography>{selectedRow[key].toString()}</Typography>
+                  </Box>
+                )}
+              </Grid>
+            ))}
+          </Grid>
+          {errMsg !== '' && <Typography color="error">{errMsg}</Typography>}
         </DialogContent>
         <DialogActions>
           <Button
@@ -319,7 +319,7 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
   };
 
   return (
-    <div>
+    <>
       <Typography className={classes.title} variant="h6" color="textPrimary">
         {!showAddEvent
           ? isRecurringEvent
@@ -400,7 +400,7 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
           />
         </>
       )}
-    </div>
+    </>
   );
 };
 

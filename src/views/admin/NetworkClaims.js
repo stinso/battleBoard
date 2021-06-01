@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
+  Box,
   Link,
   Table,
   TableBody,
@@ -14,7 +15,7 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-import { useLocation, Link as RouterLink } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
   getNetworkClaimsService,
   approveNetworkClaimService,
@@ -75,8 +76,6 @@ const NetworkClaims = () => {
   const getNetworkClaims = async (state) => {
     try {
       const { data } = await getNetworkClaimsService({});
-      console.log('data:');
-      console.log(data);
       if (data.success) {
         setClaims(data.claims);
       }
@@ -136,7 +135,7 @@ const NetworkClaims = () => {
   }, []);
 
   return (
-    <div>
+    <>
       <Typography className={classes.title} variant="h6" color="textPrimary">
         Network Claims
       </Typography>
@@ -222,9 +221,11 @@ const NetworkClaims = () => {
           />
         </>
       ) : (
-        <p className="text-center">No Data Found</p>
+        <Box display="flex" mt={2} justifyContent="center">
+          <Typography variant="h3">No Data Found</Typography>
+        </Box>
       )}
-    </div>
+    </>
   );
 };
 
