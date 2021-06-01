@@ -75,8 +75,8 @@ const NetworkClaims = () => {
   const getNetworkClaims = async (state) => {
     try {
       const { data } = await getNetworkClaimsService({});
-      console.log('data:')
-      console.log(data)
+      console.log('data:');
+      console.log(data);
       if (data.success) {
         setClaims(data.claims);
       }

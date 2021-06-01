@@ -23,7 +23,8 @@ import UpdateDeleteEvent from './UpdateDeleteEvent';
 import Dispute from './Dispute';
 import BannedPlayers from './BannedPlayers';
 import NetworkClaims from './NetworkClaims';
-import * as Sentry from '@sentry/react';
+import Page from 'src/components/Page';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
 const font = "'Saira', sans-serif";
 
@@ -80,130 +81,130 @@ const Profile = ({ className, ...rest }) => {
   const history = useHistory();
   const [currentTab, setCurrentTab] = useState(tabs.Event);
 
-  console.log(currentTab);
-
   const handleTabsChange = (event, value) => {
     setCurrentTab(value);
   };
 
   return (
-    <div className={clsx(classes.root, className)} {...rest}>
-      <Container maxWidth="lg">
-        <Grid container spacing={2}>
-          <Grid item xs={12} lg={4}>
-            <Card className={classes.card}>
-              <Box marginTop={2}>
-                <List>
-                  <ListItem className={classes.item}>
-                    <Button
-                      className={`${classes.button} ${
-                        currentTab === tabs.Event && classes.active
-                      }`}
-                      size="large"
-                      variant="text"
-                      onClick={(e) => handleTabsChange(e, tabs.Event)}
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <MatchesIcon />
-                        </SvgIcon>
-                      }
-                    >
-                      Events
-                    </Button>
-                  </ListItem>
-                  <Divider />
-                  <ListItem className={classes.item}>
-                    <Button
-                      className={`${classes.button} ${
-                        currentTab === tabs.RecurEvent && classes.active
-                      }`}
-                      size="large"
-                      variant="text"
-                      onClick={(e) => handleTabsChange(e, tabs.RecurEvent)}
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <NetworkIcon />
-                        </SvgIcon>
-                      }
-                    >
-                      Recuring Events
-                    </Button>
-                  </ListItem>
-                  <Divider />
-                  <ListItem className={classes.item}>
-                    <Button
-                      className={`${classes.button} ${
-                        currentTab === tabs.Dispute && classes.active
-                      }`}
-                      size="large"
-                      variant="text"
-                      onClick={(e) => handleTabsChange(e, tabs.Dispute)}
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <FollowersIcon />
-                        </SvgIcon>
-                      }
-                    >
-                      Disputes
-                    </Button>
-                  </ListItem>
-                  <Divider />
-                  <ListItem className={classes.item}>
-                    <Button
-                      className={`${classes.button} ${
-                        currentTab === tabs.BannedPlayers && classes.active
-                      }`}
-                      size="large"
-                      variant="text"
-                      onClick={(e) => handleTabsChange(e, tabs.BannedPlayers)}
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <FollowingIcon />
-                        </SvgIcon>
-                      }
-                    >
-                      Banned Players
-                    </Button>
-                  </ListItem>
-                  <ListItem className={classes.item}>
-                    <Button
-                      className={`${classes.button} ${
-                        currentTab === tabs.NetworkClaims && classes.active
-                      }`}
-                      size="large"
-                      variant="text"
-                      onClick={(e) => handleTabsChange(e, tabs.NetworkClaims)}
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <FollowingIcon />
-                        </SvgIcon>
-                      }
-                    >
-                      Network Claims
-                    </Button>
-                  </ListItem>
-                </List>
-              </Box>
-            </Card>
+    <PerfectScrollbar>
+      <Page className={classes.root} title="Admin Panel">
+        <Container maxWidth="lg">
+          <Grid container spacing={2}>
+            <Grid item xs={12} lg={3}>
+              <Card className={classes.card}>
+                <Box marginTop={2}>
+                  <List>
+                    <ListItem className={classes.item}>
+                      <Button
+                        className={`${classes.button} ${
+                          currentTab === tabs.Event && classes.active
+                        }`}
+                        size="large"
+                        variant="text"
+                        onClick={(e) => handleTabsChange(e, tabs.Event)}
+                        startIcon={
+                          <SvgIcon fontSize="small">
+                            <MatchesIcon />
+                          </SvgIcon>
+                        }
+                      >
+                        Events
+                      </Button>
+                    </ListItem>
+                    <Divider />
+                    <ListItem className={classes.item}>
+                      <Button
+                        className={`${classes.button} ${
+                          currentTab === tabs.RecurEvent && classes.active
+                        }`}
+                        size="large"
+                        variant="text"
+                        onClick={(e) => handleTabsChange(e, tabs.RecurEvent)}
+                        startIcon={
+                          <SvgIcon fontSize="small">
+                            <NetworkIcon />
+                          </SvgIcon>
+                        }
+                      >
+                        Recuring Events
+                      </Button>
+                    </ListItem>
+                    <Divider />
+                    <ListItem className={classes.item}>
+                      <Button
+                        className={`${classes.button} ${
+                          currentTab === tabs.Dispute && classes.active
+                        }`}
+                        size="large"
+                        variant="text"
+                        onClick={(e) => handleTabsChange(e, tabs.Dispute)}
+                        startIcon={
+                          <SvgIcon fontSize="small">
+                            <FollowersIcon />
+                          </SvgIcon>
+                        }
+                      >
+                        Disputes
+                      </Button>
+                    </ListItem>
+                    <Divider />
+                    <ListItem className={classes.item}>
+                      <Button
+                        className={`${classes.button} ${
+                          currentTab === tabs.BannedPlayers && classes.active
+                        }`}
+                        size="large"
+                        variant="text"
+                        onClick={(e) => handleTabsChange(e, tabs.BannedPlayers)}
+                        startIcon={
+                          <SvgIcon fontSize="small">
+                            <FollowingIcon />
+                          </SvgIcon>
+                        }
+                      >
+                        Banned Players
+                      </Button>
+                    </ListItem>
+                    <ListItem className={classes.item}>
+                      <Button
+                        className={`${classes.button} ${
+                          currentTab === tabs.NetworkClaims && classes.active
+                        }`}
+                        size="large"
+                        variant="text"
+                        onClick={(e) => handleTabsChange(e, tabs.NetworkClaims)}
+                        startIcon={
+                          <SvgIcon fontSize="small">
+                            <FollowingIcon />
+                          </SvgIcon>
+                        }
+                      >
+                        Network Claims
+                      </Button>
+                    </ListItem>
+                  </List>
+                </Box>
+              </Card>
+            </Grid>
+            <Grid item xs={12} lg={9}>
+              <Card className={classes.card}>
+                <Box minWidth={300}>
+                  {currentTab === tabs.Event && (
+                    <UpdateDeleteEvent isRecurringEvent={false} />
+                  )}
+                  {currentTab === tabs.RecurEvent && (
+                    <UpdateDeleteEvent isRecurringEvent={true} />
+                  )}
+                  {currentTab === tabs.Dispute && <Dispute />}
+                  {currentTab === tabs.BannedPlayers && <BannedPlayers />}
+                  {currentTab === tabs.NetworkClaims && <NetworkClaims />}
+                </Box>
+              </Card>
+            </Grid>
           </Grid>
-          <Grid item xs={12} lg={8}>
-            <Card className={classes.card}>
-              <Box minWidth={300}>
-                {currentTab === tabs.Event && (
-                  <UpdateDeleteEvent isRecurringEvent={false} />
-                )}
-                {currentTab === tabs.RecurEvent && (
-                  <UpdateDeleteEvent isRecurringEvent={true} />
-                )}
-                {currentTab === tabs.Dispute && <Dispute />}
-                {currentTab === tabs.BannedPlayers && <BannedPlayers />}
-                {currentTab === tabs.NetworkClaims && <NetworkClaims />}
-              </Box>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
-    </div>
+        </Container>
+      </Page>
+    </PerfectScrollbar>
   );
 };
 
