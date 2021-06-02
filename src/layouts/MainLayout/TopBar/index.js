@@ -1,4 +1,10 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useContext,
+  useCallback
+} from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -26,7 +32,14 @@ import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { AuthContext } from '../../../context/AuthContext';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
+import { SET_USER_INFO } from '../../../actions/actions.js';
+import * as Sentry from '@sentry/react';
+
+import {
+  getMyInfoService,
+  sendSubscriptionOfServiceWorkerService
+} from '../../../service/battleServerService';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,11 +61,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TopBar = ({ className, onNavOpen, ...rest }) => {
-  const { user } = useContext(AuthContext);
+  const { user, dispatch } = useContext(AuthContext);
   const classes = useStyles();
   const anchorRef = useRef(null);
   const [openMenu, setOpenMenu] = useState(false);
   const history = useHistory();
+  const location = useLocation();
 
   // dropdowns
   const [anchorElShooter, setAnchorElShooter] = useState(null);
@@ -91,6 +105,31 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
   const handleMenuOpen = () => {
     setOpenMenu(true);
   };
+
+  const getUserInfo = async () => {
+    try {
+      const { data } = await getMyInfoService({});
+      if (data.success === true) {
+        dispatch({
+          type: SET_USER_INFO,
+          payload: {
+            ...data
+          }
+        });
+      }
+    } catch (error) {
+      console.log('🚀 ~ file: index.js ~ line 96 ~ getUserInfo ~ error', error);
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    getUserInfo();
+  }, [location.pathname]);
 
   return (
     <AppBar className={clsx(classes.root, className)} color="default" {...rest}>

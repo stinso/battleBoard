@@ -460,7 +460,7 @@ const GenericTable = ({
                       <TableCell>{row.duration}</TableCell>
                       <TableCell>
                         {getDateFromEpoch(row.dontScheduleAfter)}
-                        <TableCell />
+                        <br />
                         {getTimeFromEpoch(row.dontScheduleAfter)}
                       </TableCell>
                     </>
