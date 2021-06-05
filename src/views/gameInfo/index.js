@@ -15,6 +15,7 @@ import {
   Box,
   Button,
   Container,
+  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
@@ -22,6 +23,7 @@ import {
   DialogTitle,
   Divider,
   Grid,
+  IconButton,
   Modal,
   Paper,
   Tab,
@@ -29,7 +31,7 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import Page from 'src/components/Page';
 import Info from './Info';
 import HowToPlay from './HowToPlay';
@@ -77,6 +79,7 @@ import DisputeNotification from './DisputeNotification';
 import GameStyleNotification from './GameStyleNotification';
 //import Chat from '../chat/index';
 import useInterval from '../../hooks/useInterval';
+import CloseIcon from '@material-ui/icons/Close';
 import * as Sentry from '@sentry/react';
 
 const font = "'Saira', sans-serif";
@@ -238,6 +241,8 @@ const BattleView = () => {
   const { user } = useContext(AuthContext);
   const account = user.user?.session?.ethAddress;
   const username = user.user?.session?.username;
+  const [sponsoredEventNotificationOpen, setSponsoredEventNotificationOpen] = useState(true);
+  const [showGameStyleNotification, setShowGameStyleNotification] = useState(true);
 
   const handleTabsChange = (event, value) => {
     setCurrentTab(value);
@@ -593,7 +598,18 @@ const BattleView = () => {
 
   const generateSponsoredEventNotification = useCallback(() => {
     return (
-      <Alert severity="info">
+      <Alert severity="info" action={
+        <IconButton
+          aria-label="close"
+          color="inherit"
+          size="small"
+          onClick={() => {
+            setSponsoredEventNotificationOpen(false);
+          }}
+        >
+          <CloseIcon fontSize="inherit" />
+        </IconButton>
+      }>
         <AlertTitle>Heads up!</AlertTitle>
         This is a sponsored event, you don't need to pay anything to register
         for it.
@@ -813,7 +829,7 @@ const BattleView = () => {
           />
         )}
 
-        {isSponsoredEvent &&
+        {isSponsoredEvent && sponsoredEventNotificationOpen &&
           !(
             eventState === EventStates.ONGOING ||
             eventState === EventStates.EVENT_ENDED
@@ -824,9 +840,9 @@ const BattleView = () => {
           <GamingNetworkNotLinkedNotification />
         )}
 
-        {shouldDisplayStyle && (
-          <GameStyleNotification style={eventData.style} />
-        )}
+        {shouldDisplayStyle && showGameStyleNotification &&
+          <GameStyleNotification style={eventData.style} setShowGameStyleNotification={setShowGameStyleNotification} />
+        }
 
         {/* NOTIFICATIONS */}
         {showDisputeNotification && <DisputeNotification />}
