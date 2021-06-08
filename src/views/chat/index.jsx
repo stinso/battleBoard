@@ -1,18 +1,5 @@
 import React, {useContext,  useEffect, useState, useRef} from "react";
 import { useLocation } from 'react-router-dom';
-import classnames from "classnames";
-
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-} from "reactstrap";
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart';
 import Message from './Message';
@@ -21,6 +8,100 @@ import { AuthContext } from "../../context/AuthContext";
 import messageSent from '../../public/sounds/MessageSent.mp3';
 import newMessage from '../../public/sounds/NewMessage.mp3';
 import * as Sentry from "@sentry/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  IconButton,
+  SvgIcon,
+  TextField,
+  Typography,
+  makeStyles
+} from '@material-ui/core'
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.background.dark,
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    width: '350px',
+    height: '600px',
+    position: "fixed",
+    overflow: 'hidden',
+    bottom: 0,
+    right: 0,
+    zIndex: 3 
+  },
+  scroll: {
+    padding: theme.spacing(2)
+  },
+  chat: {
+    maxWidth: '350px',
+    height: '600px',
+    position: "fixed",
+    overflow: 'hidden',
+    bottom: 0,
+    right: 0,
+    zIndex: 3 
+  },
+  form: {
+    justifyContent: "center"
+  },
+  none: {
+    display: "none !important"
+  },
+  header: {
+    backgroundColor: theme.palette.background.dark,
+    position: 'sticky'
+  },
+  count: {
+    position: 'absolute',
+    bottom: '12%',
+    right: '25%',
+    background: '#ec250d',
+    width: '14px',
+    height: '14px',
+    borderRadius: '50%',
+  },
+  fixed: {
+    position: 'fixed !important',
+    display: 'inline-block !important'
+  },
+  content: {
+    height: '200px',
+    overflowY: 'scroll',
+  },
+  box: {
+    backgroundColor: '#555',
+    width: '350px',
+    height: '600px',
+    position: "fixed",
+    overflow: 'hidden',
+    bottom: 0,
+    right: 0,
+    zIndex: 3 
+  },
+  message: {
+    backgroundColor: '#aaa',
+    height: '80px',
+    width: '80px'
+  },
+  content: {
+    height: '340px',
+    backgroundColor: '#111'
+  },
+  footer: {
+    height: '100px',
+    backgroundColor: '#333'
+  }
+}))
 
 let listeners = []    
 let soundTime = null;
@@ -28,6 +109,7 @@ let shouldPlaySound = false;
 
 
 const ChatPage = ({roomType, typeId}) => {
+  const classes = useStyles();
   const inputbox = useRef();
   const audioNewMessage = useRef();
   const audioSendMessage = useRef();
@@ -291,55 +373,46 @@ const getMoreMessages = async () => {
 
   return (
     <>
-      <div className='chat-page'>
+      {/* <div>
         <meta charSet="UTF-8" />
         <audio
           type="audio/mpeg"
           loop
           src={newMessage}
           ref={audioNewMessage}
-          className='d-none'
+          className={classes.none}
         />
         <audio
           loop
           type="audio/mpeg"
           src={messageSent}
           ref={audioSendMessage}
-          className='d-none'
+          className={classes.none}
         />
         {showChatBox ?
           (
-            <Card className="chat"  >
-              <div
-                className='chat-header row mx-1'>
-                <div className='col text-right pr-0'>
-                <Button
-                  aria-hidden="true"
-                  className="transparent-button"
-                  onClick={() => {
-                    setShowDot(false);
-                    setShowChatBox(false);
-                  }}
-                >
-                  <i className="tim-icons icon-simple-remove" />
-                </Button>
-                  </div>
-                
-              </div>
-              <CardBody id='chat-box-end'>
+            <Card className={classes.chat}  >
+              <CardHeader className={classes.header}
+              action={
+                <IconButton aria-label="settings" aria-hidden="true"
+                onClick={() => {
+                  setShowDot(false);
+                  setShowChatBox(false);
+                }}>
+                  <CloseOutlinedIcon />
+                </IconButton>
+              }>
+                HEJ!
+              </CardHeader>
+              <PerfectScrollbar options={{ suppressScrollX: true }}>
+              <CardContent id='chat-box-end' className={classes.content}>
               {( !isLoading && canLoadMore ) &&
-                  <p onClick={() => getMoreMessages()} className="text-center hover-pointer font-weight-bold">Load Previous</p>
+                  <p onClick={() => getMoreMessages()}>Load Previous</p>
                 }
                 {isLoading && (
-                  <p className='text-center font-weight-bold chat-page'>
+                  <p>
                     {isLoading ? <>
                     Loading
-                    <div className="spinner">
-                      <div className="bounce1" />
-                      <div className="bounce2" />
-                      <div className="bounce3" />
-                    </div>
-                    
                     </> : 'No Upcoming Events' } 
                 </p>
                 )}
@@ -356,30 +429,22 @@ const getMoreMessages = async () => {
                   )
                 })}
                 <div ref={messagesEndRef} />
-              </CardBody>
-              <CardFooter className="d-block chat-footer">
-                <Form
-                  className="align-items-center"
+              </CardContent>
+              </PerfectScrollbar>
+              <CardActions>
+                <form
+                  className={classes.form}
                 >
-                  <InputGroup
-                    className={classnames("d-flex", "form-control-lg", {
-                      "input-group-focus" : formValueFocus
-                    })}
-                  >
-                  <span className={`emoji-popup ${!emojiPicker ? 'd-none' : ''}`}>
+                  <Box display="flex" >
+                  <span className={`${!emojiPicker ? classes.none : ''}`}>
                     <Picker onSelect={addEmoji} title={'Chain Games'}  />
                   </span>
-                    <InputGroupAddon
-                      addonType="prepend"
-                      className="d-flex hover-pointer"
-                    >
-                      <InputGroupText onClick={() => {
+                      <TextField  onClick={() => {
                         setEmojiPicker(!emojiPicker);
                       }}>
-                        <i className="tim-icons icon-satisfied" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
+                        icon
+                      </TextField >
+                    <TextField 
                       placeholder="Your message"
                       maxLength={50}
                       type="text"
@@ -398,17 +463,16 @@ const getMoreMessages = async () => {
                       }}
                     />
                     <Button
-                      className="btn-simple ml-2"
                       onClick={(e) => {
                         e.preventDefault();
                         sendMessage();
                       }}
                       color="warning">
-                      <i className="tim-icons icon-send" />
+                      send
                     </Button> 
-                </InputGroup>
-                </Form>
-              </CardFooter>
+                </Box>
+                </form>
+              </CardActions>
             </Card>
           ) : (
             <>
@@ -419,10 +483,9 @@ const getMoreMessages = async () => {
                   right: '3%',
                   fontSize: '20px'
                 }}
-                className='position-fixed d-inline-block'
+                className={classes.fixed}
               >
                 <Button
-                  className="btn-warning"
                   color="warning"
                   onClick={() => {
                     setShowDot(false);
@@ -433,14 +496,108 @@ const getMoreMessages = async () => {
                     style={{
                       fontSize: '25px'
                     }}
-                    className="tim-icons icon-chat-33"
+                    icon
                   />
-                  {showDot && <span className='notify-count'></span>}
+                  {showDot && <span className={classes.count}>count</span>}
                 </Button>
               </div>
             </>
           )
         }
+      </div> */}
+      <div className={classes.root}>
+        {showChatBox ? (
+          <>
+            <Box
+              alignItems="center"
+              display="flex"
+            >
+              <Box flexGrow={1} />
+              <IconButton
+                onClick={() => {
+                  setShowDot(true);
+                  setShowChatBox(false);
+                }}
+              >
+                <SvgIcon fontSize="small">
+                  <CloseOutlinedIcon />
+                </SvgIcon>
+              </IconButton>
+            </Box>
+            <Box
+              flexGrow={1}
+              overflow="hidden"
+            >
+              <PerfectScrollbar
+                className={classes.scroll}
+                options={{ suppressScrollX: true }}
+              >
+                {/* {messages.map((message) => {
+                  return (
+                    <Message
+                      key={message.id}
+                      imagePath={message.imagePath}
+                      time={message.time}
+                      username={message.username}
+                      message={message.message}
+                      isSelf={message.isSelf}
+                    />
+                  )
+                })} */}
+                <Box display="flex" mt={2}>
+                  <Box className={classes.message} ml={'auto'} />
+                </Box>
+                <Box display="flex" mt={2}>
+                  <Box className={classes.message} ml={'auto'} />
+                </Box>
+                <Box display="flex" mt={2}>
+                  <Box className={classes.message} ml={'0'} />
+                </Box>
+                <Box display="flex" mt={2}>
+                  <Box className={classes.message} ml={'0'} />
+                </Box>
+                <Box display="flex" mt={2}>
+                  <Box className={classes.message} ml={'0'} />
+                </Box>
+                <Box display="flex" mt={2}>
+                  <Box className={classes.message} ml={'0'} />
+                </Box>
+                <Box display="flex" mt={2}>
+                  <Box className={classes.message} ml={'0'} />
+                </Box>
+              </PerfectScrollbar>
+            </Box>
+            <Box className={classes.footer}>
+
+            </Box>
+            </>
+        ) : (
+          <div
+            style={{
+              bottom: '3%',
+              zIndex: '4',
+              right: '3%',
+              fontSize: '20px'
+            }}
+            className={classes.fixed}
+          >
+            <Button
+              color="warning"
+              onClick={() => {
+                setShowDot(false);
+                setShowChatBox(true);
+              }}
+            >
+              <i
+                style={{
+                  fontSize: '25px'
+                }}
+                icon
+              />
+              {showDot && <span className={classes.count}>count</span>}
+            </Button>
+          </div>
+        )}
       </div>
     </>
   );
