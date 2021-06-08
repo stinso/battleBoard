@@ -1,78 +1,78 @@
-import defaultAvatar from "../../assets/img/placeholder.jpg";
+import defaultAvatar from '../../assets/img/placeholder.jpg';
 import { Twemoji } from 'react-emoji-render';
 import TimeAgo from 'react-timeago';
+import { useHistory, Link as RouterLink } from 'react-router-dom';
 import {
-    useHistory
-  } from 'react-router-dom';
-import {
-    Box,
-    Button,
-    Card,
-    Container,
-    Divider,
-    Grid,
-    IconButton,
-    Typography,
-    makeStyles
+  Avatar,
+  Box,
+  Button,
+  Card,
+  Container,
+  Divider,
+  Grid,
+  Link,
+  IconButton,
+  Typography,
+  makeStyles
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
-    root: {},
-    justifyContentEnd: {
-        justifyContent: 'end'
-        // text right
-    },
-    justifyContentStart: {
-        justifyContent: 'start'
-    },
-    selfMessage: {
-        backgroundColor: '#555'
-    },
-    textRight: {
-
-    },
-    textLeft: {
-
-    }
-}))
-
-
+  root: {
+    marginBottom: theme.spacing(2),
+    display: 'flex'
+  },
+  avatar: {
+    height: 24,
+    width: 24
+  },
+  font: {
+    color: '#fff'
+  }
+}));
 
 const Message = ({ time, message, isSelf, imagePath, username }) => {
-    const history = useHistory();
-    const classes = useStyles();
+  const history = useHistory();
+  const classes = useStyles();
 
-    return (
-        <Grid container className={isSelf ? classes.justifyContentEnd : classes.justifyContentStart}>
-            <Grid item lg={3}>
-                <Card className={isSelf ? classes.selfMessage : ''}>
-                    <Box className={isSelf ? classes.textRight : classes.textLeft}>
-                        <Box 
-                            onClick={() => {
-                                history.push(`/profile/${username}`)
-                            }}>
-                            <img
-                                style={{
-                                    height: '16px',
-                                    width: '16px'
-                                }}
-                                alt="profile picture"
-                                src={imagePath ? imagePath : defaultAvatar} />
-                            <span>
-                                {username}
-                            </span>
-                            <Typography>
-                                <Twemoji text={message} />
-                            </Typography>
-                            <Typography>
-                                <TimeAgo date={time} />
-                            </Typography>
-                        </Box>
-                    </Box>
-                </Card>
-            </Grid>
-        </Grid>
-    )
-}
+  return (
+    <div className={classes.root}>
+      <Box display="flex" maxWidth={300} ml={isSelf ? 'auto' : 0}>
+        <Avatar className={classes.avatar} src={imagePath} />
+        <Box ml={2}>
+          <Box
+            bgcolor={isSelf ? 'secondary.main' : 'background.default'}
+            borderRadius="borderRadius"
+            boxShadow={1}
+            px={2}
+            py={1}
+            className={classes.font}
+          >
+            <Link
+              color="inherit"
+              component={RouterLink}
+              to={`/profile/${username}`}
+              variant="h4"
+            >
+              {username}
+            </Link>
+
+            <Typography color="inherit" variant="body2">
+              <Twemoji text={message} />
+            </Typography>
+          </Box>
+          <Box
+            mt={1}
+            display="flex"
+            justifyContent={isSelf ? 'flex-end' : 'flex-start'}
+          >
+            <Typography noWrap color="textSecondary" variant="caption">
+              <TimeAgo date={time} />
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+    </div>
+  );
+};
 
 export default Message;

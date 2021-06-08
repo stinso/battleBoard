@@ -241,8 +241,10 @@ const BattleView = () => {
   const { user } = useContext(AuthContext);
   const account = user.user?.session?.ethAddress;
   const username = user.user?.session?.username;
-  const [sponsoredEventNotificationOpen, setSponsoredEventNotificationOpen] = useState(true);
-  const [showGameStyleNotification, setShowGameStyleNotification] = useState(true);
+  const [sponsoredEventNotificationOpen, setSponsoredEventNotificationOpen] =
+    useState(true);
+  const [showGameStyleNotification, setShowGameStyleNotification] =
+    useState(true);
 
   const handleTabsChange = (event, value) => {
     setCurrentTab(value);
@@ -598,18 +600,21 @@ const BattleView = () => {
 
   const generateSponsoredEventNotification = useCallback(() => {
     return (
-      <Alert severity="info" action={
-        <IconButton
-          aria-label="close"
-          color="inherit"
-          size="small"
-          onClick={() => {
-            setSponsoredEventNotificationOpen(false);
-          }}
-        >
-          <CloseIcon fontSize="inherit" />
-        </IconButton>
-      }>
+      <Alert
+        severity="info"
+        action={
+          <IconButton
+            aria-label="close"
+            color="inherit"
+            size="small"
+            onClick={() => {
+              setSponsoredEventNotificationOpen(false);
+            }}
+          >
+            <CloseIcon fontSize="inherit" />
+          </IconButton>
+        }
+      >
         <AlertTitle>Heads up!</AlertTitle>
         This is a sponsored event, you don't need to pay anything to register
         for it.
@@ -829,7 +834,8 @@ const BattleView = () => {
           />
         )}
 
-        {isSponsoredEvent && sponsoredEventNotificationOpen &&
+        {isSponsoredEvent &&
+          sponsoredEventNotificationOpen &&
           !(
             eventState === EventStates.ONGOING ||
             eventState === EventStates.EVENT_ENDED
@@ -840,9 +846,12 @@ const BattleView = () => {
           <GamingNetworkNotLinkedNotification />
         )}
 
-        {shouldDisplayStyle && showGameStyleNotification &&
-          <GameStyleNotification style={eventData.style} setShowGameStyleNotification={setShowGameStyleNotification} />
-        }
+        {shouldDisplayStyle && showGameStyleNotification && (
+          <GameStyleNotification
+            style={eventData.style}
+            setShowGameStyleNotification={setShowGameStyleNotification}
+          />
+        )}
 
         {/* NOTIFICATIONS */}
         {showDisputeNotification && <DisputeNotification />}

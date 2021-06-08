@@ -25,7 +25,7 @@ import {
   getDuration,
   getGameFormatFromIndex
 } from '../../utils/helpers';
-import Chat from '../chat/index'
+import Chat from '../chat/index';
 //import Chat from '../chat/chatTest'
 
 const AllBetAmount = 'All Bet Amount';
@@ -246,10 +246,7 @@ const LobbyView = () => {
 
   return (
     <>
-      <Chat
-        roomType={1}
-        typeId={game}
-        />
+      <Chat roomType={1} typeId={game} />
       <Container maxWidth="lg">
         <Box ml={2} mt={5} mb={3}>
           <Typography
