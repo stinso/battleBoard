@@ -2,19 +2,7 @@ import defaultAvatar from '../../assets/img/placeholder.jpg';
 import { Twemoji } from 'react-emoji-render';
 import TimeAgo from 'react-timeago';
 import { useHistory, Link as RouterLink } from 'react-router-dom';
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Container,
-  Divider,
-  Grid,
-  Link,
-  IconButton,
-  Typography,
-  makeStyles
-} from '@material-ui/core';
+import { Avatar, Box, Link, Typography, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {

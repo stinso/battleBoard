@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
@@ -16,6 +16,7 @@ import {
 import Linking from './Linking';
 import ChangePassword from './ChangePassword';
 import { AuthContext } from '../../context/AuthContext';
+import ImageUpload from '../CustomUpload/ImageUpload';
 
 const font = "'Saira', sans-serif";
 
@@ -80,6 +81,13 @@ const userAccountSetting = ({ className, ...rest }) => {
   const classes = useStyles();
   const { user } = useContext(AuthContext);
   const [currentTab, setCurrentTab] = useState(tabs.linking);
+  const [imageURL, setImageURL] = useState('');
+
+  useEffect(() => {
+    if (user.user.session?.dpHigh) {
+      setImageURL(user.user.session.dpHigh ? user.user.session.dpHigh : '');
+    }
+  }, [user.user]);
 
   const handleTabsChange = (event, value) => {
     setCurrentTab(value);
@@ -87,32 +95,12 @@ const userAccountSetting = ({ className, ...rest }) => {
 
   return (
     <div className={clsx(classes.root, className)} {...rest}>
-      <Container maxWidth="md">
+      <Container>
         <Grid container spacing={2}>
           <Grid item xs={12} lg={4}>
             <Paper className={classes.paper}>
-              <Box display="flex" justifyContent="center">
-                <Avatar
-                  className={classes.avatar}
-                  src="/static/images/panda.png"
-                />
-              </Box>
+              <ImageUpload avatar imageURL={imageURL} addBtnColor="default" />
               <Box marginTop={2}>
-                <Box display="flex" justifyContent="center">
-                  <Button
-                    className={classes.button}
-                    size="small"
-                    color="secondary"
-                    variant="contained"
-                  >
-                    Change avatar
-                  </Button>
-                </Box>
-                <Box display="flex" justifyContent="center" marginTop={1}>
-                  <Typography variant="body2" color="textSecondary">
-                    User profile image updated
-                  </Typography>
-                </Box>
                 <Box mt={4}>
                   <Button
                     className={classes.button}

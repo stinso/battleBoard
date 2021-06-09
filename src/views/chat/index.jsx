@@ -1,5 +1,16 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useLayoutEffect
+} from 'react';
 import { useLocation } from 'react-router-dom';
+import {
+  disableBodyScroll,
+  enableBodyScroll,
+  clearAllBodyScrollLocks
+} from 'body-scroll-lock';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
 import Message from './Message';
@@ -12,10 +23,6 @@ import {
   Avatar,
   Box,
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
   Divider,
   IconButton,
   Input,
@@ -153,6 +160,10 @@ const ChatPage = ({ roomType, typeId }) => {
   const location = useLocation();
 
   const username = user.user.session?.username;
+
+  /* const targetElement = document.querySelector('body');
+  console.log(targetElement)
+  disableBodyScroll(targetElement); */
 
   const getCaretPosition = () => {
     if (window.getSelection && window.getSelection().getRangeAt) {
@@ -404,6 +415,21 @@ const ChatPage = ({ roomType, typeId }) => {
 
   return (
     <div>
+      <meta charSet="UTF-8" />
+      <audio
+        type="audio/mpeg"
+        loop
+        src={newMessage}
+        ref={audioNewMessage}
+        className={classes.none}
+      />
+      <audio
+        loop
+        type="audio/mpeg"
+        src={messageSent}
+        ref={audioSendMessage}
+        className={classes.none}
+      />
       {showChatBox ? (
         <div className={classes.root}>
           <Box
