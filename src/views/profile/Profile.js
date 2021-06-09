@@ -36,7 +36,7 @@ import {
   getBalanceFromCS
 } from '../../service/node.service';
 import { AuthContext } from '../../context/AuthContext';
-//import ChallengeModal from '../challenges/ChallengeModal';
+import ChallengeModal from '../challenges/ChallengeModal';
 //import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
 import { getFormattedUserName, formatInCHAIN } from '../../utils/helpers.js';
 import * as Sentry from '@sentry/react';
@@ -98,6 +98,9 @@ const useStyles = makeStyles((theme) => ({
   },
   active: {
     color: theme.palette.secondary.main
+  },
+  challengeButton: {
+    margin: theme.spacing(1)
   }
 }));
 
@@ -130,7 +133,7 @@ const Profile = ({ className, ...rest }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isBanned, setIsBanned] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(true);
-  //const [showChallengeModal, setShowChallengeModal] = useState(false);
+  const [showChallengeModal, setShowChallengeModal] = useState(false);
   const [chainNetworkBalance, setChainNetworkBalance] = useState(0);
 
   useEffect(() => {
@@ -230,6 +233,11 @@ const Profile = ({ className, ...rest }) => {
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Container maxWidth="lg">
+        <ChallengeModal
+          showChallengeModal={showChallengeModal}
+          username={name}
+          setShowChallengeModal={setShowChallengeModal}
+        />
         <Grid container spacing={2}>
           <Grid item xs={12} lg={4}>
             <Card className={classes.card}>
@@ -253,6 +261,40 @@ const Profile = ({ className, ...rest }) => {
                     {getFormattedUserName(name?.toUpperCase(), 9)}
                   </Typography>
                 </Box>
+                {isOwnProfile === false && (
+                  <Box display="flex" justifyContent="center" marginTop={1}>
+                    <Button
+                      className={classes.challengeButton}
+                      variant={isFollowing === true ? 'outlined' : 'contained'}
+                      color="secondary"
+                      href="#pablo"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (isFollowing === true) {
+                          handleUnFollowClick();
+                        } else {
+                          handleFollowClick();
+                        }
+                      }}
+                      size="small"
+                    >
+                      {isFollowing === false ? 'Follow' : 'Following'}
+                    </Button>
+                    <Button
+                      className={classes.challengeButton}
+                      color="secondary"
+                      variant="outlined"
+                      href="#pablo"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowChallengeModal(true);
+                      }}
+                      size="small"
+                    >
+                      Challenge
+                    </Button>
+                  </Box>
+                )}
                 <List>
                   <ListItem className={classes.item}>
                     <Button

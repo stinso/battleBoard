@@ -109,8 +109,6 @@ const TournamentsTable = ({ tournaments, isLoading }) => {
   const allSupportedGames = ['All Games', ...AllSupportedGamesNames];
   const [showModal, setShowModal] = useState(false);
 
-  console.log(tournaments);
-
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
