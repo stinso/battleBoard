@@ -141,8 +141,6 @@ const Linking = (props) => {
     msg: ''
   });
 
-  console.log(showPSNModal);
-
   const schema = yup.object({
     psnName: yup.string().required('This field is required.')
   });

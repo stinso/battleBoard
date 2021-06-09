@@ -119,7 +119,6 @@ export default function ValidatedForm() {
   });
 
   const submitForm = async (values) => {
-    console.log(values.attachment);
     try {
       setSubmitMessage('');
       const game = games.find((row) => {

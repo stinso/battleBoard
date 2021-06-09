@@ -115,8 +115,6 @@ const Profile = ({ className, ...rest }) => {
   const history = useHistory();
   const [currentTab, setCurrentTab] = useState(tabs.matches);
 
-  console.log(currentTab);
-
   const handleTabsChange = (event, value) => {
     setCurrentTab(value);
   };
