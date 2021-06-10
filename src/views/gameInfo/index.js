@@ -151,6 +151,18 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 8,
     paddingRight: 8,
     borderColor: theme.palette.primary.main
+  },
+  title: {
+    position: 'relative',
+    '&:after': {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      content: '" "',
+      height: 3,
+      width: 48,
+      backgroundColor: theme.palette.primary.main
+    }
   }
 }));
 
@@ -634,7 +646,11 @@ const BattleView = () => {
   const consoleModalWindow = () => {
     return (
       <Dialog open={modal} maxWidth="sm" fullWidth>
-        <DialogTitle variant="h2">Register</DialogTitle>
+        <DialogTitle disableTypography>
+          <Typography className={classes.title} variant="h6">
+            Register
+          </Typography>
+        </DialogTitle>
         <DialogContent>
           <Box>
             {notification.showNotification && (

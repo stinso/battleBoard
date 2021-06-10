@@ -60,6 +60,19 @@ const useStyles = makeStyles((theme) => ({
   },
   warning: {
     color: '#ff1744'
+  },
+  title: {
+    marginBottom: theme.spacing(2),
+    position: 'relative',
+    '&:after': {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      content: '" "',
+      height: 3,
+      width: 48,
+      backgroundColor: theme.palette.primary.main
+    }
   }
 }));
 

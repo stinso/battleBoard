@@ -89,6 +89,18 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     minWidth: 180,
     padding: 0
+  },
+  title: {
+    position: 'relative',
+    '&:after': {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      content: '" "',
+      height: 3,
+      width: 48,
+      backgroundColor: theme.palette.primary.main
+    }
   }
 }));
 
@@ -200,10 +212,10 @@ const MatchHistory = ({ className, username }) => {
   return (
     <div>
       {showModal && generateModal()}
-      <Typography variant="h6" color="textPrimary">
+      <Typography className={classes.title} variant="h6" color="textPrimary">
         Match History
       </Typography>
-      <Box mt={2}>
+      <Box mt={4}>
         <FormControl variant="outlined" className={classes.formControl}>
           <Select
             id="select-game"

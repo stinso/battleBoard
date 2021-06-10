@@ -90,6 +90,11 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     minWidth: 180,
     padding: 0
+  },
+  noEventsBox: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: theme.spacing(4)
   }
 }));
 
@@ -124,85 +129,98 @@ const TournamentsTable = ({ tournaments, isLoading }) => {
       {showModal && generateModal()}
       <PerfectScrollbar>
         <Box minWidth={300}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Game</TableCell>
-                <TableCell>Event Name</TableCell>
-                <TableCell>Game Format</TableCell>
-                <TableCell>Entry</TableCell>
-                <TableCell>Start Time</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Result</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {paginatedTournaments &&
-                paginatedTournaments.map((row, index) => {
-                  return (
-                    <TableRow
-                      spacing={0}
-                      hover
-                      key={index}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (
-                          row.eventStatus === 'Cancelled' ||
-                          row.eventStatus === 'Deleted'
-                        ) {
-                          setSelectedRow(row);
-                          setShowModal(true);
-                        } else {
-                          history.push(`/gameInformationPage/${row.id}`);
-                        }
-                      }}
-                    >
-                      <TableCell>{row.gameShortName}</TableCell>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>
-                        {getGameFormatFromIndex(row.game, row.gameFormat)}
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          color={row.sponsored ? 'secondary' : 'textPrimary'}
-                          variant="body2"
+          {paginatedTournaments ? (
+            <>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Game</TableCell>
+                    <TableCell>Event Name</TableCell>
+                    <TableCell>Game Format</TableCell>
+                    <TableCell>Entry</TableCell>
+                    <TableCell>Start Time</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Result</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {paginatedTournaments &&
+                    paginatedTournaments.map((row, index) => {
+                      return (
+                        <TableRow
+                          spacing={0}
+                          hover
+                          key={index}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (
+                              row.eventStatus === 'Cancelled' ||
+                              row.eventStatus === 'Deleted'
+                            ) {
+                              setSelectedRow(row);
+                              setShowModal(true);
+                            } else {
+                              history.push(`/gameInformationPage/${row.id}`);
+                            }
+                          }}
                         >
-                          {row.sponsored
-                            ? 'Free'
-                            : `$${row.betAmount.toFixed(2)}`}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        {getDateFromEpoch(row.startTime)}{' '}
-                        {getTimeFromEpoch(row.startTime)}
-                      </TableCell>
-                      <TableCell>
-                        <Typography className={classes.waiting} variant="body2">
-                          {formatEventStatus(row.eventStatus)}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        {['WinnersDeclared'].includes(row.eventStatus)
-                          ? row.rank
-                            ? `Won : Ranked ${row.rank}`
-                            : `Lost`
-                          : `--`}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-          <TablePagination
-            component="div"
-            count={tournaments.length}
-            labelRowsPerPage={'Rows per page'}
-            onChangePage={handlePageChange}
-            onChangeRowsPerPage={handleLimitChange}
-            page={page}
-            rowsPerPage={limit}
-            rowsPerPageOptions={[5, 10, 25]}
-          />
+                          <TableCell>{row.gameShortName}</TableCell>
+                          <TableCell>{row.name}</TableCell>
+                          <TableCell>
+                            {getGameFormatFromIndex(row.game, row.gameFormat)}
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              color={
+                                row.sponsored ? 'secondary' : 'textPrimary'
+                              }
+                              variant="body2"
+                            >
+                              {row.sponsored
+                                ? 'Free'
+                                : `$${row.betAmount.toFixed(2)}`}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            {getDateFromEpoch(row.startTime)}{' '}
+                            {getTimeFromEpoch(row.startTime)}
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              className={classes.waiting}
+                              variant="body2"
+                            >
+                              {formatEventStatus(row.eventStatus)}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            {['WinnersDeclared'].includes(row.eventStatus)
+                              ? row.rank
+                                ? `Won : Ranked ${row.rank}`
+                                : `Lost`
+                              : `--`}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                component="div"
+                count={tournaments.length}
+                labelRowsPerPage={'Rows per page'}
+                onChangePage={handlePageChange}
+                onChangeRowsPerPage={handleLimitChange}
+                page={page}
+                rowsPerPage={limit}
+                rowsPerPageOptions={[5, 10, 25]}
+              />
+            </>
+          ) : (
+            <Box className={classes.noEventsBox}>
+              <Typography>No Tournaments Found.</Typography>
+            </Box>
+          )}
         </Box>
       </PerfectScrollbar>
     </Card>

@@ -85,13 +85,10 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(4)
   },
   title: {
-    marginBottom: 10,
-    fontFamily: font,
-    fontSize: 32,
     position: 'relative',
     '&:after': {
       position: 'absolute',
-      bottom: -8,
+      bottom: 0,
       left: 0,
       content: '" "',
       height: 3,
@@ -420,7 +417,7 @@ const Linking = (props) => {
     <div>
       {showModal.show && ModalWindow()}
       {showPSNModal.show && PSNModal()}
-      <Typography className={classes.title} variant="h2" color="textPrimary">
+      <Typography className={classes.title} variant="h6" color="textPrimary">
         Linked Accounts
       </Typography>
       <Table>

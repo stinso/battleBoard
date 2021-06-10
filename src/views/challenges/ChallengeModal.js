@@ -72,6 +72,18 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(6),
     paddingRight: theme.spacing(6),
     justifyContent: 'center'
+  },
+  title: {
+    position: 'relative',
+    '&:after': {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      content: '" "',
+      height: 3,
+      width: 48,
+      backgroundColor: theme.palette.primary.main
+    }
   }
 }));
 
@@ -364,7 +376,7 @@ const ChallengeModal = ({
             }}
           >
             <DialogTitle disableTypography className={classes.dialogTitle}>
-              <Typography variant="h6">
+              <Typography className={classes.title} variant="h6">
                 CHALLENGE {username && username}
               </Typography>
               <IconButton

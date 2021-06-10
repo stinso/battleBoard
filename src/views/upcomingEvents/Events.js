@@ -120,6 +120,9 @@ const Events = ({ className }) => {
   return (
     <div className={classes.root}>
       <Container maxWidth="lg">
+        <Typography className={classes.title} variant="h1" color="textPrimary">
+          My Events
+        </Typography>
         <Box mt={3}>
           <Tabs
             onChange={handleTabsChange}

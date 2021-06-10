@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
-import { Button, Typography, makeStyles } from '@material-ui/core';
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardMedia,
+  Grid,
+  Typography,
+  makeStyles
+} from '@material-ui/core';
 import defaultAvatar from '../../assets/img/placeholder.jpg';
 import {
   getFollowingService,
@@ -22,6 +31,50 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom: 60
     },
     margin: 0
+  },
+  followerCard: {
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing(2),
+    transition: 'transform 0.15s ease-in-out',
+    maxWidth: '160px',
+    '&:hover': { transform: 'scale3d(1.05, 1.05, 1)' }
+  },
+  avatar: {
+    width: theme.spacing(9),
+    height: theme.spacing(9),
+    border: '3px solid',
+    borderColor: theme.palette.secondary.main
+  },
+  centerContainer: {
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  cardContent: {
+    padding: 0,
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  title: {
+    marginBottom: theme.spacing(2)
+  },
+  followButton: {
+    textTransform: 'none'
+  },
+  link: {
+    textDecoration: 'none'
+  },
+  title: {
+    marginBottom: theme.spacing(2),
+    position: 'relative',
+    '&:after': {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      content: '" "',
+      height: 3,
+      width: 48,
+      backgroundColor: theme.palette.primary.main
+    }
   }
 }));
 
@@ -79,40 +132,60 @@ const Following = ({ username, isOwnProfile }) => {
       <Typography className={classes.title} variant="h6" color="textPrimary">
         Following
       </Typography>
+
       {followingUsers.length > 0 ? (
-        followingUsers.map((row, index) => {
-          return (
-            <div key={index}>
-              <Typography
-                key={row.username}
-                component={RouterLink}
-                to={`/profile/${row.username}`}
-              >
-                {getFormattedUserName(row.username, 16)}
-              </Typography>
-              <ImageTagWithErrorImage
-                src={row.dpHigh ? row.dpHigh : defaultAvatar}
-                alt="profile image"
-                className="img-fluid rounded-circle profile-image"
-                errorImage={defaultAvatar}
-              />
-              {isOwnProfile && (
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleUnFollowClick(row.username);
-                  }}
-                >
-                  unfollow
-                </Button>
-              )}
-            </div>
-          );
-        })
+        <Grid
+          container
+          direction="row"
+          justify="space-evenly"
+          alignItems="center"
+          spacing={3}
+        >
+          {followingUsers.map((row, index) => {
+            return (
+              <Grid item key={index} md={3} sm={6} xs={12} align="center">
+                <Card className={classes.followerCard} variant="outlined">
+                  <RouterLink
+                    className={classes.link}
+                    style={{ textDecoration: 'none' }}
+                    to={`/profile/${row.username}`}
+                  >
+                    <CardMedia>
+                      <div className={classes.centerContainer}>
+                        <Avatar className={classes.avatar} src={row.dpHigh} />
+                      </div>
+                    </CardMedia>
+                    <Box className={classes.cardContent} mt={1}>
+                      <Typography variant="h4" color="textPrimary">
+                        {getFormattedUserName(row.username, 16)}
+                      </Typography>
+                    </Box>
+                  </RouterLink>
+                  {isOwnProfile && (
+                    <Box className={classes.cardContent} mt={1}>
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        size="small"
+                        className={classes.followButton}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleUnFollowClick(row.username);
+                        }}
+                      >
+                        Unfollow
+                      </Button>
+                    </Box>
+                  )}
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
       ) : (
-        <p>No Followers Found.</p>
+        <Box display="flex" mt={2} justifyContent="center">
+          <Typography variant="h4">No Followers Found.</Typography>
+        </Box>
       )}
     </div>
   );

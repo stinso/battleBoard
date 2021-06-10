@@ -7,7 +7,13 @@ import Fifa_Image from '../../assets/img/fifa-background-image.jpg';
 const useStyles = makeStyles((theme) => ({
   paper: {
     backgroundColor: theme.palette.background.dark,
-    elevation: 10
+    elevation: 10,
+    width: '100%'
+  },
+  image: {
+    width: '100%',
+    objectFit: 'cover',
+    maxHeight: '400px'
   }
 }));
 
@@ -27,7 +33,7 @@ const GameSectionOne = () => {
   };
   return (
     <Paper className={classes.paper}>
-      <img alt="Presentation" src={getImage()} />
+      <img className={classes.image} alt="Presentation" src={getImage()} />
     </Paper>
   );
 };

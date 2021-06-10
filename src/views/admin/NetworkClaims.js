@@ -49,6 +49,19 @@ const useStyles = makeStyles((theme) => ({
     height: '60px',
     width: '60px',
     padding: 0
+  },
+  title: {
+    marginBottom: theme.spacing(2),
+    position: 'relative',
+    '&:after': {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      content: '" "',
+      height: 3,
+      width: 48,
+      backgroundColor: theme.palette.primary.main
+    }
   }
 }));
 
