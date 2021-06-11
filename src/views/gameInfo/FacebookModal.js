@@ -29,6 +29,22 @@ import { FacebookAppID, ChainGamesFBID, Devices } from '../../config/constants';
 import { Alert } from '@material-ui/lab';
 import * as Sentry from '@sentry/react';
 
+const useStyles = makeStyles((theme) => ({
+  title: {
+    marginBottom: theme.spacing(2),
+    position: 'relative',
+    '&:after': {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      content: '" "',
+      height: 3,
+      width: 48,
+      backgroundColor: theme.palette.primary.main
+    }
+  }
+}));
+
 const FaceBookStepsModal = ({
   consoleSelectedValue,
   handleConsoleOnChange,
@@ -45,6 +61,7 @@ const FaceBookStepsModal = ({
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const location = useLocation();
+  const classes = useStyles();
 
   useEffect(() => {
     if (isSponsoredEvent) {
@@ -272,7 +289,11 @@ const FaceBookStepsModal = ({
           maxWidth="lg"
           fullWidth
         >
-          <DialogTitle>Facebook Steps</DialogTitle>
+          <DialogTitle>
+            <Typography className={classes.title} variant="h6">
+              Facebook Steps
+            </Typography>
+          </DialogTitle>
           <DialogContent>
             {facebookNotification.showNotification && (
               <Alert
@@ -286,14 +307,15 @@ const FaceBookStepsModal = ({
                   });
                 }}
               >
-                <span> icon </span>
-                <span>{facebookNotification.message}</span>
+                <Typography variant="body1">
+                  icon {facebookNotification.message}
+                </Typography>
               </Alert>
             )}
-            <p>
+            <Typography variant="body1">
               In order to register for the sponsored event, Please complete
               below steps.
-            </p>
+            </Typography>
             <h2>{`Step ${currentStep}`}</h2>
             <div>{/* <Nav currentStep={currentStep} totalSteps={3} /> */}</div>
             {renderAppropriateCard(currentStep)}
