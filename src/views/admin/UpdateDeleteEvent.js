@@ -275,14 +275,14 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
       <Dialog
         open={showMoreInfo}
         onClose={() => setShowMoreInfoModal(false)}
-        minWidth="md"
+        maxWidth="sm"
         fullWidth
       >
         <DialogTitle>Event Info</DialogTitle>
         <DialogContent>
           <Grid container>
             {Object.keys(selectedRow).map((key, index) => (
-              <Grid item xs={6}>
+              <Grid key={index} item xs={6}>
                 {key === 'startTime' ||
                 key === 'endTime' ||
                 key === 'dontScheduleAfter' ||
@@ -318,7 +318,6 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
             Delete
           </Button>
           <Button
-            color="warning"
             variant="contained"
             data-dismiss="modal"
             type="button"

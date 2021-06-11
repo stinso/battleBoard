@@ -62,6 +62,7 @@ const AddEvent = ({
   initialValues = {
     gameName: games[0].name,
     style: Styles[2].name,
+    eventName: '',
     gameFormat: defaultGameFormat,
     betAmount: BetAmount[0],
     maxWinners: MaxWinners[0],
@@ -524,8 +525,7 @@ const AddEvent = ({
                   <DateTimePicker
                     name="startDateTime"
                     value={startDateTime}
-                    isValidDate={startDateTimeValid}
-                    required="true"
+                    required={true}
                     inputVariant="outlined"
                     onChange={(e) => {
                       setStartDateTime(e);
@@ -559,7 +559,7 @@ const AddEvent = ({
                   >
                     <DateTimePicker
                       name="endDateTime"
-                      required="true"
+                      required={true}
                       value={endDateTime}
                       inputVariant="outlined"
                       onChange={(e) => {
