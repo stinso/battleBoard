@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Typography, makeStyles } from '@material-ui/core';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
 import xboxImage from '../../assets/img/xbox-logo-profile-page.png';
 import playStationImage from '../../assets/img/ps-logo.png';
@@ -8,6 +7,16 @@ import battleNetImage from '../../assets/img/battle-net-logo.png';
 import { getLinkedNetworkService } from '../../service/node.service.js';
 import { SupportedGameNetworks } from '../../config/constants';
 import * as Sentry from '@sentry/react';
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardMedia,
+  Grid,
+  Typography,
+  makeStyles
+} from '@material-ui/core';
 
 const NetworkEnums = {
   XBOX_NETWORK_ID: SupportedGameNetworks[0].index,
@@ -39,6 +48,28 @@ const useStyles = makeStyles((theme) => ({
       width: 48,
       backgroundColor: theme.palette.primary.main
     }
+  },
+  followerCard: {
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing(2),
+    transition: 'transform 0.15s ease-in-out',
+    maxWidth: '160px',
+    '&:hover': { transform: 'scale3d(1.05, 1.05, 1)' }
+  },
+  avatar: {
+    width: theme.spacing(9),
+    height: theme.spacing(9),
+    border: '3px solid',
+    borderColor: theme.palette.secondary.main
+  },
+  centerContainer: {
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  cardContent: {
+    padding: 0,
+    display: 'flex',
+    justifyContent: 'center'
   }
 }));
 
@@ -103,16 +134,43 @@ const GamingNetworks = ({ username }) => {
       <Typography className={classes.title} variant="h6" color="textPrimary">
         GamingNetworks
       </Typography>
-      {data.map((row, index) => {
-        return (
-          <div key={index}>
-            <img alt={`${row.name} Logo`} src={row.imageSrc} />
-            <Typography variant="body2" color="textPrimary">
-              {row.gamerTag}
-            </Typography>
-          </div>
-        );
-      })}
+
+      {data.length > 0 ? (
+        <Grid
+          container
+          direction="row"
+          justify="space-evenly"
+          alignItems="center"
+          spacing={3}
+        >
+          {data.map((row, index) => {
+            return (
+              <Grid item key={index} md={4} sm={4} xs={12} align="center">
+                <Card className={classes.followerCard} variant="outlined">
+                  <CardMedia>
+                    <div className={classes.centerContainer}>
+                      <Avatar
+                        className={classes.avatar}
+                        src={row.imageSrc}
+                        alt={`${row.name} Logo`}
+                      />
+                    </div>
+                  </CardMedia>
+                  <Box className={classes.cardContent} mt={1}>
+                    <div className={classes.centerContainer}>
+                      <Typography variant="h4">{row.gamerTag}</Typography>
+                    </div>
+                  </Box>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
+      ) : (
+        <Box display="flex" mt={2} justifyContent="center">
+          <Typography variant="h4">No linked networks found.</Typography>
+        </Box>
+      )}
     </div>
   );
 };
