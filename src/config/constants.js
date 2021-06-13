@@ -213,7 +213,9 @@ export const Styles = [
   { name: 'Solos', index: 2 },
   { name: 'Duos', index: 3 },
   { name: 'Trios', index: 4 },
-  { name: 'Quads', index: 5 }
+  { name: 'Quads', index: 5 },
+  { name: 'Bracket', index: 6 },
+  { name: 'Public 1v1', index: 7 }
 ];
 
 export const GameFormat = {

@@ -1,6 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Grid, Paper, makeStyles } from '@material-ui/core';
+import {
+  Avatar,
+  Box,
+  Grid,
+  Paper,
+  makeStyles,
+  Typography
+} from '@material-ui/core';
 import secondPrizes from '../../assets/img/secondPrizes.png';
 import thirdPrizes from '../../assets/img/thirdPrizes.png';
 import {
@@ -14,15 +21,89 @@ import forthPrizes from '../../assets/img/forthPrizes.png';
 import fifthPrize from '../../assets/img/fifthPrize.png';
 import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {},
   price: {
-    height: '280px'
+    maxHeight: '280px',
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(2)
+  },
+  avatar: {
+    marginTop: theme.spacing(3),
+    height: theme.spacing(12),
+    width: theme.spacing(12),
+    marginBottom: theme.spacing(1),
+    border: '3px solid',
+    borderColor: theme.palette.secondary.main
+  },
+  place: {
+    fontSize: 20
   }
 }));
 
 const Info = ({ eventData }) => {
   const classes = useStyles();
+  const [winners, setWinners] = useState([]);
+
+  console.log(winners);
+
+  const getPriceInfo = () => {
+    let winnersTemp = [];
+    if (eventData.winners?.length > 0) {
+      winnersTemp = eventData.winners.map((row, index) => {
+        let imgSrc = null;
+        switch (index + 1) {
+          case 1:
+            imgSrc = grandPrize;
+            break;
+          case 2:
+            imgSrc = secondPrizes;
+            break;
+          case 3:
+            imgSrc = thirdPrizes;
+            break;
+          default:
+            imgSrc = null;
+            break;
+        }
+        return {
+          imgSrc,
+          prizeAmount: row.winningsInUSD.toFixed(2),
+          ...row
+        };
+      });
+    } else {
+      const totalPrize = calculateTotalPrizePool(
+        eventData?.betAmount,
+        eventData.maxPlayers
+      );
+      winnersTemp = eventData.rewardsDistribution.map((row, index) => {
+        let imgSrc = null;
+        switch (index + 1) {
+          case 1:
+            imgSrc = grandPrize;
+            break;
+          case 2:
+            imgSrc = secondPrizes;
+            break;
+          case 3:
+            imgSrc = thirdPrizes;
+            break;
+          default:
+            imgSrc = null;
+            break;
+        }
+        return { imgSrc, prizeAmount: calIndividualPrize(row, totalPrize) };
+      });
+    }
+    setWinners(winnersTemp);
+  };
+
+  useEffect(() => {
+    if (eventData?.maxPlayers && eventData.rewardsDistribution?.length > 0) {
+      getPriceInfo();
+    }
+  }, [eventData]);
 
   const generatePrizeCard = (additionalPrize = false) => {
     let winners = [];
@@ -149,9 +230,9 @@ const Info = ({ eventData }) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={4}>
-        <Paper className={classes.price}>
-          <h2>
+      <Grid item align="center" xs={3}>
+        <Paper item className={classes.price}>
+          {/* <h2>
             {`PRIZES ${
               eventData && !eventData.declareWinnerTx ? ' UP TO' : ''
             }`}
@@ -159,15 +240,51 @@ const Info = ({ eventData }) => {
           <hr />
           {eventData?.maxPlayers &&
             eventData.rewardsDistribution?.length > 0 &&
-            generatePrizeCard()}
+            generatePrizeCard()} */}
+          <Typography className={classes.place} variant="h6">
+            1st
+          </Typography>
+          <Avatar className={classes.avatar}></Avatar>
+          <Typography className={classes.place} variant="h6">
+            {winners.length > 0 && `$${winners[0].prizeAmount}`}
+          </Typography>
         </Paper>
       </Grid>
-      <Grid item xs={4}>
-        <Paper className={classes.price}></Paper>
+      <Grid item align="center" xs={3}>
+        <Paper className={classes.price}>
+          <Typography className={classes.place} variant="h6">
+            2nd
+          </Typography>
+          <Avatar className={classes.avatar}></Avatar>
+          <Typography className={classes.place} variant="h6">
+            {winners.length > 1 && `$${winners[1].prizeAmount}`}
+          </Typography>
+        </Paper>
       </Grid>
-      <Grid item xs={4}>
-        <Paper className={classes.price}></Paper>
+      <Grid item align="center" item xs={3}>
+        <Paper className={classes.price}>
+          <Typography className={classes.place} variant="h6">
+            3rd
+          </Typography>
+          <Avatar className={classes.avatar}></Avatar>
+          <Typography className={classes.place} variant="h6">
+            {winners.length > 2 && `$${winners[2].prizeAmount}`}
+          </Typography>
+        </Paper>
       </Grid>
+      {eventData &&
+        eventData.maxWinners &&
+        eventData.rewardsDistribution?.length >= 4 && (
+          <Grid item align="center" xs={3}>
+            <Paper className={classes.price}>
+              <Typography className={classes.place} variant="h6">
+                Additional Prizes{' '}
+                {eventData && !eventData.declareWinnerTx && 'UP TO'}
+              </Typography>
+              {/* {eventData?.maxPlayers && generatePrizeCard(true)} */}
+            </Paper>
+          </Grid>
+        )}
     </Grid>
   );
 };

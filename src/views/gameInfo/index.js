@@ -266,7 +266,7 @@ const BattleView = () => {
     { value: 'info', label: 'Info' },
     { value: 'howToPlay', label: 'How to Play' },
     { value: 'rules', label: 'Rules' },
-    { value: 'teams', label: 'Teams' }
+    { value: 'teams', label: 'Bracket' }
   ];
 
   async function getChainAmount(betAmount) {

@@ -11,7 +11,6 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-import defaultAvatar from '../../assets/img/placeholder.jpg';
 import {
   getFollowingService,
   unFollowService
@@ -53,9 +52,6 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
     display: 'flex',
     justifyContent: 'center'
-  },
-  title: {
-    marginBottom: theme.spacing(2)
   },
   followButton: {
     textTransform: 'none'
