@@ -1,32 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
-import {
-  Box,
-  Card,
-  Container,
-  Divider,
-  Tab,
-  Tabs,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-  makeStyles
-} from '@material-ui/core';
+import { useLocation } from 'react-router-dom';
+import { Box, Button, Container, makeStyles } from '@material-ui/core';
 import * as Sentry from '@sentry/react';
 import { getEventsService } from '../../service/node.service';
+import { getTournamentsService } from '../../service/tournaments.service.js';
 import {
   getTimeFromEpoch,
   getDateFromEpoch,
   calculateTotalPrizePool,
-  getDuration,
-  getGameFormatFromIndex
+  getDuration
 } from '../../utils/helpers';
 import Chat from '../chat/index';
-//import Chat from '../chat/chatTest'
+import Events from './Events';
+import Tournaments from './Tournaments';
 
 const AllBetAmount = 'All Bet Amount';
 const AllDates = 'All Dates';
@@ -66,18 +52,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const TabEnums = {
+  Events: 'Events',
+  Tournaments: 'Tournaments'
+};
+
 const applyPagination = (list, page, limit) => {
   return list.slice(page * limit, page * limit + limit);
 };
 
 const LobbyView = () => {
   const classes = useStyles();
-  const [currentTab, setCurrentTab] = useState('all');
-  const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(10);
-
-  // new
-  const [lobbyData, setLobbyData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [allBetAmounts, setAllBetAmounts] = useState([]);
   const [betAmounts, setBetAmounts] = useState([]);
@@ -85,52 +70,18 @@ const LobbyView = () => {
   const [allDates, setAllDates] = useState([]);
   const [dates, setDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState([]);
+  const [selectedTab, setSelectedTab] = useState(TabEnums.Events);
 
-  const filterEvents = () => {
-    const result = lobbyData.filter((event) => {
-      if (currentTab === 'free') {
-        if (event.entry === 'Free') {
-          return true;
-        }
-      } else if (currentTab === 'paid') {
-        if (event.entry !== 'Free') {
-          return true;
-        }
-      } else {
-        return true;
-      }
-    });
-
-    return result;
-  };
-
-  const filteredEvents = filterEvents();
-  const paginatedLobbyData = applyPagination(filteredEvents, page, limit);
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleLimitChange = (event) => {
-    setLimit(parseInt(event.target.value));
-  };
+  const [events, setEvents] = useState([]);
+  const [tournaments, setTournaments] = useState([]);
 
   const location = useLocation();
   const game = location.pathname.substring(
     location.pathname.lastIndexOf('/') + 1
   );
 
-  const tabs = [
-    { value: 'all', label: 'All' },
-    { value: 'free', label: 'Free' },
-    { value: 'paid', label: 'Paid' }
-  ];
-
-  const handleTabsChange = (event, value) => {
-    setCurrentTab(value);
-  };
-
-  async function getLobbyData() {
+  async function getLobbyData(selectedTab) {
+    setIsLoading(true);
     try {
       let gameID = 0;
       //TODO remove gameID hard coded below and send gameID of appropriate game like GameID for COD is 1
@@ -149,7 +100,13 @@ const LobbyView = () => {
           break;
       }
 
-      const { data } = await getEventsService({ gameID });
+      let service = getEventsService;
+
+      if (selectedTab === TabEnums.Tournaments) {
+        service = getTournamentsService;
+      }
+
+      const { data } = await service({ gameID });
       if (data.success === true && data.events?.length > 0) {
         const editedData = data.events.map((row) => {
           return {
@@ -186,7 +143,11 @@ const LobbyView = () => {
           }
           return 0;
         });
-        setLobbyData(editedData);
+        if (selectedTab === TabEnums.Events) {
+          setEvents(editedData);
+        } else {
+          setTournaments(editedData);
+        }
         setSelectedBetAmount(AllBetAmount);
         setSelectedDate(AllDates);
         const allPossibleBetAmount = editedData.map((row) => row.betAmount);
@@ -236,102 +197,40 @@ const LobbyView = () => {
   };
 
   useEffect(() => {
-    getLobbyData();
-  }, []);
-
-  const history = useHistory();
-  const handleRowClick = (id) => {
-    history.push('/gameInformationPage/' + id);
-  };
+    getLobbyData(selectedTab);
+  }, [selectedTab]);
 
   return (
     <>
       <Chat roomType={1} typeId={game} />
       <Container maxWidth="lg">
-        <Box ml={2} mt={5} mb={3}>
-          <Typography
-            display="inline"
-            variant="h2"
-            color="textPrimary"
-            className={classes.title}
-          >
-            Upcoming Events
-          </Typography>
-        </Box>
-        <Box mt={1} mb={3}>
-          <Tabs
-            onChange={handleTabsChange}
-            scrollButtons="auto"
-            textColor="secondary"
-            value={currentTab}
-            variant="scrollable"
-          >
-            {tabs.map((tab) => (
-              <Tab key={tab.value} label={tab.label} value={tab.value} />
-            ))}
-          </Tabs>
-          <Divider />
-        </Box>
-        <Card className={classes.card}>
-          <Box minWidth={300}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Event Name</TableCell>
-                  <TableCell>Game Format</TableCell>
-                  <TableCell>Participants</TableCell>
-                  <TableCell>Start Time</TableCell>
-                  <TableCell>Entry</TableCell>
-                  <TableCell>Duration</TableCell>
-                  <TableCell align="right">Prize Pool</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {paginatedLobbyData.map((entry) => {
-                  return (
-                    <TableRow
-                      hover
-                      key={entry.id}
-                      onClick={() => handleRowClick(entry.id)}
-                    >
-                      <TableCell className={classes.rankCell}>
-                        {entry.game}
-                      </TableCell>
-                      <TableCell>
-                        {getGameFormatFromIndex(entry.game, entry.gameFormat)}
-                      </TableCell>
-                      <TableCell>
-                        {`${entry.noOfUsersEnrolled} of ${entry.maxUsers}`}
-                      </TableCell>
-                      <TableCell>{`${entry.date} ${entry.time}`}</TableCell>
-                      <TableCell
-                        className={
-                          entry.betAmount == 'Free' ? classes.free : ''
-                        }
-                      >
-                        {entry.betAmount}
-                      </TableCell>
-                      <TableCell>{`${entry.duration} min`}</TableCell>
-                      <TableCell className={classes.priceCell} align="right">
-                        {entry.prizePool}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-            <TablePagination
-              component="div"
-              count={filteredEvents.length}
-              labelRowsPerPage={'Rows per page'}
-              onChangePage={handlePageChange}
-              onChangeRowsPerPage={handleLimitChange}
-              page={page}
-              rowsPerPage={limit}
-              rowsPerPageOptions={[5, 10, 25]}
-            />
+        <Box display="flex" justifyContent="center" mt={2}>
+          <Box mr={2}>
+            <Button
+              size="large"
+              variant={
+                selectedTab === TabEnums.Events ? 'contained' : 'outlined'
+              }
+              color="secondary"
+              onClick={() => setSelectedTab(TabEnums.Events)}
+            >
+              Upcoming Events
+            </Button>
           </Box>
-        </Card>
+          <Button
+            size="large"
+            variant={selectedTab === TabEnums.Events ? 'outlined' : 'contained'}
+            color="secondary"
+            onClick={() => setSelectedTab(TabEnums.Tournaments)}
+          >
+            Upcoming Tournaments
+          </Button>
+        </Box>
+        {selectedTab === TabEnums.Events ? (
+          <Events events={events} isLoading={isLoading} />
+        ) : (
+          <Tournaments tournaments={tournaments} isLoading={isLoading} />
+        )}
       </Container>
     </>
   );
