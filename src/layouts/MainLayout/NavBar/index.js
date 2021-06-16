@@ -67,7 +67,7 @@ const mySections = [
       {
         title: 'My Challanges',
         icon: AwardIcon,
-        href: '/challenges',
+        href: '/myChallenges',
         isExternal: false
       }
     ]

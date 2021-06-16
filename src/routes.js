@@ -99,7 +99,7 @@ const routes = [
       },
       {
         exact: true,
-        path: '/challenges',
+        path: '/myChallenges',
         component: lazy(() => import('src/views/challenges'))
       },
       {

@@ -338,12 +338,12 @@ const LiveStats = () => {
         <Container maxWidth="lg">
           <Chat roomType={2} typeId={id} />
           <Typography
-              className={classes.title}
-              variant="h5"
-              color="textPrimary"
-            >
-              Live Stats
-            </Typography>
+            className={classes.title}
+            variant="h5"
+            color="textPrimary"
+          >
+            Live Stats
+          </Typography>
 
           <Grid container justify="center">
             <Grid item md={12} className={classes.gridItem}>
@@ -366,13 +366,17 @@ const LiveStats = () => {
                   ) : (
                     <>
                       <Box display="flex" justifyContent="center">
-                        <Typography variant="body1" color="secondary" component="div">
-                        <Box fontWeight="fontWeightBold">
-                        EVENT STATUS:&nbsp;
+                        <Typography
+                          variant="body1"
+                          color="secondary"
+                          component="div"
+                        >
+                          <Box fontWeight="fontWeightBold">
+                            EVENT STATUS:&nbsp;
                           </Box>
                         </Typography>
                         <Typography variant="body1" color="secondary">
-                        {eventStatus}{' '}
+                          {eventStatus}{' '}
                           {` ${
                             EVENT_STATUS_ENUM.ENDED_WINNER_DECLARED_SOON ===
                             eventStatus

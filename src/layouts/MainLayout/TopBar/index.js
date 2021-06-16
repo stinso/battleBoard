@@ -8,7 +8,6 @@ import React, {
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { THEMES } from 'src/constants';
 import {
   AppBar,
   Badge,
@@ -29,17 +28,19 @@ import {
 import { ChevronDown as ArrowIcon, Menu as MenuIcon } from 'react-feather';
 import Logo from 'src/components/Logo';
 import SearchIcon from '@material-ui/icons/Search';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { AuthContext } from '../../../context/AuthContext';
 import { useLocation, useHistory } from 'react-router-dom';
 import { SET_USER_INFO } from '../../../actions/actions.js';
+import { SessionID } from '../../../reducer/reducer.js';
+import { PublicVapidKey } from '../../../config/constants';
 import * as Sentry from '@sentry/react';
-
+import { checkIsPrivatePath, checkIsPublicPath } from '../../../utils/helpers';
 import {
   getMyInfoService,
   sendSubscriptionOfServiceWorkerService
 } from '../../../service/battleServerService';
+import Notifications from './Notifications';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,6 +68,8 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
   const [openMenu, setOpenMenu] = useState(false);
   const history = useHistory();
   const location = useLocation();
+  const [isLoggedIn, setIsLoggedIn] = useState(SessionID === 'true');
+  const [userName, setUserName] = useState(user.user?.session?.username);
 
   // dropdowns
   const [anchorElShooter, setAnchorElShooter] = useState(null);
@@ -106,7 +109,59 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
     setOpenMenu(true);
   };
 
-  const getUserInfo = async () => {
+  useEffect(() => {
+    setUserName(user.user?.session?.username);
+  }, [user.user]);
+
+  const setLoggedIn = useCallback(() => {
+    setIsLoggedIn(false);
+  }, [location.pathname]);
+
+  function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, '+')
+      .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
+  async function registerSW() {
+    let subscription = '';
+
+    try {
+      const register = await navigator.serviceWorker.register(
+        '/notificationSW.js'
+      );
+
+      const tempSubscription = await register.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(PublicVapidKey)
+      });
+
+      subscription = JSON.stringify(tempSubscription);
+    } catch (error) {
+      console.log('🚀 ~ file: index.jsx ~ line 57 ~ registerSW ~ error', error);
+    } finally {
+      const { data } = await sendSubscriptionOfServiceWorkerService({
+        subscription
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (isLoggedIn && 'serviceWorker' in navigator && 'PushManager' in window) {
+      registerSW();
+    }
+  }, [isLoggedIn]);
+
+  const getUserInfo = useCallback(async () => {
     try {
       const { data } = await getMyInfoService({});
       if (data.success === true) {
@@ -125,10 +180,14 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
         }
       });
     }
-  };
+  }, [location.pathname]);
 
   useEffect(() => {
-    getUserInfo();
+    if (checkIsPublicPath(location.pathname)) {
+      setLoggedIn();
+    } else if (checkIsPrivatePath(location.pathname)) {
+      getUserInfo();
+    }
   }, [location.pathname]);
 
   return (
@@ -148,11 +207,7 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
             <IconButton aria-label="search" color="inherit">
               <SearchIcon />
             </IconButton>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+            <Notifications />
             <Box ml={2} display="flex">
               {user.user?.isLoggedIn ? (
                 <Button className={classes.root} onClick={onNavOpen}>
@@ -311,14 +366,7 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
                   <IconButton aria-label="search" color="inherit">
                     <SearchIcon />
                   </IconButton>
-                  <IconButton
-                    aria-label="show 17 new notifications"
-                    color="inherit"
-                  >
-                    <Badge badgeContent={17} color="secondary">
-                      <NotificationsIcon />
-                    </Badge>
-                  </IconButton>
+                  <Notifications />
                   <Box ml={2} display="flex">
                     {user.user?.isLoggedIn ? (
                       <Button className={classes.root} onClick={onNavOpen}>

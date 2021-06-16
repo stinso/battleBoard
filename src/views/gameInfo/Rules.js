@@ -46,7 +46,7 @@ const renderAppropriateRules = (game, gameFormat, classes) => {
       switch (gameFormat) {
         case 0:
           return (
-            <List dense={false}>
+            <List dense={true}>
               <ListItem>
                 <ListItemIcon>
                   <FiberManualRecordTwoToneIcon className={classes.bullet} />

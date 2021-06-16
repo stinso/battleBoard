@@ -88,17 +88,17 @@ export const checkIsPrivatePath = (path) => {
     [
       '/dashboard',
       '/upcomingEvents',
-      '/profile/[username]',
+      '/profile',
       '/admin',
-      '/gameInformationPage/[id]',
-      '/actionGamePage/[game]',
+      '/gameInformationPage',
+      '/actionGamePage',
       '/404',
       '/500',
       '/reportIssue',
       '/userAccountSetting',
-      '/liveStats/[id]',
+      '/liveStats',
       '/myChallenges',
-      '/dispute/[id]',
+      '/dispute',
       '/claim-network'
     ].includes(path)
   ) {

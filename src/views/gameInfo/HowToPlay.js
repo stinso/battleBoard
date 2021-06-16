@@ -116,7 +116,7 @@ const renderAppropriateHowToPlay = (game, gameFormat, console, classes) => {
   switch (game) {
     case 'Call of Duty: Modern Warfare':
       return (
-        <ol>
+        <List dense={true}>
           <ListItem>
             <ListItemIcon>
               <FiberManualRecordTwoToneIcon className={classes.bullet} />
@@ -154,7 +154,7 @@ const renderAppropriateHowToPlay = (game, gameFormat, console, classes) => {
               your event history.
             </ListItemText>
           </ListItem>
-        </ol>
+        </List>
       );
     case 'Madden NFL 21':
       return (
