@@ -124,6 +124,11 @@ const routes = [
       },
       {
         exact: true,
+        path: '/liveStats/:id?',
+        component: lazy(() => import('src/views/liveStats'))
+      },
+      {
+        exact: true,
         path: ['/', '/dashboard'],
         component: HomeView
       },
