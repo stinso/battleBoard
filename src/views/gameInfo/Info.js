@@ -231,7 +231,7 @@ const Info = ({ eventData }) => {
   return (
     <Grid container spacing={2}>
       <Grid item align="center" xs={3}>
-        <Paper item className={classes.price}>
+        <Paper className={classes.price}>
           {/* <h2>
             {`PRIZES ${
               eventData && !eventData.declareWinnerTx ? ' UP TO' : ''

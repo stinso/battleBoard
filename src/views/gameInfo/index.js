@@ -48,7 +48,8 @@ import {
   checkGameRequiresManualResult,
   isMinutesRemaining,
   checkWithCurrentTime,
-  getDuration
+  getDuration,
+  isEventBracket
 } from '../../utils/helpers.js';
 import {
   getEventDetailsFromId,
@@ -305,35 +306,8 @@ const BattleView = () => {
           (row) => row.username === username
         );
 
-        if (checkIsOngoingEvent(data.events.startTime, data.events.endTime)) {
-          setEventState(EventStates.ONGOING);
-        } else if (checkHasEventEnded(data.events.endTime)) {
-          if (checkGame) {
-            if (
-              playerInfo?.status ===
-                StatusReceivedFromAPI.RESULT_NOT_SUBMITTED &&
-              checkWithCurrentTime(data.events.endTime, 15)
-            ) {
-              setEventState(EventStates.CAN_SUBMIT_RESULT);
-            } else if (
-              playerInfo?.status === StatusReceivedFromAPI.DISPUTE_OCCURED &&
-              checkWithCurrentTime(
-                data.events.endTime,
-                HoursAfterWhichCanSubmitEvidence * 60
-              )
-            ) {
-              setShowDisputeNotification(true);
-              setEventState(EventStates.CAN_SUBMIT_DISPUTE_EVIDENCE);
-            } else {
-              setEventState(EventStates.CANNOT_DO_ANYTHING);
-            }
-          } else {
-            setEventState(EventStates.EVENT_ENDED);
-          }
-        } else {
-          if (data.events.challengeID) {
-            setEventState(EventStates.CANNOT_DO_ANYTHING);
-          } else {
+        if (isEventBracket(data.events.style)) {
+          if (data.events.eventStatus === 'Waiting') {
             if (playerInfo?.username) {
               if (isMinutesRemaining(data.events.startTime, 120)) {
                 setEventState(EventStates.CAN_UNREGISTER);
@@ -345,6 +319,55 @@ const BattleView = () => {
                 setEventState(EventStates.CAN_REGISTER);
               } else {
                 setEventState(EventStates.CANNOT_REGISTER_EVENT_NOT_STARTED);
+              }
+            }
+          } else {
+            setEventState(EventStates.CANNOT_DO_ANYTHING);
+          }
+        } else {
+          if (checkIsOngoingEvent(data.events.startTime, data.events.endTime)) {
+            setEventState(EventStates.ONGOING);
+          } else if (checkHasEventEnded(data.events.endTime)) {
+            if (checkGame) {
+              if (
+                playerInfo?.status ===
+                  StatusReceivedFromAPI.RESULT_NOT_SUBMITTED &&
+                checkWithCurrentTime(data.events.endTime, 15)
+              ) {
+                setEventState(EventStates.CAN_SUBMIT_RESULT);
+              } else if (
+                playerInfo?.status === StatusReceivedFromAPI.DISPUTE_OCCURED &&
+                checkWithCurrentTime(
+                  data.events.endTime,
+                  HoursAfterWhichCanSubmitEvidence * 60
+                )
+              ) {
+                setShowDisputeNotification(true);
+                setEventState(EventStates.CAN_SUBMIT_DISPUTE_EVIDENCE);
+              } else {
+                setEventState(EventStates.CANNOT_DO_ANYTHING);
+              }
+            } else {
+              setEventState(EventStates.EVENT_ENDED);
+            }
+          } else {
+            if (data.events.challengeID) {
+              setEventState(EventStates.CANNOT_DO_ANYTHING);
+            } else {
+              if (playerInfo?.username) {
+                if (isMinutesRemaining(data.events.startTime, 120)) {
+                  setEventState(EventStates.CAN_UNREGISTER);
+                } else {
+                  setEventState(
+                    EventStates.CANNOT_UNREGISTER_EVENT_NOT_STARTED
+                  );
+                }
+              } else {
+                if (isMinutesRemaining(data.events.startTime, 16)) {
+                  setEventState(EventStates.CAN_REGISTER);
+                } else {
+                  setEventState(EventStates.CANNOT_REGISTER_EVENT_NOT_STARTED);
+                }
               }
             }
           }
@@ -1018,9 +1041,15 @@ const BattleView = () => {
             value={currentTab}
             variant="scrollable"
           >
-            {tabs.map((tab) => (
-              <Tab key={tab.value} label={tab.label} value={tab.value} />
-            ))}
+            {tabs.map((tab) =>
+              tab.value !== 'teams' ? (
+                <Tab key={tab.value} label={tab.label} value={tab.value} />
+              ) : (
+                isEventBracket(eventData.style) && (
+                  <Tab key={tab.value} label={tab.label} value={tab.value} />
+                )
+              )
+            )}
           </Tabs>
           <Divider />
         </Box>
@@ -1034,7 +1063,7 @@ const BattleView = () => {
             eventData={eventData}
           />
         )}
-        {currentTab === 'teams' && <Teams />}
+        {currentTab === 'teams' && <Teams eventData={eventData} />}
       </Container>
     </Page>
   );

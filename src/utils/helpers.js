@@ -9,10 +9,8 @@ import {
   Devices,
   Styles
 } from '../config/constants';
-import {
-  convertChaintoUSDService,
-  getBalanceFromCS
-} from '../service/node.service';
+import { convertChaintoUSDService } from '../service/battleServerService';
+import { getBalanceFromCS } from '../service/centralServerService';
 const DATE_FORMAT = 'Do MMM YYYY';
 const TIME_FORMAT = 'HH:mm';
 
@@ -84,6 +82,7 @@ export const getUSDValueOfAChain = async () => {
   }
 };
 
+// TODO for adding new page/path: always add new path here if they are authenticated path
 export const checkIsPrivatePath = (path) => {
   if (
     [
@@ -99,7 +98,8 @@ export const checkIsPrivatePath = (path) => {
       '/userAccountSetting',
       '/liveStats/[id]',
       '/myChallenges',
-      '/dispute/[id]'
+      '/dispute/[id]',
+      '/claim-network'
     ].includes(path)
   ) {
     return true;
@@ -107,6 +107,7 @@ export const checkIsPrivatePath = (path) => {
   return false;
 };
 
+// TODO for adding new page/path: always add new path here if they are public path
 export const checkIsPublicPath = (path) => {
   if (
     [
@@ -205,8 +206,9 @@ export function formatInCHAIN(amountInSmallestUnit) {
   );
 }
 
+// TODO for adding new game which requires manual result: add game name here
 export const checkGameRequiresManualResult = (game) => {
-  if (['Madden NFL 21', 'Fifa'].includes(game)) {
+  if (['Madden NFL 21', 'Fifa', 'NBA 2K21'].includes(game)) {
     return true;
   } else {
     return false;
@@ -236,15 +238,16 @@ export const getDevicesArray = () => {
 };
 
 export const getDeviceName = (deviceID) => {
-  if (Devices.XBOX_SERIES.id === deviceID) {
-    return Devices.XBOX_SERIES.name;
-  } else if (Devices.XBOX_ONE.id === deviceID) {
-    return Devices.XBOX_ONE.name;
-  } else if (Devices.PS4.id === deviceID) {
-    return Devices.PS4.name;
-  } else if (Devices.PS5.id === deviceID) {
-    return Devices.PS5.name;
+  let deviceName = 'Not Specified';
+
+  for (let device in Devices) {
+    if (Devices[device].id === deviceID) {
+      deviceName = Devices[device].name;
+      break;
+    }
   }
+
+  return deviceName;
 };
 
 export const getStyleName = (styleIndex) => {
@@ -254,4 +257,12 @@ export const getStyleName = (styleIndex) => {
     }
   });
   return style.name;
+};
+
+export const isEventBracket = (styleIndex) => {
+  // Hard Coded: 6 is the style index of bracket
+  if (styleIndex === 6) {
+    return true;
+  }
+  return false;
 };
