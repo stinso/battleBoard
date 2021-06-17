@@ -8,6 +8,9 @@ import {
   calIndividualPrize
 } from '../../utils/helpers.js';
 import grandPrize from '../../assets/img/grandPrize.png';
+import gold from '../../assets/img/trophy_gold.png'
+import silver from '../../assets/img/trophy_silver.png'
+import bronze from '../../assets/img/trophy_bronze.png'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -18,11 +21,42 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     marginTop: theme.spacing(3),
-    height: theme.spacing(12),
-    width: theme.spacing(12),
+    height: theme.spacing(16),
+    width: theme.spacing(16),
     marginBottom: theme.spacing(1),
     border: '3px solid',
     borderColor: theme.palette.secondary.main
+  },
+  avatarGold: {
+    marginTop: theme.spacing(2),
+    height: theme.spacing(16),
+    width: theme.spacing(16),
+    marginBottom: theme.spacing(1),
+    border: '3px solid',
+    borderColor: '#F1B640',
+    boxShadow:
+        "0px 3px 1px -2px #F1B640,0px 2px 2px 0px #F1B640,0px 1px 5px 0px #F1B640"
+  },
+  avatarSilver: {
+    marginTop: theme.spacing(2),
+    height: theme.spacing(16),
+    width: theme.spacing(16),
+    marginBottom: theme.spacing(1),
+    border: '3px solid',
+    borderColor: '#999999',
+    boxShadow:
+        "0px 3px 1px -2px #999999,0px 2px 2px 0px #999999,0px 1px 5px 0px #999999"
+  },
+  avatarBronze: {
+    marginTop: theme.spacing(2),
+    height: theme.spacing(16),
+    width: theme.spacing(16),
+    marginBottom: theme.spacing(1),
+    border: '3px solid',
+    borderColor: '#DD6D40',
+    boxShadow:
+        "0px 3px 1px -2px #DD6D40,0px 2px 2px 0px #DD6D40,0px 1px 5px 0px #DD6D40"
+    
   },
   place: {
     fontSize: 20
@@ -100,7 +134,7 @@ const Info = ({ eventData }) => {
           <Typography className={classes.place} variant="h6">
             1st
           </Typography>
-          <Avatar className={classes.avatar}></Avatar>
+          <Avatar className={classes.avatarGold} src={gold} component={Paper} elevation={10}></Avatar>
           <Typography className={classes.place} variant="h6">
             {winners.length > 0 && `$${winners[0].prizeAmount}`}
           </Typography>
@@ -111,7 +145,7 @@ const Info = ({ eventData }) => {
           <Typography className={classes.place} variant="h6">
             2nd
           </Typography>
-          <Avatar className={classes.avatar}></Avatar>
+          <Avatar className={classes.avatarSilver} src={silver} component={Paper} elevation={10}></Avatar>
           <Typography className={classes.place} variant="h6">
             {winners.length > 1 && `$${winners[1].prizeAmount}`}
           </Typography>
@@ -122,7 +156,7 @@ const Info = ({ eventData }) => {
           <Typography className={classes.place} variant="h6">
             3rd
           </Typography>
-          <Avatar className={classes.avatar}></Avatar>
+          <Avatar className={classes.avatarBronze} src={bronze} component={Paper} elevation={10}></Avatar>
           <Typography className={classes.place} variant="h6">
             {winners.length > 2 && `$${winners[2].prizeAmount}`}
           </Typography>

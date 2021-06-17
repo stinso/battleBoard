@@ -6,11 +6,6 @@ import React, {
   useLayoutEffect
 } from 'react';
 import { useLocation } from 'react-router-dom';
-import {
-  disableBodyScroll,
-  enableBodyScroll,
-  clearAllBodyScrollLocks
-} from 'body-scroll-lock';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
 import Message from './Message';
