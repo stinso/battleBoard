@@ -176,7 +176,7 @@ const Dispute = () => {
   const generateMoreInfoModal = () => {
     return (
       <Dialog
-        maxWidth="sm"
+        maxWidth="md"
         fullWidth
         open={showMoreInfo}
         onClose={() => {
@@ -210,8 +210,7 @@ const Dispute = () => {
                       style={{
                         width: '300px',
                         height: '100px',
-                        overflow: 'auto',
-                        display: 'inline-block'
+                        overflow: 'auto'
                       }}
                     >
                       {userInfo.description}
@@ -282,7 +281,7 @@ const Dispute = () => {
         <DialogActions>
           <Button
             variant="contained"
-            color="warning"
+            color="primary"
             data-dismiss="modal"
             disabled={winner === ''}
             onClick={() => {
@@ -294,7 +293,7 @@ const Dispute = () => {
 
           <Button
             variant="contained"
-            color="warning"
+            color="primary"
             data-dismiss="modal"
             onClick={() => {
               setWinner('');
