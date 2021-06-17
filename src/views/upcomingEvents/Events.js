@@ -1,16 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import {
   Box,
-  Card,
   Container,
   Divider,
   Tab,
   Tabs,
   Typography,
-  Paper,
   makeStyles
 } from '@material-ui/core';
 import Countdown from 'react-countdown';

@@ -16,7 +16,6 @@ import {
   unFollowService
 } from '../../service/node.service';
 import { getFormattedUserName } from '../../utils/helpers.js';
-import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
 import * as Sentry from '@sentry/react';
 
 const useStyles = makeStyles((theme) => ({

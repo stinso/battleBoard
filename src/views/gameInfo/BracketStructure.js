@@ -8,10 +8,7 @@ import {
   Typography
 } from '@material-ui/core';
 import { useEffect, useState, useContext, createContext } from 'react';
-import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
-import defaultAvatar from '../../assets/img/placeholder.jpg';
 import { Bracket, Seed, SeedItem, SeedTeam, SeedTime } from 'react-brackets';
-import { useLocation } from 'react-router-dom';
 import { getTimeAndDateFromEpoch } from '../../utils/helpers.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -71,8 +68,7 @@ const PlayerComponent = ({
         <Avatar
           className={classes.avatar}
           alt="profile image"
-          src={dpHigh || defaultAvatar}
-          errorImage={defaultAvatar}
+          src={dpHigh}
         />
       )}
       {username}

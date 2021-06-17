@@ -123,10 +123,9 @@ const Profile = ({ className, ...rest }) => {
   };
 
   // new
-  const { user, dispatch } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   //const router = useRouter()
   const { username } = useParams();
-  const wrapper = useRef('wrapper');
   //const [profileTabs, setProfileTabs] = useState(TabsEnum.MatchHistory);
   const [imageURL, setImageURL] = useState(defaultAvatar);
   const [name, setName] = useState('');

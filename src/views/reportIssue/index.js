@@ -14,12 +14,9 @@ import {
   Card,
   CardContent,
   Container,
-  Divider,
   FormControl,
   FormHelperText,
-  Input,
   InputLabel,
-  Link,
   MenuItem,
   Select,
   TextField,
@@ -29,7 +26,6 @@ import {
 import Page from 'src/components/Page';
 import Logo from 'src/components/Logo';
 import { Alert } from '@material-ui/lab';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 
 const FILE_SIZE = 5000024;
 

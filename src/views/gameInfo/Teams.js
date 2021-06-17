@@ -7,7 +7,7 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const Teams = ({ eventData }) => {
+const Bracket = ({ eventData }) => {
   const classes = useStyles();
 
   return (
@@ -17,8 +17,8 @@ const Teams = ({ eventData }) => {
   );
 };
 
-Teams.propTypes = {
+Bracket.propTypes = {
   className: PropTypes.string
 };
 
-export default Teams;
+export default Bracket;

@@ -22,7 +22,7 @@ import Page from 'src/components/Page';
 import Info from './Info';
 import HowToPlay from './HowToPlay';
 import Rules from './Rules';
-import Teams from './Teams';
+import Bracket from './Bracket';
 import { AuthContext } from '../../context/AuthContext';
 import moment from 'moment';
 import EthAddressNotLinkedNotification from '../home/HomeView/EthAddressNotLinkedNotification';
@@ -253,7 +253,7 @@ const BattleView = () => {
     { value: 'info', label: 'Info' },
     { value: 'howToPlay', label: 'How to Play' },
     { value: 'rules', label: 'Rules' },
-    { value: 'teams', label: 'Bracket' }
+    { value: 'bracket', label: 'Bracket' }
   ];
 
   async function getChainAmount(betAmount) {
@@ -1033,7 +1033,7 @@ const BattleView = () => {
               variant="scrollable"
             >
               {tabs.map((tab) =>
-                tab.value !== 'teams' ? (
+                tab.value !== 'bracket' ? (
                   <Tab key={tab.value} label={tab.label} value={tab.value} />
                 ) : (
                   isEventBracket(eventData.style) && (
@@ -1054,7 +1054,7 @@ const BattleView = () => {
               eventData={eventData}
             />
           )}
-          {currentTab === 'teams' && <Teams eventData={eventData} />}
+          {currentTab === 'bracket' && <Bracket eventData={eventData} />}
         </Container>
       </FacebookProvider>
     </Page>

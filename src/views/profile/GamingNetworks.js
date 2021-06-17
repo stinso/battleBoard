@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation, Link as RouterLink } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import xboxImage from '../../assets/img/xbox-logo-profile-page.png';
 import playStationImage from '../../assets/img/ps-logo.png';
 import battleNetImage from '../../assets/img/battle-net-logo.png';
@@ -10,7 +10,6 @@ import * as Sentry from '@sentry/react';
 import {
   Avatar,
   Box,
-  Button,
   Card,
   CardMedia,
   Grid,
