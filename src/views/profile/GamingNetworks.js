@@ -16,6 +16,7 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const NetworkEnums = {
   XBOX_NETWORK_ID: SupportedGameNetworks[0].index,
@@ -69,6 +70,9 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
     display: 'flex',
     justifyContent: 'center'
+  },
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -76,8 +80,10 @@ const GamingNetworks = ({ username }) => {
   const classes = useStyles();
   const location = useLocation();
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getLinkedNetworks = async () => {
+    setIsLoading(true);
     try {
       const { data } = await getLinkedNetworkService({ username });
       if (data.success === true) {
@@ -120,6 +126,7 @@ const GamingNetworks = ({ username }) => {
         }
       });
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -166,8 +173,25 @@ const GamingNetworks = ({ username }) => {
           })}
         </Grid>
       ) : (
-        <Box display="flex" mt={2} justifyContent="center">
-          <Typography variant="h4">No linked networks found.</Typography>
+        <Box>
+          {isLoading ? (
+            <>
+              <Box display="flex" justifyContent="center" pt={2}>
+                <Typography variant="h5" className={classes.noEventsText}>
+                  Fetching Linked Networks
+                </Typography>
+              </Box>
+              <Box>
+                <LoadingScreen width={200} />
+              </Box>
+            </>
+          ) : (
+            <Box display="flex" justifyContent="center" pt={2} mb={2}>
+              <Typography variant="h5" className={classes.noEventsText}>
+                No Linked Networks Found
+              </Typography>
+            </Box>
+          )}
         </Box>
       )}
     </div>

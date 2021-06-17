@@ -25,6 +25,7 @@ import playStationIcon from '../../assets/img/playstation-logo.png';
 import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import * as Sentry from '@sentry/react';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,6 +63,9 @@ const useStyles = makeStyles((theme) => ({
       width: 48,
       backgroundColor: theme.palette.primary.main
     }
+  },
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -75,6 +79,7 @@ const NetworkClaims = () => {
   const [claims, setClaims] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -87,6 +92,7 @@ const NetworkClaims = () => {
   const paginatedClaims = applyPagination(claims, page, limit);
 
   const getNetworkClaims = async (state) => {
+    setIsLoading(true);
     try {
       const { data } = await getNetworkClaimsService({});
       if (data.success) {
@@ -103,6 +109,7 @@ const NetworkClaims = () => {
         }
       });
     }
+    setIsLoading(false);
   };
 
   const approveClaim = async (id) => {
@@ -152,91 +159,108 @@ const NetworkClaims = () => {
       <Typography className={classes.title} variant="h6" color="textPrimary">
         Network Claims
       </Typography>
-
-      {claims.length > 0 ? (
-        <>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Network</TableCell>
-                <TableCell>Username</TableCell>
-                <TableCell>GamerTag</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Evidence</TableCell>
-                <TableCell>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {paginatedClaims.map((row, index) => {
-                return (
-                  <TableRow spacing={0} hover key={index}>
-                    <TableCell
-                      className={classes.imageCell}
-                      align="center"
-                      padding="none"
-                    >
-                      <img className={classes.rowImage} src={playStationIcon} />
-                    </TableCell>
-                    <TableCell>{row.username}</TableCell>
-                    <TableCell>{row.gamerTag}</TableCell>
-                    <TableCell>{row.description}</TableCell>
-                    <TableCell>
-                      {row.proofPath && (
-                        <Link href={row.proofPath} target={`_blank`}>
-                          View
-                        </Link>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Tooltip title="Accept">
-                        <IconButton
-                          color="secondary"
-                          aria-label="accept"
-                          component="span"
-                          id={'Accept' + index}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            approveClaim(row.id);
-                          }}
-                        >
-                          <CheckOutlinedIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Reject">
-                        <IconButton
-                          color="secondary"
-                          aria-label="modify"
-                          component="span"
-                          id={'Reject' + index}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            rejectClaim(row.id);
-                          }}
-                        >
-                          <CloseOutlinedIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-          <TablePagination
-            component="div"
-            count={claims.length}
-            labelRowsPerPage={'Rows per page'}
-            onChangePage={handlePageChange}
-            onChangeRowsPerPage={handleLimitChange}
-            page={page}
-            rowsPerPage={limit}
-            rowsPerPageOptions={[5, 10, 25]}
-          />
-        </>
+      {!isLoading ? (
+        claims.length > 0 ? (
+          <>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Network</TableCell>
+                  <TableCell>Username</TableCell>
+                  <TableCell>GamerTag</TableCell>
+                  <TableCell>Description</TableCell>
+                  <TableCell>Evidence</TableCell>
+                  <TableCell>Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedClaims.map((row, index) => {
+                  return (
+                    <TableRow spacing={0} hover key={index}>
+                      <TableCell
+                        className={classes.imageCell}
+                        align="center"
+                        padding="none"
+                      >
+                        <img
+                          className={classes.rowImage}
+                          src={playStationIcon}
+                        />
+                      </TableCell>
+                      <TableCell>{row.username}</TableCell>
+                      <TableCell>{row.gamerTag}</TableCell>
+                      <TableCell>{row.description}</TableCell>
+                      <TableCell>
+                        {row.proofPath && (
+                          <Link href={row.proofPath} target={`_blank`}>
+                            View
+                          </Link>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Tooltip title="Accept">
+                          <IconButton
+                            color="secondary"
+                            aria-label="accept"
+                            component="span"
+                            id={'Accept' + index}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              approveClaim(row.id);
+                            }}
+                          >
+                            <CheckOutlinedIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Reject">
+                          <IconButton
+                            color="secondary"
+                            aria-label="modify"
+                            component="span"
+                            id={'Reject' + index}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              rejectClaim(row.id);
+                            }}
+                          >
+                            <CloseOutlinedIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+            <TablePagination
+              component="div"
+              count={claims.length}
+              labelRowsPerPage={'Rows per page'}
+              onChangePage={handlePageChange}
+              onChangeRowsPerPage={handleLimitChange}
+              page={page}
+              rowsPerPage={limit}
+              rowsPerPageOptions={[5, 10, 25]}
+            />
+          </>
+        ) : (
+          <Box display="flex" justifyContent="center" pt={2} mb={2}>
+            <Typography variant="h5" className={classes.noEventsText}>
+              No Data Found
+            </Typography>
+          </Box>
+        )
       ) : (
-        <Box display="flex" mt={2} justifyContent="center">
-          <Typography variant="h3">No Data Found</Typography>
-        </Box>
+        <>
+          <Box display="flex" justifyContent="center" pt={2}>
+            <Typography variant="h5" className={classes.noEventsText}>
+              Fetching Data
+            </Typography>
+          </Box>
+          <Box>
+            <LoadingScreen width={200} />
+          </Box>
+        </>
       )}
     </>
   );

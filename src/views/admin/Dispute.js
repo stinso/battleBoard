@@ -35,6 +35,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,6 +67,9 @@ const useStyles = makeStyles((theme) => ({
       width: 48,
       backgroundColor: theme.palette.primary.main
     }
+  },
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -89,6 +93,7 @@ const Dispute = () => {
   const [showMoreInfo, setShowMoreInfoModal] = useState(false);
   const [winner, setWinner] = useState('');
   const [msg, setMsg] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (fetchDataInfo.fetch) {
@@ -97,6 +102,7 @@ const Dispute = () => {
   }, [fetchDataInfo, tabs]);
 
   const getDisputes = async (state) => {
+    setIsLoading(true);
     try {
       const { data } = await getDisputesService({ resolved: Boolean(state) });
       if (data.success) {
@@ -114,6 +120,7 @@ const Dispute = () => {
       });
     }
     setFetchDataInfo({ fetch: false });
+    setIsLoading(false);
   };
 
   const submitDisputeDecision = async () => {
@@ -330,6 +337,7 @@ const Dispute = () => {
             setShowMoreInfoModal={setShowMoreInfoModal}
             setMsg={setMsg}
             classes={classes}
+            isLoading={isLoading}
           />
         )}
         {currentTab === 'resolved' && (
@@ -339,6 +347,7 @@ const Dispute = () => {
             setShowMoreInfoModal={setShowMoreInfoModal}
             setMsg={setMsg}
             classes={classes}
+            isLoading={isLoading}
           />
         )}
       </Box>
@@ -351,71 +360,87 @@ const DisputesTable = ({
   setSelectedRow,
   setShowMoreInfoModal,
   setMsg,
-  classes
+  classes,
+  isLoading
 }) => {
   return (
     <>
-      {disputes.length > 0 ? (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Event ID</TableCell>
-              <TableCell>Participant 1</TableCell>
-              <TableCell>Participant 2</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {disputes.map((row, index) => {
-              return (
-                <TableRow key={row.eventID}>
-                  <TableCell>{row.eventID}</TableCell>
-                  <TableCell
-                    className={`${
-                      row.users[0].isWinner ? classes.success : classes.danger
-                    }`}
-                  >
-                    {row.users[0].username}
-                  </TableCell>
-                  <TableCell
-                    className={`${
-                      row.users[1].isWinner ? classes.success : classes.danger
-                    }`}
-                  >
-                    {row.users[1].username}
-                  </TableCell>
-                  <TableCell>
-                    {getDateFromEpoch(row.conflictDate)}
-                    <br />
-                    {getTimeFromEpoch(row.conflictDate)}
-                  </TableCell>
-                  <TableCell>
-                    <Tooltip title="Info">
-                      <IconButton
-                        color="secondary"
-                        aria-label="info"
-                        component="span"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setSelectedRow(row);
-                          setShowMoreInfoModal(true);
-                          setMsg('');
-                        }}
-                      >
-                        <InfoOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+      {!isLoading ? (
+        disputes.length > 0 ? (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Event ID</TableCell>
+                <TableCell>Participant 1</TableCell>
+                <TableCell>Participant 2</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {disputes.map((row, index) => {
+                return (
+                  <TableRow key={row.eventID}>
+                    <TableCell>{row.eventID}</TableCell>
+                    <TableCell
+                      className={`${
+                        row.users[0].isWinner ? classes.success : classes.danger
+                      }`}
+                    >
+                      {row.users[0].username}
+                    </TableCell>
+                    <TableCell
+                      className={`${
+                        row.users[1].isWinner ? classes.success : classes.danger
+                      }`}
+                    >
+                      {row.users[1].username}
+                    </TableCell>
+                    <TableCell>
+                      {getDateFromEpoch(row.conflictDate)}
+                      <br />
+                      {getTimeFromEpoch(row.conflictDate)}
+                    </TableCell>
+                    <TableCell>
+                      <Tooltip title="Info">
+                        <IconButton
+                          color="secondary"
+                          aria-label="info"
+                          component="span"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setSelectedRow(row);
+                            setShowMoreInfoModal(true);
+                            setMsg('');
+                          }}
+                        >
+                          <InfoOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        ) : (
+          <Box display="flex" justifyContent="center" pt={2} mb={2}>
+            <Typography variant="h5" className={classes.noEventsText}>
+              No Disputes Found
+            </Typography>
+          </Box>
+        )
       ) : (
-        <Box display="flex" mt={2} justifyContent="center">
-          <Typography variant="h3">No Disputes Found</Typography>
-        </Box>
+        <>
+          <Box display="flex" justifyContent="center" pt={2}>
+            <Typography variant="h5" className={classes.noEventsText}>
+              Fetching Disputes
+            </Typography>
+          </Box>
+          <Box>
+            <LoadingScreen width={200} />
+          </Box>
+        </>
       )}
     </>
   );

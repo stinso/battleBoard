@@ -11,40 +11,16 @@ import {
   Avatar,
   Box,
   Button,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormHelperText,
-  Grid,
-  IconButton,
-  Input,
-  InputLabel,
-  MenuItem,
-  Modal,
-  OutlinedInput,
-  Paper,
-  Select,
-  Tab,
-  Tabs,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
-  TextField,
-  Tooltip,
   Typography,
   makeStyles
 } from '@material-ui/core';
 import defaultAvatar from '../../assets/img/placeholder.jpg';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
       width: 48,
       backgroundColor: theme.palette.primary.main
     }
+  },
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -78,8 +57,10 @@ const BannedPlayers = () => {
   const location = useLocation();
   const history = useHistory();
   const [players, setPlayers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getBannedPlayers = async (state) => {
+    setIsLoading(true);
     try {
       const { data } = await getBannedPlayersService({});
       if (data.success) {
@@ -96,6 +77,7 @@ const BannedPlayers = () => {
         }
       });
     }
+    setIsLoading(false);
   };
 
   const unbanPlayer = async (player) => {
@@ -126,57 +108,72 @@ const BannedPlayers = () => {
       <Typography className={classes.title} variant="h6" color="textPrimary">
         Banned Players
       </Typography>
-      {players.length > 0 ? (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Username</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {players.map((row) => {
-              return (
-                <TableRow key={row.username}>
-                  <TableCell
-                    onClick={() => {
-                      history.push(`/profile/${row.username}`);
-                    }}
-                  >
-                    <Avatar
-                      className={classes.avatar}
-                      src={row.dpHigh ? row.dpHigh : defaultAvatar}
-                      alt="profile image"
-                    />
-                    {row.username}
-                  </TableCell>
-                  <TableCell>
-                    <Link href={`mailto:${row.email}`} target={`_blank`}>
-                      {row.email}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outlined"
-                      color="secondary"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        unbanPlayer(row.username);
+      {!isLoading ? (
+        players.length > 0 ? (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Username</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {players.map((row) => {
+                return (
+                  <TableRow key={row.username}>
+                    <TableCell
+                      onClick={() => {
+                        history.push(`/profile/${row.username}`);
                       }}
                     >
-                      Unban
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                      <Avatar
+                        className={classes.avatar}
+                        src={row.dpHigh ? row.dpHigh : defaultAvatar}
+                        alt="profile image"
+                      />
+                      {row.username}
+                    </TableCell>
+                    <TableCell>
+                      <Link href={`mailto:${row.email}`} target={`_blank`}>
+                        {row.email}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          unbanPlayer(row.username);
+                        }}
+                      >
+                        Unban
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        ) : (
+          <Box display="flex" justifyContent="center" pt={2} mb={2}>
+            <Typography variant="h5" className={classes.noEventsText}>
+              No Players Found
+            </Typography>
+          </Box>
+        )
       ) : (
-        <Box display="flex" mt={2} justifyContent="center">
-          <Typography variant="h3">No Players Found</Typography>
-        </Box>
+        <>
+          <Box display="flex" justifyContent="center" pt={2}>
+            <Typography variant="h5" className={classes.noEventsText}>
+              Fetching Banned Players
+            </Typography>
+          </Box>
+          <Box>
+            <LoadingScreen width={200} />
+          </Box>
+        </>
       )}
     </>
   );

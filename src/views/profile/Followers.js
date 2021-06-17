@@ -10,12 +10,10 @@ import {
   makeStyles
 } from '@material-ui/core';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
-
-import defaultAvatar from '../../assets/img/placeholder.jpg';
 import { getFollowersService } from '../../service/node.service';
 import { generateImageURL, getFormattedUserName } from '../../utils/helpers.js';
-import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
 import * as Sentry from '@sentry/react';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
       width: 48,
       backgroundColor: theme.palette.primary.main
     }
+  },
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -68,8 +69,10 @@ const Followers = ({ username }) => {
   const classes = useStyles();
   const location = useLocation();
   const [followers, setFollowers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function getFollowers() {
+    setIsLoading(true);
     try {
       const response = await getFollowersService({ username });
       if (response.data.success === true && response.data.users?.length > 0) {
@@ -86,6 +89,7 @@ const Followers = ({ username }) => {
         }
       });
     }
+    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -130,8 +134,25 @@ const Followers = ({ username }) => {
           })}
         </Grid>
       ) : (
-        <Box display="flex" mt={2} justifyContent="center">
-          <Typography variant="h4">No Followers Found.</Typography>
+        <Box>
+          {isLoading ? (
+            <>
+              <Box display="flex" justifyContent="center" pt={2}>
+                <Typography variant="h5" className={classes.noEventsText}>
+                  Fetching Followers
+                </Typography>
+              </Box>
+              <Box>
+                <LoadingScreen width={200} />
+              </Box>
+            </>
+          ) : (
+            <Box display="flex" justifyContent="center" pt={2} mb={2}>
+              <Typography variant="h5" className={classes.noEventsText}>
+                No Followers found
+              </Typography>
+            </Box>
+          )}
         </Box>
       )}
     </div>

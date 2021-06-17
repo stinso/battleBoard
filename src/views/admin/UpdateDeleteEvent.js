@@ -42,6 +42,7 @@ import {
   getTournamentsService
 } from '../../service/tournaments.service.js';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,6 +74,9 @@ const useStyles = makeStyles((theme) => ({
       width: 48,
       backgroundColor: theme.palette.primary.main
     }
+  },
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -92,6 +96,7 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
   const [selectedGame, setSelectedGame] = useState('All Games');
   const allSupportedGames = ['All Games', ...AllSupportedGamesNames];
   const [currentTab, setCurrentTab] = useState('events');
+  const [isLoading, setIsLoading] = useState(false);
 
   const tabs = [
     { value: 'events', label: 'Events' },
@@ -103,6 +108,7 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
   };
 
   const getEvents = async () => {
+    setIsLoading(true);
     try {
       const { data } = await getEventsService({ allGames: true });
       if (data.success === true && data.events?.length > 0) {
@@ -121,9 +127,11 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
         error
       );
     }
+    setIsLoading(false);
   };
 
   const getRecurringEvents = async () => {
+    setIsLoading(true);
     try {
       const { data } = await getRecurringEventsService({});
       if (data.success === true && data.recurringEvents?.length > 0) {
@@ -142,9 +150,11 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
         error
       );
     }
+    setIsLoading(false);
   };
 
   const getTournaments = async () => {
+    setIsLoading(true);
     try {
       const { data } = await getTournamentsService({ allGames: true });
       if (data.success === true && data.events?.length > 0) {
@@ -163,9 +173,11 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
         error
       );
     }
+    setIsLoading(false);
   };
 
   const getRecurringTournaments = async () => {
+    setIsLoading(true);
     try {
       const { data } = await getRecurringTournamentsService({});
       if (data.success === true && data.recurringEvents?.length > 0) {
@@ -184,6 +196,7 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
         error
       );
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -383,6 +396,7 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
                 setShowMoreInfoModal={setShowMoreInfoModal}
                 setSelectedRow={setSelectedRow}
                 classes={classes}
+                isLoading={isLoading}
               />
             )}
             {currentTab === 'tournaments' && (
@@ -395,6 +409,7 @@ const UpdateDeleteEvent = ({ isRecurringEvent }) => {
                 setShowMoreInfoModal={setShowMoreInfoModal}
                 setSelectedRow={setSelectedRow}
                 classes={classes}
+                isLoading={isLoading}
               />
             )}
           </Box>
@@ -424,100 +439,124 @@ const GenericTable = ({
   setErrMsg,
   setShowMoreInfoModal,
   setSelectedRow,
-  classes
+  classes,
+  isLoading
 }) => {
   return (
     <>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              {isRecurringEvent && 'Recurring '}
-              {` ${isEvent ? 'Event' : 'Tournament'}`} ID
-            </TableCell>
-            <TableCell>{`${isEvent ? 'Event' : 'Tournament'}`} Name</TableCell>
-            <TableCell>Game</TableCell>
-            <TableCell>Game Format</TableCell>
-            <TableCell>Bet Amount</TableCell>
-            {!isRecurringEvent ? (
-              <>
-                <TableCell>Start Time</TableCell>
-                <TableCell>Event Status</TableCell>
-                <TableCell>Users Enrolled</TableCell>
-              </>
-            ) : (
-              <>
-                <TableCell>CRON</TableCell>
-                <TableCell>Duration</TableCell>
-                <TableCell>Don't Schedule After</TableCell>
-              </>
-            )}
-            <TableCell>Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data
-            .filter((row) => games.includes(row.game))
-            .map((row, index) => {
-              return (
-                <TableRow spacing={0} hover key={row.id}>
-                  <TableCell>{row.id}</TableCell>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.game}</TableCell>
-                  <TableCell>{row.gameFormat}</TableCell>
-                  <TableCell>{row.betAmount}</TableCell>
-                  {isRecurringEvent ? (
-                    <>
-                      <TableCell>{row.cronSpec}</TableCell>
-                      <TableCell>{row.duration}</TableCell>
+      {!isLoading ? (
+        data.filter((row) => games.includes(row.game)).length > 0 ? (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  {isRecurringEvent && 'Recurring '}
+                  {` ${isEvent ? 'Event' : 'Tournament'}`} ID
+                </TableCell>
+                <TableCell>
+                  {`${isEvent ? 'Event' : 'Tournament'}`} Name
+                </TableCell>
+                <TableCell>Game</TableCell>
+                <TableCell>Game Format</TableCell>
+                <TableCell>Bet Amount</TableCell>
+                {!isRecurringEvent ? (
+                  <>
+                    <TableCell>Start Time</TableCell>
+                    <TableCell>Event Status</TableCell>
+                    <TableCell>Users Enrolled</TableCell>
+                  </>
+                ) : (
+                  <>
+                    <TableCell>CRON</TableCell>
+                    <TableCell>Duration</TableCell>
+                    <TableCell>Don't Schedule After</TableCell>
+                  </>
+                )}
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data
+                .filter((row) => games.includes(row.game))
+                .map((row, index) => {
+                  return (
+                    <TableRow spacing={0} hover key={row.id}>
+                      <TableCell>{row.id}</TableCell>
+                      <TableCell>{row.name}</TableCell>
+                      <TableCell>{row.game}</TableCell>
+                      <TableCell>{row.gameFormat}</TableCell>
+                      <TableCell>{row.betAmount}</TableCell>
+                      {isRecurringEvent ? (
+                        <>
+                          <TableCell>{row.cronSpec}</TableCell>
+                          <TableCell>{row.duration}</TableCell>
+                          <TableCell>
+                            {getDateFromEpoch(row.dontScheduleAfter)}
+                            <br />
+                            {getTimeFromEpoch(row.dontScheduleAfter)}
+                          </TableCell>
+                        </>
+                      ) : (
+                        <>
+                          <TableCell>
+                            {getDateFromEpoch(row.startTime)}
+                            <br />
+                            {getTimeFromEpoch(row.startTime)}
+                          </TableCell>
+                          <TableCell
+                            className={`${
+                              row.eventStatus === 'Waiting'
+                                ? classes.success
+                                : classes.warning
+                            }`}
+                          >
+                            {row.eventStatus}
+                          </TableCell>
+                          <TableCell>{row.noOfUsersEnrolled}</TableCell>
+                        </>
+                      )}
                       <TableCell>
-                        {getDateFromEpoch(row.dontScheduleAfter)}
-                        <br />
-                        {getTimeFromEpoch(row.dontScheduleAfter)}
+                        <Tooltip title="Info">
+                          <IconButton
+                            color="secondary"
+                            aria-label="info"
+                            component="span"
+                            key={index + 1}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setSelectedRow(row);
+                              setErrMsg('');
+                              setShowMoreInfoModal(true);
+                            }}
+                          >
+                            <InfoOutlinedIcon />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
-                    </>
-                  ) : (
-                    <>
-                      <TableCell>
-                        {getDateFromEpoch(row.startTime)}
-                        <br />
-                        {getTimeFromEpoch(row.startTime)}
-                      </TableCell>
-                      <TableCell
-                        className={`${
-                          row.eventStatus === 'Waiting'
-                            ? classes.success
-                            : classes.warning
-                        }`}
-                      >
-                        {row.eventStatus}
-                      </TableCell>
-                      <TableCell>{row.noOfUsersEnrolled}</TableCell>
-                    </>
-                  )}
-                  <TableCell>
-                    <Tooltip title="Info">
-                      <IconButton
-                        color="secondary"
-                        aria-label="info"
-                        component="span"
-                        key={index + 1}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setSelectedRow(row);
-                          setErrMsg('');
-                          setShowMoreInfoModal(true);
-                        }}
-                      >
-                        <InfoOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-        </TableBody>
-      </Table>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        ) : (
+          <Box display="flex" justifyContent="center" pt={2} mb={2}>
+            <Typography variant="h5" className={classes.noEventsText}>
+              No Data Found
+            </Typography>
+          </Box>
+        )
+      ) : (
+        <>
+          <Box display="flex" justifyContent="center" pt={2}>
+            <Typography variant="h5" className={classes.noEventsText}>
+              Fetching Data
+            </Typography>
+          </Box>
+          <Box>
+            <LoadingScreen width={200} />
+          </Box>
+        </>
+      )}
     </>
   );
 };
