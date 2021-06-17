@@ -221,9 +221,11 @@ const EventsTable = ({ events, isLoading }) => {
                   </Box>
                 </>
               ) : (
-                <Typography variant="h5" className={classes.noEventsText}>
-                  No Upcoming Events
-                </Typography>
+                <Box display="flex" justifyContent="center" pt={2} mb={2}>
+                  <Typography variant="h5" className={classes.noEventsText}>
+                    No Upcoming Events
+                  </Typography>
+                </Box>
               )}
             </Box>
           )}

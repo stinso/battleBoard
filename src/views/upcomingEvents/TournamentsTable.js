@@ -229,9 +229,11 @@ const TournamentsTable = ({ tournaments, isLoading }) => {
                   </Box>
                 </>
               ) : (
-                <Typography variant="h5" className={classes.noEventsText}>
-                  No Upcoming Tournaments
-                </Typography>
+                <Box display="flex" justifyContent="center" pt={2} mb={2}>
+                  <Typography variant="h5" className={classes.noEventsText}>
+                    No Upcoming Tournaments
+                  </Typography>
+                </Box>
               )}
             </Box>
           )}
