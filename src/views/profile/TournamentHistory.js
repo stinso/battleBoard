@@ -28,6 +28,7 @@ import {
   formatEventStatus,
   getGameFormatFromIndex
 } from '../../utils/helpers';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const font = "'Saira', sans-serif";
 
@@ -89,6 +90,9 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     minWidth: 180,
     padding: 0
+  },
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -98,6 +102,7 @@ const applyPagination = (list, page, limit) => {
 
 const TournamentHistory = ({ className, username }) => {
   const classes = useStyles();
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <Typography variant="h6" color="textPrimary">

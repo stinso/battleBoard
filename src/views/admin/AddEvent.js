@@ -21,27 +21,21 @@ import { checkGameRequiresManualResult } from '../../utils/helpers.js';
 import {
   Box,
   Button,
-  Card,
   Checkbox,
-  Container,
-  Divider,
   FormControl,
   FormControlLabel,
   FormLabel,
   FormGroup,
   FormHelperText,
-  Grid,
   InputLabel,
-  List,
-  ListItem,
   MenuItem,
   OutlinedInput,
   Select,
   Switch,
-  SvgIcon,
   Typography,
   makeStyles
 } from '@material-ui/core';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -49,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
   },
   formControlCheckboxes: {
     marginTop: theme.spacing(2)
+  },
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
