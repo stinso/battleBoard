@@ -10,20 +10,17 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
   AppBar,
-  Badge,
   Box,
   Button,
   Toolbar,
   IconButton,
-  Link,
   Hidden,
   Grid,
   Menu,
   MenuItem,
   Typography,
   SvgIcon,
-  makeStyles,
-  useTheme
+  makeStyles
 } from '@material-ui/core';
 import { ChevronDown as ArrowIcon, Menu as MenuIcon } from 'react-feather';
 import Logo from 'src/components/Logo';

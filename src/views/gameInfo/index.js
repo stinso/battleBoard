@@ -1,30 +1,16 @@
-import React, {
-  useEffect,
-  useState,
-  useContext,
-  useCallback,
-  Fragment
-} from 'react';
-import {
-  Link as RouterLink,
-  useHistory,
-  useLocation,
-  useParams
-} from 'react-router-dom';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import {
   Box,
   Button,
   Container,
-  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Divider,
   Grid,
   IconButton,
-  Modal,
   Paper,
   Tab,
   Tabs,
@@ -842,229 +828,235 @@ const BattleView = () => {
 
   return (
     <Page className={classes.root} title="Battle">
-      <Container maxWidth="lg">
-        {modal && consoleModalWindow()}
-        {showFacebookModal && (
-          <FacebookModal
-            consoleSelectedValue={consoleSelectedValue}
-            handleConsoleOnChange={handleConsoleOnChange}
-            handleSponsoredEventRegister={handleSponsoredEventRegister}
-            fbInfo={fbInfo}
-            setFbInfo={setFbInfo}
-            eventData={eventData}
-            isSponsoredEvent={isSponsoredEvent}
-            setShowFacebookModal={setShowFacebookModal}
-            showFacebookModal={showFacebookModal}
-            facebookNotification={facebookNotification}
-            isLoading={isLoading}
-          />
-        )}
-        {showCODSettingsModal.show && (
-          <CODSettingsModal
-            setShowCODSettingsModal={setShowCODSettingsModal}
-            showCODSettingsModal={showCODSettingsModal}
-          />
-        )}
-        {showSubmitResultModal && (
-          <SubmitResultModal
-            setShowSubmitResultModal={setShowSubmitResultModal}
-            showSubmitResultModal={showSubmitResultModal}
-            submitResult={submitResult}
-          />
-        )}
+      <FacebookProvider appId={FacebookAppID}>
+        <Container maxWidth="lg">
+          {modal && consoleModalWindow()}
+          {showFacebookModal && (
+            <FacebookModal
+              consoleSelectedValue={consoleSelectedValue}
+              handleConsoleOnChange={handleConsoleOnChange}
+              handleSponsoredEventRegister={handleSponsoredEventRegister}
+              fbInfo={fbInfo}
+              setFbInfo={setFbInfo}
+              eventData={eventData}
+              isSponsoredEvent={isSponsoredEvent}
+              setShowFacebookModal={setShowFacebookModal}
+              showFacebookModal={showFacebookModal}
+              facebookNotification={facebookNotification}
+              isLoading={isLoading}
+            />
+          )}
+          {showCODSettingsModal.show && (
+            <CODSettingsModal
+              setShowCODSettingsModal={setShowCODSettingsModal}
+              showCODSettingsModal={showCODSettingsModal}
+            />
+          )}
+          {showSubmitResultModal && (
+            <SubmitResultModal
+              setShowSubmitResultModal={setShowSubmitResultModal}
+              showSubmitResultModal={showSubmitResultModal}
+              submitResult={submitResult}
+            />
+          )}
 
-        {isSponsoredEvent &&
-          sponsoredEventNotificationOpen &&
-          !(
-            eventState === EventStates.ONGOING ||
-            eventState === EventStates.EVENT_ENDED
-          ) &&
-          generateSponsoredEventNotification()}
+          {isSponsoredEvent &&
+            sponsoredEventNotificationOpen &&
+            !(
+              eventState === EventStates.ONGOING ||
+              eventState === EventStates.EVENT_ENDED
+            ) &&
+            generateSponsoredEventNotification()}
 
-        {showGamingNetworkNotification && (
-          <GamingNetworkNotLinkedNotification />
-        )}
+          {showGamingNetworkNotification && (
+            <GamingNetworkNotLinkedNotification />
+          )}
 
-        {shouldDisplayStyle && showGameStyleNotification && (
-          <GameStyleNotification
-            style={eventData.style}
-            setShowGameStyleNotification={setShowGameStyleNotification}
-          />
-        )}
+          {shouldDisplayStyle && showGameStyleNotification && (
+            <GameStyleNotification
+              style={eventData.style}
+              setShowGameStyleNotification={setShowGameStyleNotification}
+            />
+          )}
 
-        {/* NOTIFICATIONS */}
-        {showDisputeNotification && <DisputeNotification />}
-        {showEthAddressNotification && <EthAddressNotLinkedNotification />}
-        {errorNotifications.showNotification && generateErrorNotification()}
-        {successNotifications.showNotification && generateSuccessNotification()}
+          {/* NOTIFICATIONS */}
+          {showDisputeNotification && <DisputeNotification />}
+          {showEthAddressNotification && <EthAddressNotLinkedNotification />}
+          {errorNotifications.showNotification && generateErrorNotification()}
+          {successNotifications.showNotification &&
+            generateSuccessNotification()}
 
-        <Box mt={10} mb={3}>
-          <Paper className={classes.topPaper}>
-            <Box className={classes.info} borderBottom={1}>
-              <Grid container>
-                <Grid item md={12} lg={4}>
-                  <img
-                    className={classes.image}
-                    src="/static/images/games/cod_coldWar.jpg"
-                  />
-                </Grid>
-                <Grid item md={12} lg={8}>
-                  <Box
-                    className={classes.caption}
-                    display="flex"
-                    flexDirection="column"
-                  >
-                    <Typography
-                      className={classes.titlePaper}
-                      color="textPrimary"
-                      variant="body2"
-                    >
-                      {eventData?.name}
-                    </Typography>
-                    <Box display="flex" mb={1}>
-                      <Box className={classes.borderedBoxGlew}>
-                        <Typography color="textPrimary" variant="body2">
-                          {eventData?.game}
-                        </Typography>
-                        <Typography color="secondary" variant="body2">
-                          COMMUNITY TOURNAMENT
-                        </Typography>
-                      </Box>
-                    </Box>
-                    <Box display="flex">
-                      <Box className={classes.borderedBox} border={1}>
-                        <Typography color="secondary" variant="body2">
-                          REGISTRATION OPENS
-                        </Typography>
-                        <Typography color="textPrimary" variant="body1">
-                          Open Now
-                        </Typography>
-                      </Box>
-                      <Box ml={1} className={classes.borderedBox} border={1}>
-                        <Typography color="secondary" variant="body2">
-                          START TIME
-                        </Typography>
-                        <Typography color="textPrimary" variant="body1">
-                          {eventData &&
-                            eventData.startTime &&
-                            getTimeAndDateFromEpoch(eventData.startTime)}
-                        </Typography>
-                      </Box>
-                    </Box>
-                    <Box display="flex" mt={1} ml={1}>
-                      <Box>
-                        <Typography color="textSecondary" variant="body2">
-                          ENTRY/PLAYER
-                        </Typography>
-                        <Typography color="textPrimary" variant="body2">
-                          {eventData &&
-                            (isSponsoredEvent
-                              ? 'Free'
-                              : '$' + eventData.betAmount.toFixed(2))}
-                        </Typography>
-                      </Box>
-                      <Divider className={classes.divider} />
-                      <Box>
-                        <Typography color="textSecondary" variant="body2">
-                          DURATION
-                        </Typography>
-                        <Typography color="textPrimary" variant="body2">
-                          {eventData &&
-                            eventData.startTime &&
-                            eventData.endTime &&
-                            getDuration(eventData.startTime, eventData.endTime)}
-                          {` Min.`}
-                        </Typography>
-                      </Box>
-                      <Divider className={classes.divider} />
-                      <Box>
-                        <Typography color="textSecondary" variant="body2">
-                          PLAYERS
-                        </Typography>
-                        <Typography color="textPrimary" variant="body2">
-                          {eventData?.minPlayers} – {eventData?.maxPlayers}
-                        </Typography>
-                      </Box>
-                      <Divider className={classes.divider} />
-                      <Box>
-                        <Typography color="textSecondary" variant="body2">
-                          ENROLLED
-                        </Typography>
-                        <Typography color="textPrimary" variant="body2">
-                          {eventData?.playersEnrolled &&
-                            eventData?.playersEnrolled.length}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Grid>
-              </Grid>
-            </Box>
-
-            <Box display="flex" className={classes.timer}>
-              <Box
-                ml={5}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                {timeObject.showTimer && (
-                  <>
-                    <Box mt={1} mr={1}>
-                      <Typography color="textPrimary" variant="body2">
-                        Starts in
-                      </Typography>
-                    </Box>
-                    <CountDown
-                      timeObject={timeObject}
-                      getEventDetails={getEventDetails}
-                      setTimeObject={setTimeObject}
+          <Box mt={10} mb={3}>
+            <Paper className={classes.topPaper}>
+              <Box className={classes.info} borderBottom={1}>
+                <Grid container>
+                  <Grid item md={12} lg={4}>
+                    <img
+                      className={classes.image}
+                      src="/static/images/games/cod_coldWar.jpg"
                     />
-                  </>
-                )}
+                  </Grid>
+                  <Grid item md={12} lg={8}>
+                    <Box
+                      className={classes.caption}
+                      display="flex"
+                      flexDirection="column"
+                    >
+                      <Typography
+                        className={classes.titlePaper}
+                        color="textPrimary"
+                        variant="body2"
+                      >
+                        {eventData?.name}
+                      </Typography>
+                      <Box display="flex" mb={1}>
+                        <Box className={classes.borderedBoxGlew}>
+                          <Typography color="textPrimary" variant="body2">
+                            {eventData?.game}
+                          </Typography>
+                          <Typography color="secondary" variant="body2">
+                            COMMUNITY TOURNAMENT
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Box display="flex">
+                        <Box className={classes.borderedBox} border={1}>
+                          <Typography color="secondary" variant="body2">
+                            REGISTRATION OPENS
+                          </Typography>
+                          <Typography color="textPrimary" variant="body1">
+                            Open Now
+                          </Typography>
+                        </Box>
+                        <Box ml={1} className={classes.borderedBox} border={1}>
+                          <Typography color="secondary" variant="body2">
+                            START TIME
+                          </Typography>
+                          <Typography color="textPrimary" variant="body1">
+                            {eventData &&
+                              eventData.startTime &&
+                              getTimeAndDateFromEpoch(eventData.startTime)}
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Box display="flex" mt={1} ml={1}>
+                        <Box>
+                          <Typography color="textSecondary" variant="body2">
+                            ENTRY/PLAYER
+                          </Typography>
+                          <Typography color="textPrimary" variant="body2">
+                            {eventData &&
+                              (isSponsoredEvent
+                                ? 'Free'
+                                : '$' + eventData.betAmount.toFixed(2))}
+                          </Typography>
+                        </Box>
+                        <Divider className={classes.divider} />
+                        <Box>
+                          <Typography color="textSecondary" variant="body2">
+                            DURATION
+                          </Typography>
+                          <Typography color="textPrimary" variant="body2">
+                            {eventData &&
+                              eventData.startTime &&
+                              eventData.endTime &&
+                              getDuration(
+                                eventData.startTime,
+                                eventData.endTime
+                              )}
+                            {` Min.`}
+                          </Typography>
+                        </Box>
+                        <Divider className={classes.divider} />
+                        <Box>
+                          <Typography color="textSecondary" variant="body2">
+                            PLAYERS
+                          </Typography>
+                          <Typography color="textPrimary" variant="body2">
+                            {eventData?.minPlayers} – {eventData?.maxPlayers}
+                          </Typography>
+                        </Box>
+                        <Divider className={classes.divider} />
+                        <Box>
+                          <Typography color="textSecondary" variant="body2">
+                            ENROLLED
+                          </Typography>
+                          <Typography color="textPrimary" variant="body2">
+                            {eventData?.playersEnrolled &&
+                              eventData?.playersEnrolled.length}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </Grid>
+                </Grid>
               </Box>
-              <Box
-                display="flex"
-                alignItems="center"
-                ml={timeObject.showTimer ? 9 : 0}
-              >
-                {eventState && getAppropriateButton()}
+
+              <Box display="flex" className={classes.timer}>
+                <Box
+                  ml={5}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  {timeObject.showTimer && (
+                    <>
+                      <Box mt={1} mr={1}>
+                        <Typography color="textPrimary" variant="body2">
+                          Starts in
+                        </Typography>
+                      </Box>
+                      <CountDown
+                        timeObject={timeObject}
+                        getEventDetails={getEventDetails}
+                        setTimeObject={setTimeObject}
+                      />
+                    </>
+                  )}
+                </Box>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  ml={timeObject.showTimer ? 9 : 0}
+                >
+                  {eventState && getAppropriateButton()}
+                </Box>
               </Box>
-            </Box>
-          </Paper>
-        </Box>
-        <Box mt={10} mb={3}>
-          <Tabs
-            onChange={handleTabsChange}
-            scrollButtons="auto"
-            textColor="secondary"
-            value={currentTab}
-            variant="scrollable"
-          >
-            {tabs.map((tab) =>
-              tab.value !== 'teams' ? (
-                <Tab key={tab.value} label={tab.label} value={tab.value} />
-              ) : (
-                isEventBracket(eventData.style) && (
+            </Paper>
+          </Box>
+          <Box mt={10} mb={3}>
+            <Tabs
+              onChange={handleTabsChange}
+              scrollButtons="auto"
+              textColor="secondary"
+              value={currentTab}
+              variant="scrollable"
+            >
+              {tabs.map((tab) =>
+                tab.value !== 'teams' ? (
                   <Tab key={tab.value} label={tab.label} value={tab.value} />
+                ) : (
+                  isEventBracket(eventData.style) && (
+                    <Tab key={tab.value} label={tab.label} value={tab.value} />
+                  )
                 )
-              )
-            )}
-          </Tabs>
-          <Divider />
-        </Box>
-        {currentTab === 'info' && <Info eventData={eventData} />}
-        {currentTab === 'howToPlay' && <HowToPlay eventData={eventData} />}
-        {currentTab === 'rules' && (
-          <Rules
-            questionAnswers={
-              eventData?.description ? eventData.description : []
-            }
-            eventData={eventData}
-          />
-        )}
-        {currentTab === 'teams' && <Teams eventData={eventData} />}
-      </Container>
+              )}
+            </Tabs>
+            <Divider />
+          </Box>
+          {currentTab === 'info' && <Info eventData={eventData} />}
+          {currentTab === 'howToPlay' && <HowToPlay eventData={eventData} />}
+          {currentTab === 'rules' && (
+            <Rules
+              questionAnswers={
+                eventData?.description ? eventData.description : []
+              }
+              eventData={eventData}
+            />
+          )}
+          {currentTab === 'teams' && <Teams eventData={eventData} />}
+        </Container>
+      </FacebookProvider>
     </Page>
   );
 };

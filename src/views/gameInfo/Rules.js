@@ -5,10 +5,7 @@ import {
   List,
   ListItem,
   ListItemText,
-  Box,
-  Grid,
   Paper,
-  Typography,
   makeStyles
 } from '@material-ui/core';
 import FiberManualRecordTwoToneIcon from '@material-ui/icons/FiberManualRecordTwoTone';
