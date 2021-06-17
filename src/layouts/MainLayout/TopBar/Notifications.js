@@ -34,6 +34,7 @@ import { ChallengesEnums } from '../../../views/challenges/constants';
 import TimeAgo from 'react-timeago';
 import { getTimeAndDateFromEpoch } from '../../../utils/helpers';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import * as Sentry from '@sentry/react';
 
 const useStyles = makeStyles((theme) => ({
   popover: {
