@@ -1,30 +1,20 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { useLocation, useParams, Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import {
   Avatar,
   Box,
-  Button,
   Card,
-  Container,
-  Divider,
-  Grid,
-  Link,
   IconButton,
-  SvgIcon,
-  Tab,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
-  Tabs,
   Tooltip,
   Typography,
-  makeStyles,
-  Dialog
+  makeStyles
 } from '@material-ui/core';
 import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
@@ -41,6 +31,7 @@ import {
 import { Devices } from '../../config/constants';
 import moment from 'moment';
 import ChallengeModal from './ChallengeModal';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,10 +62,8 @@ const useStyles = makeStyles((theme) => ({
   statusesButton: {
     margin: theme.spacing(2)
   },
-  noChallengesBox: {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: theme.spacing(4)
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -345,8 +334,25 @@ const ReceivedChallenges = ({
               />
             </>
           ) : (
-            <Box className={classes.noChallengesBox}>
-              <Typography>No Challenges Found.</Typography>
+            <Box>
+              {isLoading ? (
+                <>
+                  <Box display="flex" justifyContent="center" pt={2}>
+                    <Typography variant="h5" className={classes.noEventsText}>
+                      Fetching Challenges
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <LoadingScreen width={200} />
+                  </Box>
+                </>
+              ) : (
+                <Box display="flex" justifyContent="center" pt={2} mb={2}>
+                  <Typography variant="h5" className={classes.noEventsText}>
+                    No Challenges found
+                  </Typography>
+                </Box>
+              )}
             </Box>
           )}
         </Box>

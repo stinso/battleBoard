@@ -29,6 +29,7 @@ import {
   formatEventStatus,
   getGameFormatFromIndex
 } from '../../utils/helpers';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const font = "'Saira', sans-serif";
 
@@ -91,10 +92,8 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 180,
     padding: 0
   },
-  noEventsBox: {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: theme.spacing(4)
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -217,8 +216,23 @@ const TournamentsTable = ({ tournaments, isLoading }) => {
               />
             </>
           ) : (
-            <Box className={classes.noEventsBox}>
-              <Typography>No Tournaments Found.</Typography>
+            <Box>
+              {isLoading ? (
+                <>
+                  <Box display="flex" justifyContent="center" pt={2}>
+                    <Typography variant="h5" className={classes.noEventsText}>
+                      Fetching Upcoming Tournaments
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <LoadingScreen width={200} />
+                  </Box>
+                </>
+              ) : (
+                <Typography variant="h5" className={classes.noEventsText}>
+                  No Upcoming Tournaments
+                </Typography>
+              )}
             </Box>
           )}
         </Box>

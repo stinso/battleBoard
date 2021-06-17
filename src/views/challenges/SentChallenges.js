@@ -7,24 +7,16 @@ import {
   Box,
   Button,
   Card,
-  Container,
-  Divider,
-  Grid,
-  Link,
-  SvgIcon,
-  Tab,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
-  Tabs,
   Typography,
-  makeStyles,
-  Dialog
+  makeStyles
 } from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 import {
   getDateFromEpoch,
@@ -62,10 +54,8 @@ const useStyles = makeStyles((theme) => ({
   statusesButton: {
     margin: theme.spacing(2)
   },
-  noChallengesBox: {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: theme.spacing(4)
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -179,8 +169,25 @@ const SentChallenges = ({
             />
           </>
         ) : (
-          <Box className={classes.noChallengesBox}>
-            <Typography>No Challenges Found.</Typography>
+          <Box>
+            {isLoading ? (
+              <>
+                <Box display="flex" justifyContent="center" pt={2}>
+                  <Typography variant="h5" className={classes.noEventsText}>
+                    Fetching Challenges
+                  </Typography>
+                </Box>
+                <Box>
+                  <LoadingScreen width={200} />
+                </Box>
+              </>
+            ) : (
+              <Box display="flex" justifyContent="center" pt={2} mb={2}>
+                <Typography variant="h5" className={classes.noEventsText}>
+                  No Challenges found
+                </Typography>
+              </Box>
+            )}
           </Box>
         )}
       </Box>

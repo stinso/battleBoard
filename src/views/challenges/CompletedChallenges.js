@@ -1,34 +1,24 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { useLocation, useParams, Link as RouterLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
   Avatar,
   Box,
-  Button,
   Card,
-  Container,
-  Divider,
   FormControl,
-  Grid,
-  Link,
   InputLabel,
   MenuItem,
   Select,
-  SvgIcon,
-  Tab,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
-  Tabs,
   Typography,
-  makeStyles,
-  Dialog
+  makeStyles
 } from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import {
   getDateFromEpoch,
@@ -36,6 +26,7 @@ import {
   getGameFormatFromIndex,
   getTimeFromEpoch
 } from '../../utils/helpers';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,6 +67,9 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
     marginLeft: theme.spacing(2),
     marginTop: theme.spacing(2)
+  },
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -242,8 +236,25 @@ const CompletedChallenges = ({ data, isLoading, user }) => {
             />
           </>
         ) : (
-          <Box className={classes.noChallengesBox}>
-            <Typography>No Challenges Found.</Typography>
+          <Box>
+            {isLoading ? (
+              <>
+                <Box display="flex" justifyContent="center" pt={2}>
+                  <Typography variant="h5" className={classes.noEventsText}>
+                    Fetching Challenges
+                  </Typography>
+                </Box>
+                <Box>
+                  <LoadingScreen width={200} />
+                </Box>
+              </>
+            ) : (
+              <Box display="flex" justifyContent="center" pt={2} mb={2}>
+                <Typography variant="h5" className={classes.noEventsText}>
+                  No Challenges found
+                </Typography>
+              </Box>
+            )}
           </Box>
         )}
       </Box>

@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Avatar,
-  Grid,
-  Paper,
-  makeStyles,
-  Typography
-} from '@material-ui/core';
+import { Avatar, Grid, Paper, makeStyles, Typography } from '@material-ui/core';
 import secondPrizes from '../../assets/img/secondPrizes.png';
 import thirdPrizes from '../../assets/img/thirdPrizes.png';
 import {
@@ -98,7 +92,6 @@ const Info = ({ eventData }) => {
       getPriceInfo();
     }
   }, [eventData]);
-
 
   return (
     <Grid container spacing={2}>

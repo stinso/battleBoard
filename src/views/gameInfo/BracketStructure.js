@@ -65,11 +65,7 @@ const PlayerComponent = ({
       }}
     >
       {username !== Dash && (
-        <Avatar
-          className={classes.avatar}
-          alt="profile image"
-          src={dpHigh}
-        />
+        <Avatar className={classes.avatar} alt="profile image" src={dpHigh} />
       )}
       {username}
     </SeedTeam>
