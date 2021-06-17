@@ -68,6 +68,7 @@ import GameStyleNotification from './GameStyleNotification';
 import useInterval from '../../hooks/useInterval';
 import CloseIcon from '@material-ui/icons/Close';
 import * as Sentry from '@sentry/react';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
 const font = "'Saira', sans-serif";
 
@@ -827,6 +828,7 @@ const BattleView = () => {
   };
 
   return (
+    <PerfectScrollbar>
     <Page className={classes.root} title="Battle">
       <FacebookProvider appId={FacebookAppID}>
         <Container maxWidth="lg">
@@ -1058,6 +1060,7 @@ const BattleView = () => {
         </Container>
       </FacebookProvider>
     </Page>
+    </PerfectScrollbar>
   );
 };
 

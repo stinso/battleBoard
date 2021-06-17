@@ -46,7 +46,7 @@
     "chart.js": "^2.9.4",
     "emoji-mart": "^3.0.1",
     "ethers": "^5.0.26",
-    "firebase": "^8.6.5",
+    "firebase": "^8.6.7",
     "formik": "^2.2.6",
     "formik-material-ui": "^3.0.1",
     "history": "^4.10.1",
