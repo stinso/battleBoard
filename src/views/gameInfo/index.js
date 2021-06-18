@@ -837,67 +837,67 @@ const BattleView = () => {
 
   return (
     <PerfectScrollbar>
-    <Page className={classes.root} title="Battle">
-      <FacebookProvider appId={FacebookAppID}>
-        <Container maxWidth="lg">
-          {modal && consoleModalWindow()}
-          {showFacebookModal && (
-            <FacebookModal
-              consoleSelectedValue={consoleSelectedValue}
-              handleConsoleOnChange={handleConsoleOnChange}
-              handleSponsoredEventRegister={handleSponsoredEventRegister}
-              fbInfo={fbInfo}
-              setFbInfo={setFbInfo}
-              eventData={eventData}
-              isSponsoredEvent={isSponsoredEvent}
-              setShowFacebookModal={setShowFacebookModal}
-              showFacebookModal={showFacebookModal}
-              facebookNotification={facebookNotification}
-              isLoading={isLoading}
-            />
-          )}
-          {showCODSettingsModal.show && (
-            <CODSettingsModal
-              setShowCODSettingsModal={setShowCODSettingsModal}
-              showCODSettingsModal={showCODSettingsModal}
-            />
-          )}
-          {showSubmitResultModal && (
-            <SubmitResultModal
-              setShowSubmitResultModal={setShowSubmitResultModal}
-              showSubmitResultModal={showSubmitResultModal}
-              submitResult={submitResult}
-            />
-          )}
+      <Page className={classes.root} title="Battle">
+        <FacebookProvider appId={FacebookAppID}>
+          <Container maxWidth="lg">
+            {modal && consoleModalWindow()}
+            {showFacebookModal && (
+              <FacebookModal
+                consoleSelectedValue={consoleSelectedValue}
+                handleConsoleOnChange={handleConsoleOnChange}
+                handleSponsoredEventRegister={handleSponsoredEventRegister}
+                fbInfo={fbInfo}
+                setFbInfo={setFbInfo}
+                eventData={eventData}
+                isSponsoredEvent={isSponsoredEvent}
+                setShowFacebookModal={setShowFacebookModal}
+                showFacebookModal={showFacebookModal}
+                facebookNotification={facebookNotification}
+                isLoading={isLoading}
+              />
+            )}
+            {showCODSettingsModal.show && (
+              <CODSettingsModal
+                setShowCODSettingsModal={setShowCODSettingsModal}
+                showCODSettingsModal={showCODSettingsModal}
+              />
+            )}
+            {showSubmitResultModal && (
+              <SubmitResultModal
+                setShowSubmitResultModal={setShowSubmitResultModal}
+                showSubmitResultModal={showSubmitResultModal}
+                submitResult={submitResult}
+              />
+            )}
 
-          {isSponsoredEvent &&
-            sponsoredEventNotificationOpen &&
-            !(
-              eventState === EventStates.ONGOING ||
-              eventState === EventStates.EVENT_ENDED
-            ) &&
-            generateSponsoredEventNotification()}
+            {isSponsoredEvent &&
+              sponsoredEventNotificationOpen &&
+              !(
+                eventState === EventStates.ONGOING ||
+                eventState === EventStates.EVENT_ENDED
+              ) &&
+              generateSponsoredEventNotification()}
 
-          {showGamingNetworkNotification && (
-            <GamingNetworkNotLinkedNotification />
-          )}
+            {showGamingNetworkNotification && (
+              <GamingNetworkNotLinkedNotification />
+            )}
 
-          {shouldDisplayStyle && showGameStyleNotification && (
-            <GameStyleNotification
-              style={eventData.style}
-              setShowGameStyleNotification={setShowGameStyleNotification}
-            />
-          )}
+            {shouldDisplayStyle && showGameStyleNotification && (
+              <GameStyleNotification
+                style={eventData.style}
+                setShowGameStyleNotification={setShowGameStyleNotification}
+              />
+            )}
 
-          {/* NOTIFICATIONS */}
-          {showDisputeNotification && <DisputeNotification />}
-          {showEthAddressNotification && <EthAddressNotLinkedNotification />}
-          {errorNotifications.showNotification && generateErrorNotification()}
-          {successNotifications.showNotification &&
-            generateSuccessNotification()}
+            {/* NOTIFICATIONS */}
+            {showDisputeNotification && <DisputeNotification />}
+            {showEthAddressNotification && <EthAddressNotLinkedNotification />}
+            {errorNotifications.showNotification && generateErrorNotification()}
+            {successNotifications.showNotification &&
+              generateSuccessNotification()}
 
-          <Box mt={10} mb={3}>
-            <Paper className={classes.topPaper}>
+            <Box mt={10} mb={3}>
+              <Paper className={classes.topPaper}>
                 <Grid container>
                   <Grid item xs={12} sm={2} md={4}>
                     <img
@@ -998,75 +998,78 @@ const BattleView = () => {
                       </Box>
                     </Box>
                   </Grid>
-                  
                 </Grid>
                 <Divider />
-              <Box display="flex" className={classes.timer}>
-                <Box
-                  ml={5}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  {timeObject.showTimer && (
-                    <>
-                      <Box mt={1} mr={1}>
-                        <Typography color="textPrimary" variant="body2">
-                          Starts in
-                        </Typography>
-                      </Box>
-                      <CountDown
-                        timeObject={timeObject}
-                        getEventDetails={getEventDetails}
-                        setTimeObject={setTimeObject}
-                      />
-                    </>
-                  )}
+                <Box display="flex" className={classes.timer}>
+                  <Box
+                    ml={5}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    {timeObject.showTimer && (
+                      <>
+                        <Box mt={1} mr={1}>
+                          <Typography color="textPrimary" variant="body2">
+                            Starts in
+                          </Typography>
+                        </Box>
+                        <CountDown
+                          timeObject={timeObject}
+                          getEventDetails={getEventDetails}
+                          setTimeObject={setTimeObject}
+                        />
+                      </>
+                    )}
+                  </Box>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    ml={timeObject.showTimer ? 9 : 0}
+                  >
+                    {eventState && getAppropriateButton()}
+                  </Box>
                 </Box>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  ml={timeObject.showTimer ? 9 : 0}
-                >
-                  {eventState && getAppropriateButton()}
-                </Box>
-              </Box>
-            </Paper>
-          </Box>
-          <Box mt={10} mb={3}>
-            <Tabs
-              onChange={handleTabsChange}
-              scrollButtons="auto"
-              textColor="secondary"
-              value={currentTab}
-              variant="scrollable"
-            >
-              {tabs.map((tab) =>
-                tab.value !== 'bracket' ? (
-                  <Tab key={tab.value} label={tab.label} value={tab.value} />
-                ) : (
-                  isEventBracket(eventData.style) && (
+              </Paper>
+            </Box>
+            <Box mt={10} mb={3}>
+              <Tabs
+                onChange={handleTabsChange}
+                scrollButtons="auto"
+                textColor="secondary"
+                value={currentTab}
+                variant="scrollable"
+              >
+                {tabs.map((tab) =>
+                  tab.value !== 'bracket' ? (
                     <Tab key={tab.value} label={tab.label} value={tab.value} />
+                  ) : (
+                    isEventBracket(eventData.style) && (
+                      <Tab
+                        key={tab.value}
+                        label={tab.label}
+                        value={tab.value}
+                      />
+                    )
                   )
-                )
-              )}
-            </Tabs>
-            <Divider />
-          </Box>
-          {currentTab === 'info' && <Info eventData={eventData} />}
-          {currentTab === 'howToPlay' && <HowToPlay eventData={eventData} />}
-          {currentTab === 'rules' && (
-            <Rules
-              questionAnswers={
-                eventData?.description ? eventData.description : []
-              }
-              eventData={eventData}
-            />
-          )}
-          {currentTab === 'bracket' && <Bracket eventData={eventData} />}
-        </Container>
-      </FacebookProvider>
-    </Page>
+                )}
+              </Tabs>
+              <Divider />
+            </Box>
+            {currentTab === 'info' && <Info eventData={eventData} />}
+            {currentTab === 'howToPlay' && <HowToPlay eventData={eventData} />}
+            {currentTab === 'rules' && (
+              <Rules
+                questionAnswers={
+                  eventData?.description ? eventData.description : []
+                }
+                eventData={eventData}
+              />
+            )}
+            {currentTab === 'bracket' && <Bracket eventData={eventData} />}
+          </Container>
+        </FacebookProvider>
+      </Page>
     </PerfectScrollbar>
   );
 };

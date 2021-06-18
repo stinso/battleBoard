@@ -21,6 +21,8 @@ import {
   TablePagination,
   TableRow,
   Tabs,
+  SvgIcon,
+  Tooltip,
   makeStyles,
   useTheme,
   useMediaQuery
@@ -46,11 +48,9 @@ import FIFA_Image from '../../../assets/img/fifa21.jpg';
 import NBA_Image from '../../../assets/img/nba.jpg';
 import COD_Image from '../../../assets/img/cod.jpg';
 import MADDEN_Image from '../../../assets/img/madden.png';
+import { Star as StarIcon } from 'react-feather';
 
-import {
-  SupportedGamesWithID
-} from '../../../config/constants'
-
+import { SupportedGamesWithID } from '../../../config/constants';
 
 const font = "'Saira', sans-serif";
 
@@ -205,7 +205,7 @@ const useStyles = makeStyles((theme) => ({
   priceCell: {
     color: theme.palette.success.main,
     fontFamily: font,
-    fontSize: 16,
+    fontSize: 16
   },
   rowImage: {
     height: '60px',
@@ -213,7 +213,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     padding: 0,
     verticalAlign: 'top',
-    objectFit: 'cover',
+    objectFit: 'cover'
   },
   imageCell: {
     height: '60px',
@@ -226,11 +226,19 @@ const useStyles = makeStyles((theme) => ({
   },
   entry: {
     fontFamily: font,
+    fontSize: 16
+  },
+  entryFree: {
+    fontFamily: font,
     fontSize: 16,
     color: theme.palette.secondary.main
   },
   hiddenText: {
     overflow: 'hidden'
+  },
+  icon: {
+    marginRight: theme.spacing(2),
+    color: theme.palette.secondary.main
   }
 }));
 
@@ -442,7 +450,7 @@ const Hero = ({ className, ...rest }) => {
     }
   };
 
-  console.log(SupportedGamesWithID)
+  console.log(SupportedGamesWithID);
 
   return (
     <>
@@ -654,16 +662,35 @@ const Hero = ({ className, ...rest }) => {
                           align="center"
                           padding="none"
                         >
-                          <img className={classes.rowImage} src={getImage(entry.game)} />
+                          <img
+                            className={classes.rowImage}
+                            src={getImage(entry.game)}
+                          />
                         </TableCell>
                         <TableCell>
+                          {entry.betAmount === 'Free' && (
+                            <Tooltip title="Sponsored Event!">
+                              <SvgIcon
+                                className={classes.icon}
+                                fontSize="small"
+                              >
+                                <StarIcon />
+                              </SvgIcon>
+                            </Tooltip>
+                          )}
                           {entry.gameFormat}
                         </TableCell>
                         <TableCell>
                           {`${entry.noOfUsersEnrolled} of ${entry.maxUsers}`}
                         </TableCell>
                         <TableCell>{`${entry.date} ${entry.time}`}</TableCell>
-                        <TableCell className={classes.entry}>
+                        <TableCell
+                          className={
+                            entry.betAmount !== 'Free'
+                              ? classes.entry
+                              : classes.entryFree
+                          }
+                        >
                           {entry.betAmount}
                         </TableCell>
                         <TableCell>{`${entry.duration} min`}</TableCell>
