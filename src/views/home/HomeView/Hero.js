@@ -27,7 +27,8 @@ import {
   useTheme,
   useMediaQuery
 } from '@material-ui/core';
-import Carousel from './Carousel';
+import GamesCarousel from './Carousel';
+import { Carousel } from 'react-responsive-carousel';
 import { AuthContext } from '../../../context/AuthContext';
 import {
   getEventsService,
@@ -185,7 +186,22 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0.8,
 
     width: '100%',
-    height: '24%'
+    height: '16%'
+  },
+  MediaCaptionLeftMobile: {
+    position: 'absolute',
+    bottom: 0,
+
+    paddingLeft: '30px',
+    paddingBottom: '10px',
+    paddingTop: '36px',
+
+    backgroundColor: 'black',
+    color: 'white',
+    opacity: 0.8,
+
+    width: '100%',
+    height: '28%'
   },
   viewButtonRight: {
     position: 'absolute',
@@ -195,8 +211,13 @@ const useStyles = makeStyles((theme) => ({
   },
   viewButtonLeft: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 10,
     right: 16
+  },
+  captionCarousel: {
+    position: 'absolute',
+    bottom: 10,
+    left: 16
   },
   gamesTitle: {
     fontFamily: font,
@@ -362,11 +383,9 @@ const Hero = ({ className, ...rest }) => {
   };
 
   const filterCommunityEvents = () => {
-
-    const result = events.filter((event) => event.betAmount === 'Free')
-    return result.slice(0,5);
+    const result = events.filter((event) => event.betAmount === 'Free');
+    return result;
   };
-  
 
   const communityEvents = filterCommunityEvents();
   const filteredEvents = filterEvents();
@@ -441,11 +460,11 @@ const Hero = ({ className, ...rest }) => {
       <div className={clsx(classes.root, className)} {...rest}>
         {/* Notification to register Ethereum Address */}
         {showNotification && <Notification />}
-        {!mobileDevice && communityEvents.length > 4 && (
+        {!mediumDevice && communityEvents.length > 4 && (
           <Paper className={classes.paper}>
             <Box className={classes.tournamentBox}>
               <Grid container spacing={1}>
-                <Grid item xs={mediumDevice ? 12 : 6}>
+                <Grid item xs={6}>
                   <Card raised className={classes.cardLeft}>
                     <Typography
                       variant="h6"
@@ -463,6 +482,7 @@ const Hero = ({ className, ...rest }) => {
                       <Box className={classes.MediaCaptionLeft}>
                         <Grid container spacing={3}>
                           <Grid item xs={8}>
+                            <Box className={classes.captionCarousel}>
                             <Grid item xs={12}>
                               <Typography variant="h4" color="secondary">
                                 COMMUNITY TOURNAMENT
@@ -478,6 +498,7 @@ const Hero = ({ className, ...rest }) => {
                                 {`${communityEvents[0].prizePool} Free Entry ${communityEvents[0].gameFormat}`}
                               </Typography>
                             </Grid>
+                            </Box>
                           </Grid>
                           <Grid item xs={4}>
                             <Button
@@ -498,7 +519,7 @@ const Hero = ({ className, ...rest }) => {
                 </Grid>
                 {!mediumDevice && (
                   <Grid item container xs={6} spacing={1}>
-                    {communityEvents.slice(1,5).map((tournament) => {
+                    {communityEvents.slice(1, 5).map((tournament) => {
                       return (
                         <Grid item xs={6} key={tournament.id}>
                           <Card raised className={classes.cardRight}>
@@ -551,7 +572,7 @@ const Hero = ({ className, ...rest }) => {
                                 size="small"
                                 color="secondary"
                                 component={RouterLink}
-                              to={`/gameInformationPage/${tournament.id}`}
+                                to={`/gameInformationPage/${tournament.id}`}
                               >
                                 VIEW
                               </Button>
@@ -566,6 +587,80 @@ const Hero = ({ className, ...rest }) => {
             </Box>
           </Paper>
         )}
+
+        {mediumDevice && (
+          <Carousel infiniteLoop showStatus={false}>
+            {communityEvents.map((tournament) => {
+              return (
+                <Paper className={classes.paper}>
+                  <Box className={classes.tournamentBox}>
+                    <Card raised className={classes.cardLeft}>
+                      <Typography
+                        variant="h6"
+                        color="secondary"
+                        className={classes.pricePool}
+                        fontFamily={font}
+                      >
+                        {tournament.prizePool}
+                      </Typography>
+                      <CardMedia
+                        className={classes.media}
+                        image={getImage(tournament.game)}
+                        title={tournament.game}
+                      >
+                        <Box className={mobileDevice ? classes.MediaCaptionLeftMobile : classes.MediaCaptionLeft}>
+                          <Grid container spacing={3}>
+                            <Grid item align="left" xs={12} md={8}>
+                            <Box className={classes.captionCarousel}>
+                                <Typography variant="h4" color="secondary">
+                                  COMMUNITY TOURNAMENT
+                                </Typography>
+                                <Typography variant="h4" color="textPrimary">
+                                  {`${tournament.date} ${tournament.time}`}
+                                </Typography>
+                                <Typography variant="h3" color="textPrimary">
+                                  {`${tournament.prizePool} Free Entry ${tournament.gameFormat}`}
+                                </Typography>
+                                {mobileDevice && 
+                                <Box mt={1}>
+                                <Button
+                                variant="contained"
+                                size="large"
+                                color="secondary"
+                                component={RouterLink}
+                                to={`/gameInformationPage/${tournament.id}`}
+                              >
+                                VIEW TOURNAMENT
+                              </Button></Box>}
+
+                                
+                                </Box>
+                            </Grid>
+                            {!mobileDevice && 
+                            <Grid item xs={12} md={4}>
+                              <Button
+                                className={classes.viewButtonLeft}
+                                variant="contained"
+                                size="large"
+                                color="secondary"
+                                component={RouterLink}
+                                to={`/gameInformationPage/${tournament.id}`}
+                              >
+                                VIEW TOURNAMENT
+                              </Button>
+                            </Grid>
+            }
+                          </Grid>
+                        </Box>
+                      </CardMedia>
+                    </Card>
+                  </Box>
+                </Paper>
+              );
+            })}
+          </Carousel>
+        )}
+
         <Container maxWidth="lg">
           <Box mt={3} mb={3} ml={2}>
             <Typography
@@ -583,7 +678,7 @@ const Hero = ({ className, ...rest }) => {
               Select a game and choose how you want to play.
             </Typography>
           </Box>
-          <Carousel />
+          <GamesCarousel />
         </Container>
         <Container maxWidth="lg">
           <Box ml={2} mt={10} mb={3}>

@@ -1,7 +1,6 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { uploadProfileImageService } from '../../service/centralServerService';
 import defaultAvatar from '../../assets/img/placeholder.jpg';
-import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from './cropImage';
 import { useLocation } from 'react-router-dom';
