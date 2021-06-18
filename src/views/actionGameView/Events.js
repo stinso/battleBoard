@@ -58,9 +58,17 @@ const useStyles = makeStyles((theme) => ({
   fetching: {
     fontSize: 20
   },
+  '@keyframes fadeIn': {
+    '0%': {
+      color: theme.palette.secondary.main
+    },
+    '100%': {
+      color: '#30913C'
+    }
+  },
   icon: {
-    marginRight: theme.spacing(2),
-    color: theme.palette.secondary.main
+    marginRight: theme.spacing(1),
+    animation: '$fadeIn 1s alternate infinite'
   },
   entry: {
     fontFamily: font,
@@ -180,7 +188,7 @@ const Events = ({ events, isLoading }) => {
                         onClick={() => handleRowClick(entry.id)}
                       >
                         <TableCell className={classes.rankCell}>
-                        {entry.betAmount === 'Free' && (
+                          {entry.betAmount === 'Free' && (
                             <Tooltip title="Sponsored Event!">
                               <SvgIcon
                                 className={classes.icon}

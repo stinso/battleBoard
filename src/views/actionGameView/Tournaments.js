@@ -66,10 +66,6 @@ const useStyles = makeStyles((theme) => ({
   fetching: {
     fontSize: 20
   },
-  icon: {
-    marginRight: theme.spacing(2),
-    color: theme.palette.secondary.main
-  },
   entry: {
     fontFamily: font,
     fontSize: 16
@@ -78,6 +74,18 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: font,
     fontSize: 16,
     color: theme.palette.secondary.main
+  },
+  '@keyframes fadeIn': {
+    '0%': {
+      color: theme.palette.secondary.main
+    },
+    '100%': {
+      color: '#30913C'
+    }
+  },
+  icon: {
+    marginRight: theme.spacing(1),
+    animation: '$fadeIn 1s alternate infinite'
   }
 }));
 

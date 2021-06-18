@@ -236,9 +236,17 @@ const useStyles = makeStyles((theme) => ({
   hiddenText: {
     overflow: 'hidden'
   },
+  '@keyframes fadeIn': {
+    '0%': {
+      color: theme.palette.secondary.main
+    },
+    '100%': {
+      color: '#30913C'
+    }
+  },
   icon: {
-    marginRight: theme.spacing(2),
-    color: theme.palette.secondary.main
+    marginRight: theme.spacing(1),
+    animation: '$fadeIn 1s alternate infinite'
   }
 }));
 
