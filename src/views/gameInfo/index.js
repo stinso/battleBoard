@@ -114,7 +114,12 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#1f2429'
   },
   image: {
-    height: '210px'
+    width: '100%',
+    objectFit: 'cover',
+    height: '210px',
+    margin: 0,
+    padding: 0,
+    verticalAlign: 'top'
   },
   titlePaper: {
     fontFamily: font,
@@ -151,6 +156,9 @@ const useStyles = makeStyles((theme) => ({
       width: 48,
       backgroundColor: theme.palette.primary.main
     }
+  },
+  caption: {
+    paddingLeft: theme.spacing(2)
   }
 }));
 
@@ -890,15 +898,14 @@ const BattleView = () => {
 
           <Box mt={10} mb={3}>
             <Paper className={classes.topPaper}>
-              <Box className={classes.info} borderBottom={1}>
                 <Grid container>
-                  <Grid item md={12} lg={4}>
+                  <Grid item xs={12} sm={2} md={4}>
                     <img
                       className={classes.image}
                       src="/static/images/games/cod_coldWar.jpg"
                     />
                   </Grid>
-                  <Grid item md={12} lg={8}>
+                  <Grid item xs={12} sm={10} md={8}>
                     <Box
                       className={classes.caption}
                       display="flex"
@@ -991,9 +998,9 @@ const BattleView = () => {
                       </Box>
                     </Box>
                   </Grid>
+                  
                 </Grid>
-              </Box>
-
+                <Divider />
               <Box display="flex" className={classes.timer}>
                 <Box
                   ml={5}

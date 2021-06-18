@@ -124,7 +124,7 @@ const renderAppropriateRules = (game, gameFormat, classes) => {
           );
         case 1:
           return (
-            <List dense={false}>
+            <List dense={true}>
               <ListItem>
                 <ListItemIcon>
                   <FiberManualRecordTwoToneIcon className={classes.bullet} />
@@ -190,7 +190,7 @@ const renderAppropriateRules = (game, gameFormat, classes) => {
           );
         case 2:
           return (
-            <List dense={false}>
+            <List dense={true}>
               <ListItem>
                 <ListItemIcon>
                   <FiberManualRecordTwoToneIcon className={classes.bullet} />
@@ -263,7 +263,7 @@ const renderAppropriateRules = (game, gameFormat, classes) => {
           );
         case 3:
           return (
-            <List dense={false}>
+            <List dense={true}>
               <ListItem>
                 <ListItemIcon>
                   <FiberManualRecordTwoToneIcon className={classes.bullet} />
@@ -337,7 +337,7 @@ const renderAppropriateRules = (game, gameFormat, classes) => {
       break;
     case 'Madden NFL 21':
       return (
-        <List dense={false}>
+        <List dense={true}>
           <ListItem>
             <ListItemIcon>
               <FiberManualRecordTwoToneIcon className={classes.bullet} />
@@ -453,7 +453,7 @@ const renderAppropriateRules = (game, gameFormat, classes) => {
       );
     case 'Fifa':
       return (
-        <List dense={false}>
+        <List dense={true}>
           <ListItem>
             <ListItemIcon>
               <FiberManualRecordTwoToneIcon className={classes.bullet} />
@@ -534,7 +534,7 @@ const renderAppropriateRules = (game, gameFormat, classes) => {
       );
     case 'NBA 2K21':
       return (
-        <List dense={false}>
+        <List dense={true}>
           <ListItem>
             <ListItemIcon>
               <FiberManualRecordTwoToneIcon className={classes.bullet} />

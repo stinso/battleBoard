@@ -42,6 +42,15 @@ import {
 } from '../../../utils/helpers';
 import { MAX_APPROVED_BALANCE } from '../../../config/constants';
 import Wizard from '../../initialStepsWizard/index';
+import FIFA_Image from '../../../assets/img/fifa21.jpg';
+import NBA_Image from '../../../assets/img/nba.jpg';
+import COD_Image from '../../../assets/img/cod.jpg';
+import MADDEN_Image from '../../../assets/img/madden.png';
+
+import {
+  SupportedGamesWithID
+} from '../../../config/constants'
+
 
 const font = "'Saira', sans-serif";
 
@@ -194,14 +203,17 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 40
   },
   priceCell: {
-    color: theme.palette.success.main
+    color: theme.palette.success.main,
+    fontFamily: font,
+    fontSize: 16,
   },
   rowImage: {
     height: '60px',
     width: '60px',
     margin: 0,
     padding: 0,
-    verticalAlign: 'top'
+    verticalAlign: 'top',
+    objectFit: 'cover',
   },
   imageCell: {
     height: '60px',
@@ -214,7 +226,7 @@ const useStyles = makeStyles((theme) => ({
   },
   entry: {
     fontFamily: font,
-    fontSize: 20,
+    fontSize: 16,
     color: theme.palette.secondary.main
   },
   hiddenText: {
@@ -416,6 +428,21 @@ const Hero = ({ className, ...rest }) => {
     getEvents();
     getInfoFromAPI();
   }, []);
+
+  const getImage = (game) => {
+    switch (game) {
+      case SupportedGamesWithID[0].name:
+        return COD_Image;
+      case SupportedGamesWithID[1].name:
+        return MADDEN_Image;
+      case SupportedGamesWithID[2].name:
+        return FIFA_Image;
+      case SupportedGamesWithID[3].name:
+        return NBA_Image;
+    }
+  };
+
+  console.log(SupportedGamesWithID)
 
   return (
     <>
@@ -627,10 +654,9 @@ const Hero = ({ className, ...rest }) => {
                           align="center"
                           padding="none"
                         >
-                          <img className={classes.rowImage} src={entry.image} />
+                          <img className={classes.rowImage} src={getImage(entry.game)} />
                         </TableCell>
                         <TableCell>
-                          {/* getGameFormatFromIndex(entry.game ,entry.gameFormat) */}
                           {entry.gameFormat}
                         </TableCell>
                         <TableCell>
