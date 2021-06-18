@@ -250,45 +250,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const tournaments = [
-  {
-    id: 0,
-    game: 'Cod',
-    tournamentStyle: 'COMMUNITY TOURNAMENT',
-    date: 'MAR29, 2:00 PM PST',
-    description: '$10 Free Entry 3v3 Best of 1',
-    image: '/static/images/games/cod_coldWar.jpg',
-    entry: '$10'
-  },
-  {
-    id: 1,
-    game: 'NBA',
-    tournamentStyle: 'COMMUNITY TOURNAMENT',
-    date: 'MAR29, 2:00 PM PST',
-    description: '$10 Free Entry 3v3 Best of 1',
-    image: '/static/images/games/nba.jpg',
-    entry: '$16'
-  },
-  {
-    id: 2,
-    game: 'NBA',
-    tournamentStyle: 'COMMUNITY TOURNAMENT',
-    date: 'MAR29, 2:00 PM PST',
-    description: '$10 Free Entry 3v3 Best of 1',
-    image: '/static/images/games/nba.jpg',
-    entry: '$10'
-  },
-  {
-    id: 3,
-    game: 'Cod',
-    tournamentStyle: 'COMMUNITY TOURNAMENT',
-    date: 'MAR29, 2:00 PM PST',
-    description: '$10 Free Entry 3v3 Best of 1',
-    image: '/static/images/games/cod_coldWar.jpg',
-    entry: '$10'
-  }
-];
-
 const WizardEnums = {
   AccountLink: 0,
   Approve: 1,
@@ -400,6 +361,14 @@ const Hero = ({ className, ...rest }) => {
     return result;
   };
 
+  const filterCommunityEvents = () => {
+
+    const result = events.filter((event) => event.betAmount === 'Free')
+    return result.slice(0,5);
+  };
+  
+
+  const communityEvents = filterCommunityEvents();
   const filteredEvents = filterEvents();
   const paginatedEvents = applyPagination(filteredEvents, page, limit);
 
@@ -472,7 +441,7 @@ const Hero = ({ className, ...rest }) => {
       <div className={clsx(classes.root, className)} {...rest}>
         {/* Notification to register Ethereum Address */}
         {showNotification && <Notification />}
-        {!mobileDevice && (
+        {!mobileDevice && communityEvents.length > 4 && (
           <Paper className={classes.paper}>
             <Box className={classes.tournamentBox}>
               <Grid container spacing={1}>
@@ -484,12 +453,12 @@ const Hero = ({ className, ...rest }) => {
                       className={classes.pricePool}
                       fontFamily={font}
                     >
-                      $10
+                      {communityEvents[0].prizePool}
                     </Typography>
                     <CardMedia
                       className={classes.media}
-                      image="/static/images/games/cod_coldWar.jpg"
-                      title="cod"
+                      image={getImage(communityEvents[0].game)}
+                      title={communityEvents[0].game}
                     >
                       <Box className={classes.MediaCaptionLeft}>
                         <Grid container spacing={3}>
@@ -501,12 +470,12 @@ const Hero = ({ className, ...rest }) => {
                             </Grid>
                             <Grid item xs={12}>
                               <Typography variant="h4" color="textPrimary">
-                                MAR 29, 2:00 PM PST
+                                {`${communityEvents[0].date} ${communityEvents[0].time}`}
                               </Typography>
                             </Grid>
                             <Grid item xs={12}>
                               <Typography variant="h3" color="textPrimary">
-                                $10 Free Entry 3v3 Best of 1
+                                {`${communityEvents[0].prizePool} Free Entry ${communityEvents[0].gameFormat}`}
                               </Typography>
                             </Grid>
                           </Grid>
@@ -516,6 +485,8 @@ const Hero = ({ className, ...rest }) => {
                               variant="contained"
                               size="large"
                               color="secondary"
+                              component={RouterLink}
+                              to={`/gameInformationPage/${communityEvents[0].id}`}
                             >
                               VIEW TOURNAMENT
                             </Button>
@@ -527,7 +498,7 @@ const Hero = ({ className, ...rest }) => {
                 </Grid>
                 {!mediumDevice && (
                   <Grid item container xs={6} spacing={1}>
-                    {tournaments.map((tournament) => {
+                    {communityEvents.slice(1,5).map((tournament) => {
                       return (
                         <Grid item xs={6} key={tournament.id}>
                           <Card raised className={classes.cardRight}>
@@ -537,11 +508,11 @@ const Hero = ({ className, ...rest }) => {
                               className={classes.pricePoolRight}
                               fontFamily={font}
                             >
-                              {tournament.entry}
+                              {tournament.prizePool}
                             </Typography>
                             <CardMedia
                               className={classes.media}
-                              image={tournament.image}
+                              image={getImage(tournament.game)}
                               title={tournament.game}
                             >
                               <Box className={classes.MediaCaption}>
@@ -552,7 +523,7 @@ const Hero = ({ className, ...rest }) => {
                                         variant="body2"
                                         color="secondary"
                                       >
-                                        {tournament.tournamentStyle}
+                                        COMMUNITY TOURNAMENT
                                       </Typography>
                                     </Grid>
                                     <Grid item xs={12}>
@@ -560,7 +531,7 @@ const Hero = ({ className, ...rest }) => {
                                         variant="body2"
                                         color="textPrimary"
                                       >
-                                        {tournament.date}
+                                        {`${tournament.date} ${tournament.time}`}
                                       </Typography>
                                     </Grid>
                                     <Grid item xs={12}>
@@ -568,7 +539,7 @@ const Hero = ({ className, ...rest }) => {
                                         variant="body1"
                                         color="textPrimary"
                                       >
-                                        {tournament.description}
+                                        {`${tournament.prizePool} Entry Free ${tournament.gameFormat}`}
                                       </Typography>
                                     </Grid>
                                   </Grid>
@@ -579,6 +550,8 @@ const Hero = ({ className, ...rest }) => {
                                 variant="outlined"
                                 size="small"
                                 color="secondary"
+                                component={RouterLink}
+                              to={`/gameInformationPage/${tournament.id}`}
                               >
                                 VIEW
                               </Button>

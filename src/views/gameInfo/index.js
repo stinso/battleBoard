@@ -45,6 +45,7 @@ import {
   submitEventResultService
 } from '../../service/node.service';
 import {
+  SupportedGamesWithID,
   FacebookAppID,
   StatusReceivedFromAPI,
   HoursAfterWhichCanSubmitEvidence,
@@ -69,6 +70,10 @@ import useInterval from '../../hooks/useInterval';
 import CloseIcon from '@material-ui/icons/Close';
 import * as Sentry from '@sentry/react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import FIFA_Image from '../../assets/img/fifa21.jpg';
+import NBA_Image from '../../assets/img/nba.jpg';
+import COD_Image from '../../assets/img/cod.jpg';
+import MADDEN_Image from '../../assets/img/madden.png';
 
 const font = "'Saira', sans-serif";
 
@@ -204,8 +209,6 @@ const BattleView = () => {
   const [currentTab, setCurrentTab] = useState('info');
   const history = useHistory();
   const location = useLocation();
-
-  //new
   const [modal, setModal] = useState(false);
   const [showFacebookModal, setShowFacebookModal] = useState(false);
   const [showSubmitResultModal, setShowSubmitResultModal] = useState(false);
@@ -835,6 +838,19 @@ const BattleView = () => {
     setIsLoading(false);
   };
 
+  const getImage = (game) => {
+    switch (game) {
+      case SupportedGamesWithID[0].name:
+        return COD_Image;
+      case SupportedGamesWithID[1].name:
+        return MADDEN_Image;
+      case SupportedGamesWithID[2].name:
+        return FIFA_Image;
+      case SupportedGamesWithID[3].name:
+        return NBA_Image;
+    }
+  };
+
   return (
     <PerfectScrollbar>
       <Page className={classes.root} title="Battle">
@@ -902,7 +918,7 @@ const BattleView = () => {
                   <Grid item xs={12} sm={2} md={4}>
                     <img
                       className={classes.image}
-                      src="/static/images/games/cod_coldWar.jpg"
+                      src={getImage(eventData?.game)}
                     />
                   </Grid>
                   <Grid item xs={12} sm={10} md={8}>
