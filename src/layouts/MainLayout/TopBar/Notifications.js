@@ -292,8 +292,6 @@ const Notifications = () => {
     fetchNotifications();
   }, []);
 
-  console.log(notifications);
-
   return (
     <>
       <Tooltip title="Notifications">

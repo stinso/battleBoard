@@ -49,7 +49,6 @@ const VerifyForgotPassword = ({ className, ...rest }) => {
   useEffect(() => {
     let token = query.get('token');
     setToken(token);
-    console.log('token: ' + token);
   }, []);
 
   useEffect(() => {

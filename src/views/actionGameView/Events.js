@@ -11,19 +11,25 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  SvgIcon,
+  Tooltip,
   Typography,
   makeStyles
 } from '@material-ui/core';
 import { getGameFormatFromIndex } from '../../utils/helpers';
 import { useHistory } from 'react-router-dom';
 import LoadingScreen from 'src/components/LoadingScreen';
+import { Star as StarIcon } from 'react-feather';
+import DeviceIconAndName from '../gameInfo/DeviceIconAndName';
 
 const useStyles = makeStyles((theme) => ({
   free: {
     color: theme.palette.secondary.main
   },
   priceCell: {
-    color: theme.palette.success.main
+    color: theme.palette.success.main,
+    fontFamily: font,
+    fontSize: 16
   },
   title: {
     fontFamily: font,
@@ -51,6 +57,19 @@ const useStyles = makeStyles((theme) => ({
   },
   fetching: {
     fontSize: 20
+  },
+  icon: {
+    marginRight: theme.spacing(2),
+    color: theme.palette.secondary.main
+  },
+  entry: {
+    fontFamily: font,
+    fontSize: 16
+  },
+  entryFree: {
+    fontFamily: font,
+    fontSize: 16,
+    color: theme.palette.secondary.main
   }
 }));
 
@@ -92,11 +111,11 @@ const Events = ({ events, isLoading }) => {
   const filterEvents = () => {
     const result = events.filter((event) => {
       if (currentTab === 'free') {
-        if (event.entry === 'Free') {
+        if (event.betAmount === 'Free') {
           return true;
         }
       } else if (currentTab === 'paid') {
-        if (event.entry !== 'Free') {
+        if (event.betAmount !== 'Free') {
           return true;
         }
       } else {
@@ -144,6 +163,7 @@ const Events = ({ events, isLoading }) => {
                   <TableRow>
                     <TableCell>Event Name</TableCell>
                     <TableCell>Game Format</TableCell>
+                    {events[0].deviceID && <TableCell>Console</TableCell>}
                     <TableCell>Participants</TableCell>
                     <TableCell>Start Time</TableCell>
                     <TableCell>Entry</TableCell>
@@ -160,18 +180,35 @@ const Events = ({ events, isLoading }) => {
                         onClick={() => handleRowClick(entry.id)}
                       >
                         <TableCell className={classes.rankCell}>
+                        {entry.betAmount === 'Free' && (
+                            <Tooltip title="Sponsored Event!">
+                              <SvgIcon
+                                className={classes.icon}
+                                fontSize="small"
+                              >
+                                <StarIcon />
+                              </SvgIcon>
+                            </Tooltip>
+                          )}
                           {entry.name}
                         </TableCell>
                         <TableCell>
                           {getGameFormatFromIndex(entry.game, entry.gameFormat)}
                         </TableCell>
+                        {entry.deviceID && (
+                          <TableCell>
+                            <DeviceIconAndName deviceID={entry.deviceID} />
+                          </TableCell>
+                        )}
                         <TableCell>
                           {`${entry.noOfUsersEnrolled} of ${entry.maxUsers}`}
                         </TableCell>
                         <TableCell>{`${entry.date} ${entry.time}`}</TableCell>
                         <TableCell
                           className={
-                            entry.betAmount == 'Free' ? classes.free : ''
+                            entry.betAmount !== 'Free'
+                              ? classes.entry
+                              : classes.entryFree
                           }
                         >
                           {entry.betAmount}

@@ -66,8 +66,6 @@ const Info = ({ eventData }) => {
   const classes = useStyles();
   const [winners, setWinners] = useState([]);
 
-  console.log(winners);
-
   const getPriceInfo = () => {
     let winnersTemp = [];
     if (eventData.winners?.length > 0) {

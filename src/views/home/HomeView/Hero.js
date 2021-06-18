@@ -377,11 +377,11 @@ const Hero = ({ className, ...rest }) => {
   const filterEvents = () => {
     const result = events.filter((event) => {
       if (currentTab === 'free') {
-        if (event.entry === 'Free') {
+        if (event.betAmount === 'Free') {
           return true;
         }
       } else if (currentTab === 'paid') {
-        if (event.entry !== 'Free') {
+        if (event.betAmount !== 'Free') {
           return true;
         }
       } else {
@@ -449,8 +449,6 @@ const Hero = ({ className, ...rest }) => {
         return NBA_Image;
     }
   };
-
-  console.log(SupportedGamesWithID);
 
   return (
     <>

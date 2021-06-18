@@ -13,6 +13,8 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  SvgIcon,
+  Tooltip,
   Typography,
   makeStyles
 } from '@material-ui/core';
@@ -26,13 +28,16 @@ import {
 import { useHistory } from 'react-router-dom';
 import LoadingScreen from 'src/components/LoadingScreen';
 import DeviceIconAndName from '../gameInfo/DeviceIconAndName';
+import { Star as StarIcon } from 'react-feather';
 
 const useStyles = makeStyles((theme) => ({
   free: {
     color: theme.palette.secondary.main
   },
   priceCell: {
-    color: theme.palette.success.main
+    color: theme.palette.success.main,
+    fontFamily: font,
+    fontSize: 16
   },
   title: {
     fontFamily: font,
@@ -60,6 +65,19 @@ const useStyles = makeStyles((theme) => ({
   },
   fetching: {
     fontSize: 20
+  },
+  icon: {
+    marginRight: theme.spacing(2),
+    color: theme.palette.secondary.main
+  },
+  entry: {
+    fontFamily: font,
+    fontSize: 16
+  },
+  entryFree: {
+    fontFamily: font,
+    fontSize: 16,
+    color: theme.palette.secondary.main
   }
 }));
 
@@ -101,11 +119,11 @@ const Events = ({ tournaments, isLoading }) => {
   const filterEvents = () => {
     const result = tournaments.filter((event) => {
       if (currentTab === 'free') {
-        if (event.entry === 'Free') {
+        if (event.betAmount === 'Free') {
           return true;
         }
       } else if (currentTab === 'paid') {
-        if (event.entry !== 'Free') {
+        if (event.betAmount !== 'Free') {
           return true;
         }
       } else {
@@ -169,6 +187,16 @@ const Events = ({ tournaments, isLoading }) => {
                         onClick={() => handleRowClick(entry.id)}
                       >
                         <TableCell className={classes.rankCell}>
+                          {entry.betAmount === 'Free' && (
+                            <Tooltip title="Sponsored Event!">
+                              <SvgIcon
+                                className={classes.icon}
+                                fontSize="small"
+                              >
+                                <StarIcon />
+                              </SvgIcon>
+                            </Tooltip>
+                          )}
                           {entry.name}
                         </TableCell>
                         <TableCell>
@@ -185,7 +213,9 @@ const Events = ({ tournaments, isLoading }) => {
                         <TableCell>{`${entry.date} ${entry.time}`}</TableCell>
                         <TableCell
                           className={
-                            entry.betAmount == 'Free' ? classes.free : ''
+                            entry.betAmount !== 'Free'
+                              ? classes.entry
+                              : classes.entryFree
                           }
                         >
                           {entry.betAmount}
