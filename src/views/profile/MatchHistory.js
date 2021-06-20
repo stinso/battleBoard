@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
     marginTop: theme.spacing(1)
   },
-  waiting: {
+  won: {
     color: '#388e3c'
   },
   formControl: {
@@ -105,6 +105,9 @@ const useStyles = makeStyles((theme) => ({
   },
   noEventsText: {
     fontSize: 24
+  },
+  lost: {
+    color: theme.palette.primary.main
   }
 }));
 
@@ -296,7 +299,11 @@ const MatchHistory = ({ className, username }) => {
                         {formatEventStatus(row.eventStatus)}
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className={['WinnersDeclared'].includes(row.eventStatus)
+                        ? row.rank
+                          ? classes.won
+                          : classes.lost
+                        : classes.lost}>
                       {['WinnersDeclared'].includes(row.eventStatus)
                         ? row.rank
                           ? `Won : Ranked ${row.rank}`
