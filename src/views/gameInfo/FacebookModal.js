@@ -12,6 +12,11 @@ import {
   Grid,
   Paper,
   Typography,
+  Modal,
+  Stepper,
+  Step,
+  StepLabel,
+  StepContent,
   makeStyles
 } from '@material-ui/core';
 import GameConsoleSelection from './ConsoleSelection';
@@ -25,13 +30,14 @@ import {
   Status
 } from 'react-facebook';
 import { FacebookAppID, ChainGamesFBID, Devices } from '../../config/constants';
-//import Nav from '../initialStepsWizard/Nav';
 import { Alert } from '@material-ui/lab';
 import * as Sentry from '@sentry/react';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%'
+  },
   title: {
-    marginBottom: theme.spacing(2),
     position: 'relative',
     '&:after': {
       position: 'absolute',
@@ -42,8 +48,22 @@ const useStyles = makeStyles((theme) => ({
       width: 48,
       backgroundColor: theme.palette.primary.main
     }
+  },
+  actionsContainer: {
+    marginBottom: theme.spacing(2)
+  },
+  resetContainer: {
+    padding: theme.spacing(3)
+  },
+  button: {
+    marginTop: theme.spacing(1),
+    marginRight: theme.spacing(1)
   }
 }));
+
+function getSteps() {
+  return ['Login', 'Like and Share', 'Select Console'];
+}
 
 const FaceBookStepsModal = ({
   consoleSelectedValue,
@@ -59,9 +79,14 @@ const FaceBookStepsModal = ({
   isLoading,
   setFacebookNotification
 }) => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const location = useLocation();
   const classes = useStyles();
+  const steps = getSteps();
+
+  const handleClose = () => {
+    setShowFacebookModal(false);
+  };
 
   useEffect(() => {
     if (isSponsoredEvent) {
@@ -83,7 +108,7 @@ const FaceBookStepsModal = ({
         );
         if (response.status === 'connected') {
           CheckLikeOnFB();
-          setCurrentStep(2);
+          setCurrentStep(1);
           setFbInfo((prevState) => {
             return {
               ...prevState,
@@ -105,7 +130,7 @@ const FaceBookStepsModal = ({
       FB.login(function (response) {
         if (response.status === 'connected') {
           CheckLikeOnFB();
-          setCurrentStep(2);
+          setCurrentStep(1);
           setFbInfo((prevState) => {
             return {
               ...prevState,
@@ -130,9 +155,9 @@ const FaceBookStepsModal = ({
 
   useEffect(() => {
     if (fbInfo.isConnected && !fbInfo.hasShared) {
-      setCurrentStep(2);
+      setCurrentStep(1);
     } else if (fbInfo.hasShared) {
-      setCurrentStep(3);
+      setCurrentStep(2);
     }
   }, [fbInfo.hasShared, fbInfo.isConnected, showFacebookModal]);
 
@@ -208,17 +233,21 @@ const FaceBookStepsModal = ({
     return (
       <>
         <Typography>
-          Please login to your Facebook account. Please click the below button
+          Please login to your Facebook account. Click the below button.
         </Typography>
-        <Box display="flex" justifyContent="center">
-          <Button
-            color="primary"
-            disabled={fbInfo.isConnected}
-            onClick={onLoginClick}
-          >
-            Login via Facebook (ICON
-          </Button>
-        </Box>
+        <div className={classes.actionsContainer}>
+          <Box mt={1}>
+            <Button
+              size="small"
+              color="secondary"
+              variant="contained"
+              disabled={fbInfo.isConnected}
+              onClick={onLoginClick}
+            >
+              Login via Facebook
+            </Button>
+          </Box>
+        </div>
       </>
     );
   };
@@ -229,25 +258,27 @@ const FaceBookStepsModal = ({
         <Typography>
           Like us and share our post on Facebook to win more.
         </Typography>
-        <div>
+        <div className={classes.actionsContainer}>
           {!fbInfo.isFollowing && (
-            <div>
+            <Box display="flex" mt={1}>
               <Like
                 href="https://www.facebook.com/realchaingames"
                 colorScheme="dark"
                 size="large"
               />
-            </div>
+            </Box>
           )}
-          <div className="col">
+          <Box mt={1}>
             <Button
-              color="facebook"
+              color="secondary"
+              variant="contained"
+              size="small"
               disabled={fbInfo.hasShared}
               onClick={onShareClick}
             >
-              Share on Facebook (ICON)
+              Share on Facebook
             </Button>
-          </div>
+          </Box>
         </div>
       </>
     );
@@ -269,11 +300,11 @@ const FaceBookStepsModal = ({
 
   const renderAppropriateCard = (currentStep) => {
     switch (currentStep) {
-      case 1:
+      case 0:
         return FBStepOneLogin();
-      case 2:
+      case 1:
         return FBStepTwoLikeShare();
-      case 3:
+      case 2:
         return FBStepThreeSelectConsole();
       default:
         return null;
@@ -285,11 +316,11 @@ const FaceBookStepsModal = ({
       <div>
         <Dialog
           open={showFacebookModal}
-          onClose={() => setShowFacebookModal(false)}
-          maxWidth="lg"
+          onClose={handleClose}
+          maxWidth="sm"
           fullWidth
         >
-          <DialogTitle>
+          <DialogTitle disableTypography>
             <Typography className={classes.title} variant="h6">
               Facebook Steps
             </Typography>
@@ -313,31 +344,42 @@ const FaceBookStepsModal = ({
               </Alert>
             )}
             <Typography variant="body1">
-              In order to register for the sponsored event, Please complete
+              In order to register for the sponsored event, please complete
               below steps.
             </Typography>
-            <h2>{`Step ${currentStep}`}</h2>
-            <div>{/* <Nav currentStep={currentStep} totalSteps={3} /> */}</div>
-            {renderAppropriateCard(currentStep)}
+            <Stepper activeStep={currentStep} orientation="vertical">
+              {steps.map((label, index) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                  <StepContent>{renderAppropriateCard(index)}</StepContent>
+                </Step>
+              ))}
+            </Stepper>
           </DialogContent>
           <DialogActions>
-            {currentStep === 3 && (
-              <>
-                <Button
-                  disabled={
-                    !(
-                      fbInfo.isConnected &&
-                      fbInfo.hasShared &&
-                      consoleSelectedValue !== ''
-                    ) || isLoading
-                  }
-                  onClick={handleSponsoredEventRegister}
-                >
-                  Register
-                </Button>{' '}
-              </>
+            {currentStep === steps.length - 1 && (
+              <Button
+                color="secondary"
+                variant="contained"
+                disabled={
+                  !(
+                    fbInfo.isConnected &&
+                    fbInfo.hasShared &&
+                    consoleSelectedValue !== ''
+                  ) || isLoading
+                }
+                onClick={handleSponsoredEventRegister}
+              >
+                Register
+              </Button>
             )}
-            <Button onClick={() => setShowFacebookModal(false)}>Cancel</Button>
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => setShowFacebookModal(false)}
+            >
+              Cancel
+            </Button>
           </DialogActions>
         </Dialog>
       </div>

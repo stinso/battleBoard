@@ -483,21 +483,21 @@ const Hero = ({ className, ...rest }) => {
                         <Grid container spacing={3}>
                           <Grid item xs={8}>
                             <Box className={classes.captionCarousel}>
-                            <Grid item xs={12}>
-                              <Typography variant="h4" color="secondary">
-                                COMMUNITY TOURNAMENT
-                              </Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                              <Typography variant="h4" color="textPrimary">
-                                {`${communityEvents[0].date} ${communityEvents[0].time}`}
-                              </Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                              <Typography variant="h3" color="textPrimary">
-                                {`${communityEvents[0].prizePool} Free Entry ${communityEvents[0].gameFormat}`}
-                              </Typography>
-                            </Grid>
+                              <Grid item xs={12}>
+                                <Typography variant="h4" color="secondary">
+                                  COMMUNITY TOURNAMENT
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12}>
+                                <Typography variant="h4" color="textPrimary">
+                                  {`${communityEvents[0].date} ${communityEvents[0].time}`}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12}>
+                                <Typography variant="h3" color="textPrimary">
+                                  {`${communityEvents[0].prizePool} Free Entry ${communityEvents[0].gameFormat}`}
+                                </Typography>
+                              </Grid>
                             </Box>
                           </Grid>
                           <Grid item xs={4}>
@@ -608,10 +608,16 @@ const Hero = ({ className, ...rest }) => {
                         image={getImage(tournament.game)}
                         title={tournament.game}
                       >
-                        <Box className={mobileDevice ? classes.MediaCaptionLeftMobile : classes.MediaCaptionLeft}>
+                        <Box
+                          className={
+                            mobileDevice
+                              ? classes.MediaCaptionLeftMobile
+                              : classes.MediaCaptionLeft
+                          }
+                        >
                           <Grid container spacing={3}>
                             <Grid item align="left" xs={12} md={8}>
-                            <Box className={classes.captionCarousel}>
+                              <Box className={classes.captionCarousel}>
                                 <Typography variant="h4" color="secondary">
                                   COMMUNITY TOURNAMENT
                                 </Typography>
@@ -621,35 +627,35 @@ const Hero = ({ className, ...rest }) => {
                                 <Typography variant="h3" color="textPrimary">
                                   {`${tournament.prizePool} Free Entry ${tournament.gameFormat}`}
                                 </Typography>
-                                {mobileDevice && 
-                                <Box mt={1}>
+                                {mobileDevice && (
+                                  <Box mt={1}>
+                                    <Button
+                                      variant="contained"
+                                      size="large"
+                                      color="secondary"
+                                      component={RouterLink}
+                                      to={`/gameInformationPage/${tournament.id}`}
+                                    >
+                                      VIEW TOURNAMENT
+                                    </Button>
+                                  </Box>
+                                )}
+                              </Box>
+                            </Grid>
+                            {!mobileDevice && (
+                              <Grid item xs={12} md={4}>
                                 <Button
-                                variant="contained"
-                                size="large"
-                                color="secondary"
-                                component={RouterLink}
-                                to={`/gameInformationPage/${tournament.id}`}
-                              >
-                                VIEW TOURNAMENT
-                              </Button></Box>}
-
-                                
-                                </Box>
-                            </Grid>
-                            {!mobileDevice && 
-                            <Grid item xs={12} md={4}>
-                              <Button
-                                className={classes.viewButtonLeft}
-                                variant="contained"
-                                size="large"
-                                color="secondary"
-                                component={RouterLink}
-                                to={`/gameInformationPage/${tournament.id}`}
-                              >
-                                VIEW TOURNAMENT
-                              </Button>
-                            </Grid>
-            }
+                                  className={classes.viewButtonLeft}
+                                  variant="contained"
+                                  size="large"
+                                  color="secondary"
+                                  component={RouterLink}
+                                  to={`/gameInformationPage/${tournament.id}`}
+                                >
+                                  VIEW TOURNAMENT
+                                </Button>
+                              </Grid>
+                            )}
                           </Grid>
                         </Box>
                       </CardMedia>
