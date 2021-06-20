@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -12,7 +13,8 @@ import secondPrizes from '../../assets/img/secondPrizes.png';
 import thirdPrizes from '../../assets/img/thirdPrizes.png';
 import {
   calculateTotalPrizePool,
-  calIndividualPrize
+  calIndividualPrize,
+  getFormattedUserName
 } from '../../utils/helpers.js';
 import grandPrize from '../../assets/img/grandPrize.png';
 import gold from '../../assets/img/trophy_gold.png';
@@ -74,6 +76,15 @@ const useStyles = makeStyles((theme) => ({
   additionalPrizesPlace: {
     fontSize: 16,
     color: theme.palette.secondary.main
+  },
+  avatarWinner: {
+    height: theme.spacing(3),
+    width: theme.spacing(3),
+    marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(1)
+  },
+  winner: {
+    fontSize: 20
   }
 }));
 
@@ -170,12 +181,27 @@ const Info = ({ eventData }) => {
                 return (
                   <>
                     {row.username && (
-                      <Box display="flex" mr={2}>
-                        <Avatar></Avatar>
-                        <Typography>
-                          {getFormattedUserName(row.username, 6)}
-                        </Typography>
-                      </Box>
+                      <Grid item xs={6}>
+                        <Box
+                          display="flex"
+                          mr={2}
+                          component={RouterLink}
+                          to={`/profile/${row.username}`}
+                          style={{ textDecoration: 'none' }}
+                        >
+                          <Avatar
+                            className={classes.avatarWinner}
+                            src={row.dpLow}
+                          />
+                          <Typography
+                            className={classes.winner}
+                            variant="h5"
+                            color="textPrimary"
+                          >
+                            {getFormattedUserName(row.username, 6)}
+                          </Typography>
+                        </Box>
+                      </Grid>
                     )}
                     <Grid item xs={3}>
                       <Typography
@@ -202,56 +228,132 @@ const Info = ({ eventData }) => {
     );
   };
 
+  console.log(winners);
+
   return (
     <Grid container spacing={2}>
-      <Grid item align="center" xs={3}>
-        <Paper className={classes.price}>
-          <Typography className={classes.place} variant="h6">
-            1st
-          </Typography>
-          <Avatar
-            className={classes.avatarGold}
-            src={gold}
-            component={Paper}
-            elevation={10}
-          ></Avatar>
-          <Typography className={classes.place} variant="h6">
-            {winners.length > 0 && `$${winners[0].prizeAmount}`}
-          </Typography>
-        </Paper>
-      </Grid>
-      <Grid item align="center" xs={3}>
-        <Paper className={classes.price}>
-          <Typography className={classes.place} variant="h6">
-            2nd
-          </Typography>
-          <Avatar
-            className={classes.avatarSilver}
-            src={silver}
-            component={Paper}
-            elevation={10}
-          ></Avatar>
-          <Typography className={classes.place} variant="h6">
-            {winners.length > 1 && `$${winners[1].prizeAmount}`}
-          </Typography>
-        </Paper>
-      </Grid>
-      <Grid item align="center" item xs={3}>
-        <Paper className={classes.price}>
-          <Typography className={classes.place} variant="h6">
-            3rd
-          </Typography>
-          <Avatar
-            className={classes.avatarBronze}
-            src={bronze}
-            component={Paper}
-            elevation={10}
-          ></Avatar>
-          <Typography className={classes.place} variant="h6">
-            {winners.length > 2 && `$${winners[2].prizeAmount}`}
-          </Typography>
-        </Paper>
-      </Grid>
+      {winners.length > 0 && (
+        <Grid item align="center" xs={3}>
+          <Paper className={classes.price}>
+            <Box display="flex" justifyContent="center">
+              <Typography className={classes.place} variant="h6">
+                1st
+              </Typography>
+              {winners[0].username && (
+                <Box
+                  pt={0.5}
+                  display="flex"
+                  justifyContent="center"
+                  component={RouterLink}
+                  to={`/profile/${winners[0].username}`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Avatar
+                    className={classes.avatarWinner}
+                    src={winners[0].dpLow}
+                  />
+                  <Typography
+                    className={classes.winner}
+                    variant="h5"
+                    color="textPrimary"
+                  >
+                    {getFormattedUserName(winners[0].username, 6)}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+            <Avatar
+              className={classes.avatarGold}
+              src={gold}
+              component={Paper}
+              elevation={10}
+            ></Avatar>
+            <Typography className={classes.place} variant="h6">
+              {winners.length > 0 && `$${winners[0].prizeAmount}`}
+            </Typography>
+          </Paper>
+        </Grid>
+      )}
+      {winners.length > 1 && (
+        <Grid item align="center" xs={3}>
+          <Paper className={classes.price}>
+            <Typography className={classes.place} variant="h6">
+              2nd
+            </Typography>
+            {winners[1].username && (
+              <Box
+                pt={0.5}
+                display="flex"
+                justifyContent="center"
+                component={RouterLink}
+                to={`/profile/${winners[1].username}`}
+                style={{ textDecoration: 'none' }}
+              >
+                <Avatar
+                  className={classes.avatarWinner}
+                  src={winners[1].dpLow}
+                />
+                <Typography
+                  className={classes.winner}
+                  variant="h5"
+                  color="textPrimary"
+                >
+                  {getFormattedUserName(winners[1].username, 6)}
+                </Typography>
+              </Box>
+            )}
+            <Avatar
+              className={classes.avatarSilver}
+              src={silver}
+              component={Paper}
+              elevation={10}
+            ></Avatar>
+            <Typography className={classes.place} variant="h6">
+              {`$${winners[1].prizeAmount}`}
+            </Typography>
+          </Paper>
+        </Grid>
+      )}
+      {winners.length > 2 && (
+        <Grid item align="center" item xs={3}>
+          <Paper className={classes.price}>
+            <Typography className={classes.place} variant="h6">
+              3rd
+            </Typography>
+            {winners[2].username && (
+              <Box
+                pt={0.5}
+                display="flex"
+                justifyContent="center"
+                component={RouterLink}
+                to={`/profile/${winners[2].username}`}
+                style={{ textDecoration: 'none' }}
+              >
+                <Avatar
+                  className={classes.avatarWinner}
+                  src={winners[2].dpLow}
+                />
+                <Typography
+                  className={classes.winner}
+                  variant="h5"
+                  color="textPrimary"
+                >
+                  {getFormattedUserName(winners[2].username, 6)}
+                </Typography>
+              </Box>
+            )}
+            <Avatar
+              className={classes.avatarBronze}
+              src={bronze}
+              component={Paper}
+              elevation={10}
+            ></Avatar>
+            <Typography className={classes.place} variant="h6">
+              {`$${winners[2].prizeAmount}`}
+            </Typography>
+          </Paper>
+        </Grid>
+      )}
       {eventData &&
         eventData.maxWinners &&
         eventData.rewardsDistribution?.length >= 4 && (
