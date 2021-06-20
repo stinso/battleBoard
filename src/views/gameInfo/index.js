@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
 import {
+  useHistory,
+  useLocation,
+  useParams,
+  Link as RouterLink
+} from 'react-router-dom';
+import {
+  Avatar,
   Box,
   Button,
   Container,
@@ -14,9 +20,11 @@ import {
   Paper,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
   makeStyles
 } from '@material-ui/core';
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Page from 'src/components/Page';
 import Info from './Info';
@@ -74,6 +82,7 @@ import NBA_Image from '../../assets/img/nba.jpg';
 import COD_Image from '../../assets/img/cod.jpg';
 import MADDEN_Image from '../../assets/img/madden.png';
 import LoadingScreen from 'src/components/LoadingScreen';
+import DeviceIconAndName from '../gameInfo/DeviceIconAndName';
 
 const font = "'Saira', sans-serif";
 
@@ -956,9 +965,13 @@ const BattleView = () => {
                           <Typography color="textPrimary" variant="body2">
                             {eventData?.game}
                           </Typography>
-                          <Typography color="secondary" variant="body2">
-                            COMMUNITY TOURNAMENT
-                          </Typography>
+                          {isSponsoredEvent ? (
+                            <Typography color="secondary" variant="body2">
+                              COMMUNITY TOURNAMENT
+                            </Typography>
+                          ) : (
+                            <Box mt={2} />
+                          )}
                         </Box>
                       </Box>
                       <Box display="flex">
@@ -1028,6 +1041,20 @@ const BattleView = () => {
                               eventData?.playersEnrolled.length}
                           </Typography>
                         </Box>
+                        {eventData.deviceID && (
+                          <>
+                            <Divider className={classes.divider} />
+                            <Box>
+                              <Typography color="textSecondary" variant="body2">
+                                CONSOLE
+                              </Typography>
+
+                              <DeviceIconAndName
+                                deviceID={eventData.deviceID}
+                              />
+                            </Box>
+                          </>
+                        )}
                       </Box>
                     </Box>
                   </Grid>
@@ -1061,6 +1088,34 @@ const BattleView = () => {
                     ml={timeObject.showTimer ? 9 : 0}
                   >
                     {eventState && getAppropriateButton()}
+                    {eventData?.playersEnrolled &&
+                      eventData?.playersEnrolled.length > 0 &&
+                      !(
+                        eventData?.bracketEventID || eventData?.challengeID
+                      ) && (
+                        <Box display="flex" alignItems="center" ml={4}>
+                          <Typography>Joined</Typography>
+                          <Box ml={2}>
+                            <AvatarGroup max={5}>
+                              {eventData?.playersEnrolled.map((row, index) => {
+                                return (
+                                  <Tooltip
+                                    title={row.username}
+                                    key={index}
+                                    component={RouterLink}
+                                    to={`/profile/${row.username}`}
+                                  >
+                                    <Avatar
+                                      key={row.username}
+                                      src={row.dpLow}
+                                    />
+                                  </Tooltip>
+                                );
+                              })}
+                            </AvatarGroup>
+                          </Box>
+                        </Box>
+                      )}
                   </Box>
                 </Box>
               </Paper>

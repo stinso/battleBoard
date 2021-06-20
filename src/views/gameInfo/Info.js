@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Grid, Paper, makeStyles, Typography } from '@material-ui/core';
+import {
+  Avatar,
+  Box,
+  Grid,
+  Paper,
+  makeStyles,
+  Typography
+} from '@material-ui/core';
 import secondPrizes from '../../assets/img/secondPrizes.png';
 import thirdPrizes from '../../assets/img/thirdPrizes.png';
 import {
@@ -11,6 +18,7 @@ import grandPrize from '../../assets/img/grandPrize.png';
 import gold from '../../assets/img/trophy_gold.png';
 import silver from '../../assets/img/trophy_silver.png';
 import bronze from '../../assets/img/trophy_bronze.png';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -59,6 +67,13 @@ const useStyles = makeStyles((theme) => ({
   },
   place: {
     fontSize: 20
+  },
+  additionalPrizes: {
+    fontSize: 16
+  },
+  additionalPrizesPlace: {
+    fontSize: 16,
+    color: theme.palette.secondary.main
   }
 }));
 
@@ -124,6 +139,69 @@ const Info = ({ eventData }) => {
     }
   }, [eventData]);
 
+  console.log(eventData);
+  const generateAdditionalPrizes = (additionalPrize = false) => {
+    let winners = [];
+    if (eventData.winners?.length > 0) {
+      winners = eventData.winners.map((row, index) => {
+        return {
+          prizeAmount: row.winningsInUSD.toFixed(2),
+          ...row
+        };
+      });
+    } else {
+      const totalPrize = calculateTotalPrizePool(
+        eventData?.betAmount,
+        eventData.maxPlayers
+      );
+      winners = eventData.rewardsDistribution.map((row, index) => {
+        return {
+          prizeAmount: calIndividualPrize(row, totalPrize)
+        };
+      });
+    }
+
+    return (
+      <PerfectScrollbar>
+        <Grid container align="center">
+          {additionalPrize &&
+            winners.map((row, index) => {
+              if (index > 2) {
+                return (
+                  <>
+                    {row.username && (
+                      <Box display="flex" mr={2}>
+                        <Avatar></Avatar>
+                        <Typography>
+                          {getFormattedUserName(row.username, 6)}
+                        </Typography>
+                      </Box>
+                    )}
+                    <Grid item xs={3}>
+                      <Typography
+                        variant="h5"
+                        className={classes.additionalPrizesPlace}
+                      >
+                        {`${index + 1}th `}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Typography
+                        variant="h5"
+                        className={classes.additionalPrizes}
+                      >
+                        {`$${row.prizeAmount}`}
+                      </Typography>
+                    </Grid>
+                  </>
+                );
+              }
+            })}
+        </Grid>
+      </PerfectScrollbar>
+    );
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item align="center" xs={3}>
@@ -182,6 +260,9 @@ const Info = ({ eventData }) => {
               <Typography className={classes.place} variant="h6">
                 Additional Prizes{' '}
                 {eventData && !eventData.declareWinnerTx && 'UP TO'}
+                <Box mt={2}>
+                  {eventData?.maxPlayers && generateAdditionalPrizes(true)}
+                </Box>
               </Typography>
             </Paper>
           </Grid>
