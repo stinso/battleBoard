@@ -2,17 +2,11 @@ import { useEffect, useState, useContext, useCallback, Fragment } from 'react';
 import {
   Box,
   Button,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  Divider,
-  Grid,
-  Paper,
   Typography,
-  Modal,
   Stepper,
   Step,
   StepLabel,
@@ -23,13 +17,9 @@ import GameConsoleSelection from './ConsoleSelection';
 import { useLocation } from 'react-router-dom';
 import {
   FacebookProvider,
-  LoginButton,
-  Like,
-  ShareButton,
-  Initialize,
-  Status
+  Like
 } from 'react-facebook';
-import { FacebookAppID, ChainGamesFBID, Devices } from '../../config/constants';
+import { FacebookAppID, ChainGamesFBID } from '../../config/constants';
 import { Alert } from '@material-ui/lab';
 import * as Sentry from '@sentry/react';
 
