@@ -18,6 +18,7 @@ import {
   Link,
   Select,
   MenuItem,
+  Typography,
   makeStyles
 } from '@material-ui/core';
 
@@ -220,12 +221,14 @@ const GameConsoleSelection = ({
           </>
         )}
         {!isChallenge && deviceID && (
-          <Typography>
-            Note:
-            {` You can only participate with ${getDeviceName(
-              deviceID
-            )}. Are you sure you want to register?`}
-          </Typography>
+          <Box display="flex" mt={1}>
+            <Typography color="primary">Note:&nbsp;</Typography>
+            <Typography>
+              {` You can only participate with ${getDeviceName(
+                deviceID
+              )}. Are you sure you want to register?`}
+            </Typography>
+          </Box>
         )}
       </div>
     </>

@@ -51,7 +51,6 @@ import {
   HoursAfterWhichCanSubmitEvidence,
   MinutesAfterWhichCanSubmitResult
 } from '../../config/constants';
-import defaultAvatar from '../../assets/img/placeholder.jpg';
 import GameConsoleSelection from './ConsoleSelection';
 import CODSettingsModal from './CODSettingsModal';
 import FacebookModal from './FacebookModal';
@@ -65,7 +64,7 @@ import CountDown from './CountDown';
 import GamingNetworkNotLinkedNotification from './GamingNetworkNotLinkedNotification';
 import DisputeNotification from './DisputeNotification';
 import GameStyleNotification from './GameStyleNotification';
-//import Chat from '../chat/index';
+import Chat from '../chat/index';
 import useInterval from '../../hooks/useInterval';
 import CloseIcon from '@material-ui/icons/Close';
 import * as Sentry from '@sentry/react';
@@ -74,6 +73,7 @@ import FIFA_Image from '../../assets/img/fifa21.jpg';
 import NBA_Image from '../../assets/img/nba.jpg';
 import COD_Image from '../../assets/img/cod.jpg';
 import MADDEN_Image from '../../assets/img/madden.png';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const font = "'Saira', sans-serif";
 
@@ -164,6 +164,9 @@ const useStyles = makeStyles((theme) => ({
   },
   caption: {
     paddingLeft: theme.spacing(2)
+  },
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -673,6 +676,18 @@ const BattleView = () => {
           </Typography>
         </DialogTitle>
         <DialogContent>
+          {isLoading && (
+            <>
+              <Box display="flex" justifyContent="center" pt={2}>
+                <Typography variant="h5" className={classes.noEventsText}>
+                  Registering
+                </Typography>
+              </Box>
+              <Box>
+                <LoadingScreen width={200} />
+              </Box>
+            </>
+          )}
           <Box>
             {notification.showNotification && (
               <Box mb={2}>
@@ -692,6 +707,7 @@ const BattleView = () => {
         <DialogActions>
           <Button
             color="secondary"
+            variant="contained"
             disabled={
               consoleSelectedValue === '' || currency === '' || isLoading
             }
@@ -699,7 +715,7 @@ const BattleView = () => {
           >
             Register
           </Button>
-          <Button color="secondary" onClick={toggle}>
+          <Button variant="contained" color="secondary" onClick={toggle}>
             Cancel
           </Button>
         </DialogActions>
@@ -853,6 +869,7 @@ const BattleView = () => {
 
   return (
     <PerfectScrollbar>
+      <Chat roomType={2} typeId={id} />
       <Page className={classes.root} title="Battle">
         <FacebookProvider appId={FacebookAppID}>
           <Container maxWidth="lg">

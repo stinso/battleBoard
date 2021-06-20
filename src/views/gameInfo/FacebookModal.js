@@ -15,10 +15,7 @@ import {
 } from '@material-ui/core';
 import GameConsoleSelection from './ConsoleSelection';
 import { useLocation } from 'react-router-dom';
-import {
-  FacebookProvider,
-  Like
-} from 'react-facebook';
+import { FacebookProvider, Like } from 'react-facebook';
 import { FacebookAppID, ChainGamesFBID } from '../../config/constants';
 import { Alert } from '@material-ui/lab';
 import * as Sentry from '@sentry/react';
