@@ -266,7 +266,7 @@ const Profile = ({ className, ...rest }) => {
       />
       <Container maxWidth="lg">
         <Box position="relative" mt={1} display="flex" alignItems="center">
-          <Avatar className={classes.avatar} src={imageURL} />
+          <Avatar className={classes.avatar} src={imageURL ? imageURL : ''} />
           <Box marginLeft="140px" display="flex">
             <Box className={classes.bannedIcon}>
               {isBanned ? (
