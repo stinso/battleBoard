@@ -13,6 +13,8 @@ import {
   List,
   ListItem,
   SvgIcon,
+  Tab,
+  Tabs,
   Typography,
   makeStyles
 } from '@material-ui/core';
@@ -40,6 +42,7 @@ import ChallengeModal from '../challenges/ChallengeModal';
 //import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
 import { getFormattedUserName, formatInCHAIN } from '../../utils/helpers.js';
 import * as Sentry from '@sentry/react';
+import background from '../../assets/img/COD_Background.jpg';
 
 const font = "'Saira', sans-serif";
 
@@ -47,13 +50,47 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     paddingBottom: 200,
-    paddingTop: 100,
     minHeight: '100%',
     [theme.breakpoints.down('md')]: {
       paddingTop: 0,
       paddingBottom: 60
     },
     margin: 0
+  },
+  cover: {
+    position: 'relative',
+    height: 320,
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    '&:before': {
+      position: 'absolute',
+      content: '" "',
+      top: 0,
+      left: 0,
+      height: '100%',
+      width: '100%',
+      backgroundImage:
+        'linear-gradient(-180deg, rgba(0,0,0,0.00) 58%, rgba(0,0,0,0.32) 100%)'
+    },
+    '&:hover': {
+      '& $changeButton': {
+        visibility: 'visible'
+      }
+    }
+  },
+  avatar: {
+    border: `2px solid ${theme.palette.common.white}`,
+    height: 100,
+    width: 100,
+    top: -60,
+    left: theme.spacing(3),
+    position: 'absolute',
+    cursor: 'pointer',
+    borderColor: theme.palette.secondary.main
+  },
+  action: {
+    marginLeft: theme.spacing(1)
   },
   item: {
     display: 'block',
@@ -63,11 +100,6 @@ const useStyles = makeStyles((theme) => ({
   card: {
     minHeight: '200px',
     padding: theme.spacing(4)
-  },
-  avatar: {
-    cursor: 'pointer',
-    width: 64,
-    height: 64
   },
   title: {
     fontFamily: font,
@@ -99,24 +131,23 @@ const useStyles = makeStyles((theme) => ({
   active: {
     color: theme.palette.secondary.main
   },
-  challengeButton: {
-    margin: theme.spacing(1)
+  challengeModal: {
+    marginTop: theme.spacing(1)
   }
 }));
 
-const tabs = {
-  matches: 1,
-  tournaments: 2,
-  gamingNetworks: 3,
-  followers: 4,
-  following: 5
-};
+const tabs = [
+  { value: 'matches', label: 'Matches' },
+  { value: 'gamingNetworks', label: 'Gaming_Networks' },
+  { value: 'followers', label: 'Followers' },
+  { value: 'following', label: 'Following' }
+];
 
 const Profile = ({ className, ...rest }) => {
   const classes = useStyles();
   const location = useLocation();
   const history = useHistory();
-  const [currentTab, setCurrentTab] = useState(tabs.matches);
+  const [currentTab, setCurrentTab] = useState('matches');
 
   const handleTabsChange = (event, value) => {
     setCurrentTab(value);
@@ -127,7 +158,7 @@ const Profile = ({ className, ...rest }) => {
   //const router = useRouter()
   const { username } = useParams();
   //const [profileTabs, setProfileTabs] = useState(TabsEnum.MatchHistory);
-  const [imageURL, setImageURL] = useState(defaultAvatar);
+  const [imageURL, setImageURL] = useState();
   const [name, setName] = useState('');
   const [isFollowing, setIsFollowing] = useState(false);
   const [isBanned, setIsBanned] = useState(false);
@@ -162,9 +193,7 @@ const Profile = ({ className, ...rest }) => {
         if (userInfo.data.success === true) {
           setName(userInfo?.data?.username);
           setIsBanned(userInfo?.data?.isBanned);
-          setImageURL(
-            userInfo?.data?.dpHigh ? userInfo?.data?.dpHigh : defaultAvatar
-          );
+          setImageURL(userInfo?.data?.dpHigh ? userInfo?.data?.dpHigh : '');
         }
       } catch (error) {
         console.log(
@@ -231,183 +260,99 @@ const Profile = ({ className, ...rest }) => {
 
   return (
     <div className={clsx(classes.root, className)} {...rest}>
+      <div
+        className={classes.cover}
+        style={{ backgroundImage: `url(${background})` }}
+      />
       <Container maxWidth="lg">
-        <ChallengeModal
-          showChallengeModal={showChallengeModal}
-          username={name}
-          setShowChallengeModal={setShowChallengeModal}
-        />
-        <Grid container spacing={2}>
-          <Grid item xs={12} lg={4}>
-            <Card className={classes.card}>
-              <Box display="flex" justifyContent="center">
-                <Avatar className={classes.avatar} src={imageURL} />
-              </Box>
-              <Box marginTop={2}>
-                <Box display="flex" justifyContent="center" marginTop={1}>
-                  <Box className={classes.bannedIcon}>
-                    {isBanned ? (
-                      <ErrorOutlineIcon color="error" />
-                    ) : (
-                      <CheckCircleOutlineIcon className={classes.checkCircle} />
-                    )}
-                  </Box>
-                  <Typography
-                    className={classes.userName}
-                    variant="body2"
-                    color="textPrimary"
-                  >
-                    {getFormattedUserName(name?.toUpperCase(), 9)}
-                  </Typography>
-                </Box>
-                {isOwnProfile === false && (
-                  <Box display="flex" justifyContent="center" marginTop={1}>
-                    <Button
-                      className={classes.challengeButton}
-                      variant={isFollowing === true ? 'outlined' : 'contained'}
-                      color="secondary"
-                      href="#pablo"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (isFollowing === true) {
-                          handleUnFollowClick();
-                        } else {
-                          handleFollowClick();
-                        }
-                      }}
-                      size="small"
-                    >
-                      {isFollowing === false ? 'Follow' : 'Following'}
-                    </Button>
-                    <Button
-                      className={classes.challengeButton}
-                      color="secondary"
-                      variant="outlined"
-                      href="#pablo"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setShowChallengeModal(true);
-                      }}
-                      size="small"
-                    >
-                      Challenge
-                    </Button>
-                  </Box>
-                )}
-                <List>
-                  <ListItem className={classes.item}>
-                    <Button
-                      className={`${classes.button} ${
-                        currentTab === tabs.matches && classes.active
-                      }`}
-                      size="large"
-                      variant="text"
-                      onClick={(e) => handleTabsChange(e, tabs.matches)}
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <MatchesIcon />
-                        </SvgIcon>
-                      }
-                    >
-                      Matches
-                    </Button>
-                  </ListItem>
-                  <Divider />
-                  {/* <ListItem className={classes.item}>
-                    <Button
-                      className={classes.button}
-                      size="large"
-                      variant="text"
-                      onClick={(e) => handleTabsChange(e, tabs.tournaments)}
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <MatchesIcon />
-                        </SvgIcon>
-                      }
-                    >
-                      Tournaments
-                    </Button>
-                  </ListItem>
-                  <Divider /> */}
-                  <ListItem className={classes.item}>
-                    <Button
-                      className={`${classes.button} ${
-                        currentTab === tabs.gamingNetworks && classes.active
-                      }`}
-                      size="large"
-                      variant="text"
-                      onClick={(e) => handleTabsChange(e, tabs.gamingNetworks)}
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <NetworkIcon />
-                        </SvgIcon>
-                      }
-                    >
-                      Gaming Networks
-                    </Button>
-                  </ListItem>
-                  <Divider />
-                  <ListItem className={classes.item}>
-                    <Button
-                      className={`${classes.button} ${
-                        currentTab === tabs.followers && classes.active
-                      }`}
-                      size="large"
-                      variant="text"
-                      onClick={(e) => handleTabsChange(e, tabs.followers)}
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <FollowersIcon />
-                        </SvgIcon>
-                      }
-                    >
-                      Followers
-                    </Button>
-                  </ListItem>
-                  <Divider />
-                  <ListItem className={classes.item}>
-                    <Button
-                      className={`${classes.button} ${
-                        currentTab === tabs.following && classes.active
-                      }`}
-                      size="large"
-                      variant="text"
-                      onClick={(e) => handleTabsChange(e, tabs.following)}
-                      startIcon={
-                        <SvgIcon fontSize="small">
-                          <FollowingIcon />
-                        </SvgIcon>
-                      }
-                    >
-                      Following
-                    </Button>
-                  </ListItem>
-                </List>
-              </Box>
-            </Card>
-          </Grid>
-          <Grid item xs={12} lg={8}>
-            <Card className={classes.card}>
-              <Box minWidth={300}>
-                {currentTab === tabs.matches && (
-                  <MatchHistory username={username} />
-                )}
-                {currentTab === tabs.tournaments && (
-                  <TournamentHistory username={username} />
-                )}
-                {currentTab === tabs.gamingNetworks && (
-                  <GamingNetworks username={username} />
-                )}
-                {currentTab === tabs.followers && (
-                  <Followers username={username} />
-                )}
-                {currentTab === tabs.following && (
-                  <Following username={username} isOwnProfile={isOwnProfile} />
-                )}
-              </Box>
-            </Card>
-          </Grid>
-        </Grid>
+        <Box position="relative" mt={1} display="flex" alignItems="center">
+          <Avatar className={classes.avatar} src={imageURL} />
+          <Box marginLeft="140px" display="flex">
+            <Box className={classes.bannedIcon}>
+              {isBanned ? (
+                <ErrorOutlineIcon color="error" />
+              ) : (
+                <CheckCircleOutlineIcon className={classes.checkCircle} />
+              )}
+            </Box>
+            <Typography
+              className={classes.userName}
+              variant="body2"
+              color="textPrimary"
+            >
+              {getFormattedUserName(name?.toUpperCase(), 9)}
+            </Typography>
+          </Box>
+          <Box flexGrow={1} />
+          {isOwnProfile === false && (
+            <>
+              <Button
+                className={classes.action}
+                variant={isFollowing === true ? 'outlined' : 'contained'}
+                color="secondary"
+                href="#pablo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (isFollowing === true) {
+                    handleUnFollowClick();
+                  } else {
+                    handleFollowClick();
+                  }
+                }}
+                size="small"
+              >
+                {isFollowing === false ? 'Follow' : 'Following'}
+              </Button>
+              <Button
+                className={classes.action}
+                color="secondary"
+                variant="outlined"
+                href="#pablo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowChallengeModal(true);
+                }}
+                size="small"
+              >
+                Challenge
+              </Button>
+            </>
+          )}
+        </Box>
+        <Box mt={2}>
+          <ChallengeModal
+            className={classes.challengeModal}
+            showChallengeModal={showChallengeModal}
+            username={name}
+            setShowChallengeModal={setShowChallengeModal}
+          />
+        </Box>
+      </Container>
+      <Container maxWidth="lg">
+        <Box mt={3}>
+          <Tabs
+            onChange={handleTabsChange}
+            scrollButtons="auto"
+            value={currentTab}
+            textColor="secondary"
+            variant="scrollable"
+          >
+            {tabs.map((tab) => (
+              <Tab key={tab.value} label={tab.label} value={tab.value} />
+            ))}
+          </Tabs>
+        </Box>
+        <Divider />
+        <Box py={3} pb={6}>
+          {currentTab === 'matches' && <MatchHistory username={username} />}
+          {currentTab === 'gamingNetworks' && (
+            <GamingNetworks username={username} />
+          )}
+          {currentTab === 'followers' && <Followers username={username} />}
+          {currentTab === 'following' && (
+            <Following username={username} isOwnProfile={isOwnProfile} />
+          )}
+        </Box>
       </Container>
     </div>
   );

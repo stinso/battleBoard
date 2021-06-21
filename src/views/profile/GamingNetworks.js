@@ -26,15 +26,7 @@ const NetworkEnums = {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.dark,
-    paddingBottom: 200,
-    paddingTop: 100,
-    minHeight: '100%',
-    [theme.breakpoints.down('md')]: {
-      paddingTop: 0,
-      paddingBottom: 60
-    },
-    margin: 0
+    padding: theme.spacing(2)
   },
   title: {
     marginBottom: theme.spacing(2),
@@ -136,7 +128,7 @@ const GamingNetworks = ({ username }) => {
   }, [username]);
 
   return (
-    <div>
+    <Card className={classes.root}>
       <Typography className={classes.title} variant="h6" color="textPrimary">
         GamingNetworks
       </Typography>
@@ -194,7 +186,7 @@ const GamingNetworks = ({ username }) => {
           )}
         </Box>
       )}
-    </div>
+    </Card>
   );
 };
 

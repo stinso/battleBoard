@@ -21,15 +21,7 @@ import LoadingScreen from 'src/components/LoadingScreen';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.dark,
-    paddingBottom: 200,
-    paddingTop: 100,
-    minHeight: '100%',
-    [theme.breakpoints.down('md')]: {
-      paddingTop: 0,
-      paddingBottom: 60
-    },
-    margin: 0
+    padding: theme.spacing(2)
   },
   followerCard: {
     backgroundColor: theme.palette.background.default,
@@ -130,22 +122,16 @@ const Following = ({ username, isOwnProfile }) => {
   };
 
   return (
-    <div>
+    <Card className={classes.root}>
       <Typography className={classes.title} variant="h6" color="textPrimary">
         Following
       </Typography>
 
       {followingUsers.length > 0 ? (
-        <Grid
-          container
-          direction="row"
-          justify="space-evenly"
-          alignItems="center"
-          spacing={3}
-        >
+        <Grid container direction="row" spacing={3}>
           {followingUsers.map((row, index) => {
             return (
-              <Grid item key={index} md={3} sm={6} xs={12} align="center">
+              <Grid item key={index} md={2} sm={4} xs={6} align="center">
                 <Card className={classes.followerCard} variant="outlined">
                   <RouterLink
                     className={classes.link}
@@ -206,7 +192,7 @@ const Following = ({ username, isOwnProfile }) => {
           )}
         </Box>
       )}
-    </div>
+    </Card>
   );
 };
 
