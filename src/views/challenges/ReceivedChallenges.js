@@ -4,7 +4,12 @@ import PropTypes from 'prop-types';
 import {
   Avatar,
   Box,
+  Button,
   Card,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
   IconButton,
   Table,
   TableBody,
@@ -32,6 +37,7 @@ import { Devices } from '../../config/constants';
 import moment from 'moment';
 import ChallengeModal from './ChallengeModal';
 import LoadingScreen from 'src/components/LoadingScreen';
+import GameConsoleSelection from '../gameInfo/ConsoleSelection';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,6 +70,18 @@ const useStyles = makeStyles((theme) => ({
   },
   noEventsText: {
     fontSize: 24
+  },
+  title: {
+    position: 'relative',
+    '&:after': {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      content: '" "',
+      height: 3,
+      width: 48,
+      backgroundColor: theme.palette.primary.main
+    }
   }
 }));
 
@@ -95,6 +113,14 @@ const ReceivedChallenges = ({
   const [isFetchingBalance, setIsFetchingBalance] = useState(false);
   const [currency, setCurrency] = useState('');
 
+  const handleConsoleOnChange = (value) => {
+    setConsoleValue(value.id);
+  };
+
+  const handleCurrencyOnChange = (value) => {
+    setCurrency(value.id);
+  };
+
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
@@ -113,76 +139,117 @@ const ReceivedChallenges = ({
     }
   }, [deviceID]);
 
-  /* const consoleSelectModal = () => {
-  return (
-  <div>
-      <Modal isOpen={showConsoleSelectModal}>
-      <ModalHeader>Accept { `${selectedRow.opponent.username.toUpperCase()}'s Challenge` }</ModalHeader>
-      <ModalBody>
+  const consoleSelectModal = () => {
+    return (
+      <Dialog
+        maxWidth="sm"
+        fullWidth
+        open={showConsoleSelectModal}
+        onClose={() => {
+          setShowConsoleSelectModal(false);
+        }}
+      >
+        <DialogTitle disableTypography>
+          <Typography className={classes.title} variant="h6">
+            Accept{' '}
+            {`${selectedRow.opponent.username.toUpperCase()}'s Challenge`}
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          {isFetchingBalance && (
+            <>
+              <Box display="flex" justifyContent="center" pt={2}>
+                <Typography variant="h5" className={classes.noEventsText}>
+                  Accepting Challenge
+                </Typography>
+              </Box>
+              <Box>
+                <LoadingScreen width={200} />
+              </Box>
+            </>
+          )}
           <GameConsoleSelection
-              consoleSelectedValue={consoleSelectedValue}
-              handleConsoleOnChange={handleConsoleOnChange}
-              game={selectedRow.game}
-              handleCurrencyOnChange={handleCurrencyOnChange}
-              currency={currency}
-              isChallenge={true}
-              setDeviceID={setDeviceID}
+            consoleSelectedValue={consoleSelectedValue}
+            handleConsoleOnChange={handleConsoleOnChange}
+            game={selectedRow.game}
+            handleCurrencyOnChange={handleCurrencyOnChange}
+            currency={currency}
+            isChallenge={true}
+            setDeviceID={setDeviceID}
           />
-                  {errMsg !== '' && <p className='text-center text-danger'>
-                      {errMsg}
-                  </p>}
-      </ModalBody>
-      <ModalFooter>
-                  <Button color="warning"
-                      disabled={!(consoleSelectedValue !== '' && currency !== '' && !isFetchingBalance)}
-                      onClick={async () => {
-                          setIsFetchingBalance(true);
-                          setErrMsg('');
-                          if (checkGameRequiresManualResult(selectedRow.game) && deviceID !== selectedRow.deviceID) {
-                              setIsFetchingBalance(false);
-                              return setErrMsg(`This game can only be played with 
-                              ${getDeviceName(selectedRow.deviceID)}`)
-                          }
-                          const balanceCheck = await isBalanceEnough(selectedRow.betAmount, currency)
-                          if (balanceCheck) {
-                              const response = await acceptChallenge({
-                                  challengeID: selectedRow.id,
-                                  networkID: consoleSelectedValue,
-                                  currency: currency,
-                                  deviceID,
-                              },
-                                  ChallengesEnums.Received,
-                                  selectedRow.startTime,
-                              )
-                              
-                              if (response) {
-                                  setErrMsg(response);
-                              }
-                              else {
-                                  setShowConsoleSelectModal(false)
-                                  setConsoleValue('');
-                                  setCurrency('');
-                              }
-                          }
-                          else {
-                              setErrMsg(BalanceNotEnoughErrorMessage);
-                          }
-                          setIsFetchingBalance(false)
-                      }}
-                  >
-                      Accept
-      </Button>{" "}
-          <Button color="warning" onClick={() => {
-              setShowConsoleSelectModal(false)
-              setConsoleValue('')
-          }}>
-          Cancel
-      </Button>
-      </ModalFooter>
-  </Modal>
-  </div>
-);
-}; */
+          {errMsg !== '' && (
+            <Typography color="error" align="center">
+              {errMsg}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={
+              !(
+                consoleSelectedValue !== '' &&
+                currency !== '' &&
+                !isFetchingBalance
+              )
+            }
+            onClick={async () => {
+              setIsFetchingBalance(true);
+              setErrMsg('');
+              if (
+                checkGameRequiresManualResult(selectedRow.game) &&
+                deviceID !== selectedRow.deviceID
+              ) {
+                setIsFetchingBalance(false);
+                return setErrMsg(`This game can only be played with 
+                              ${getDeviceName(selectedRow.deviceID)}`);
+              }
+              const balanceCheck = await isBalanceEnough(
+                selectedRow.betAmount,
+                currency
+              );
+              if (balanceCheck) {
+                const response = await acceptChallenge(
+                  {
+                    challengeID: selectedRow.id,
+                    networkID: consoleSelectedValue,
+                    currency: currency,
+                    deviceID
+                  },
+                  ChallengesEnums.Received,
+                  selectedRow.startTime
+                );
+
+                if (response) {
+                  setErrMsg(response);
+                } else {
+                  setShowConsoleSelectModal(false);
+                  setConsoleValue('');
+                  setCurrency('');
+                }
+              } else {
+                setErrMsg(BalanceNotEnoughErrorMessage);
+              }
+              setIsFetchingBalance(false);
+            }}
+          >
+            Accept
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setShowConsoleSelectModal(false);
+              setConsoleValue('');
+            }}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
 
   const generateChallengeModal = useCallback(() => {
     return (
