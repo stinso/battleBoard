@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import {
   Box,
   Button,
+  Card,
+  Divider,
   FormControl,
   MenuItem,
   Select,
@@ -34,15 +36,7 @@ const font = "'Saira', sans-serif";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.dark,
-    paddingBottom: 200,
-    paddingTop: 100,
-    minHeight: '100%',
-    [theme.breakpoints.down('md')]: {
-      paddingTop: 0,
-      paddingBottom: 60
-    },
-    margin: 0
+    padding: theme.spacing(2)
   },
   card: {
     minHeight: '200px',
@@ -95,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     '&:after': {
       position: 'absolute',
-      bottom: 0,
+      bottom: 4,
       left: 0,
       content: '" "',
       height: 3,
@@ -220,13 +214,13 @@ const MatchHistory = ({ className, username }) => {
   };
 
   return (
-    <div>
+    <Card className={classes.root}>
       {showModal && generateModal()}
-      <Typography className={classes.title} variant="h6" color="textPrimary">
-        Match History
-      </Typography>
-
-      <Box mt={4}>
+      <Box display="flex" mb={1}>
+        <Typography className={classes.title} variant="h6" color="textPrimary">
+          Match History
+        </Typography>
+        <Box flexGrow={1} />
         <FormControl variant="outlined" className={classes.formControl}>
           <Select
             id="select-game"
@@ -299,11 +293,15 @@ const MatchHistory = ({ className, username }) => {
                         {formatEventStatus(row.eventStatus)}
                       </Typography>
                     </TableCell>
-                    <TableCell className={['WinnersDeclared'].includes(row.eventStatus)
-                        ? row.rank
-                          ? classes.won
+                    <TableCell
+                      className={
+                        ['WinnersDeclared'].includes(row.eventStatus)
+                          ? row.rank
+                            ? classes.won
+                            : classes.lost
                           : classes.lost
-                        : classes.lost}>
+                      }
+                    >
                       {['WinnersDeclared'].includes(row.eventStatus)
                         ? row.rank
                           ? `Won : Ranked ${row.rank}`
@@ -331,7 +329,11 @@ const MatchHistory = ({ className, username }) => {
           {isLoading ? (
             <>
               <Box display="flex" justifyContent="center" pt={2}>
-                <Typography variant="h5" className={classes.noEventsText}>
+                <Typography
+                  variant="h5"
+                  className={classes.noEventsText}
+                  color="textPrimary"
+                >
                   Fetching Matches
                 </Typography>
               </Box>
@@ -341,14 +343,18 @@ const MatchHistory = ({ className, username }) => {
             </>
           ) : (
             <Box display="flex" justifyContent="center" pt={2} mb={2}>
-              <Typography variant="h5" className={classes.noEventsText}>
+              <Typography
+                variant="h5"
+                className={classes.noEventsText}
+                color="textPrimary"
+              >
                 No Matches Found
               </Typography>
             </Box>
           )}
         </Box>
       )}
-    </div>
+    </Card>
   );
 };
 

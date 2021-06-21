@@ -56,6 +56,7 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -84,6 +85,9 @@ const useStyles = makeStyles((theme) => ({
       width: 48,
       backgroundColor: theme.palette.primary.main
     }
+  },
+  noEventsText: {
+    fontSize: 24
   }
 }));
 
@@ -392,6 +396,18 @@ const ChallengeModal = ({
               </IconButton>
             </DialogTitle>
             <DialogContent>
+              {isLoading && (
+                <>
+                  <Box display="flex" justifyContent="center" pt={2}>
+                    <Typography variant="h5" className={classes.noEventsText}>
+                      Creating Challenge
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <LoadingScreen width={200} />
+                  </Box>
+                </>
+              )}
               <Formik
                 validationSchema={schema}
                 onSubmit={submitForm}
