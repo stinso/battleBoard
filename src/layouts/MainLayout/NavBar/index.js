@@ -42,6 +42,7 @@ import {
 } from '../../../config/constants';
 import { getBalance, formatInCHAIN } from '../../../utils/helpers.js';
 import {
+  userInfoService,
   getTotalEventsService,
   getTotalWinningsService,
   getBalanceFromCS
@@ -220,6 +221,7 @@ const NavBar = ({ onOpen }) => {
   const [totalEvents, setTotalEvents] = useState(0);
   const [currentStep, setCurrentStep] = useState(WizardEnums.AccountLink);
   const [username, setUsername] = useState('');
+  const [imageURL, setImageURL] = useState();
   const profileNavItem = [
     {
       title: 'Profile',
@@ -243,16 +245,20 @@ const NavBar = ({ onOpen }) => {
 
   const getInfoFromAPI = async () => {
     try {
-      const [winnings, events, balanceInfo] = await Promise.all([
+      const [winnings, events, balanceInfo, userInfo] = await Promise.all([
         getTotalWinningsService({}),
         getTotalEventsService({}),
-        getBalanceFromCS({})
+        getBalanceFromCS({}),
+        userInfoService({ username })
       ]);
       if (winnings.data?.success) {
         setTotalWinnings(winnings.data.winnings);
       }
       if (events.data?.success) {
         setTotalEvents(events.data.totalEvents);
+      }
+      if (userInfo.data.success === true) {
+        setImageURL(userInfo?.data?.dpHigh ? userInfo?.data?.dpHigh : '');
       }
       if (balanceInfo.data.success) {
         setFiatBalance(balanceInfo.data.fiat);
@@ -295,20 +301,19 @@ const NavBar = ({ onOpen }) => {
   };
 
   useEffect(() => {
-    setTotalEvents(0);
-    setTotalWinnings(0);
-    getInfoFromAPI();
-  }, []);
+    if (username) {
+      setTotalEvents(0);
+      setTotalWinnings(0);
+      getInfoFromAPI();
+    }
+  }, [username]);
 
   const content = (
     <Box height="100%" display="flex" flexDirection="column">
       <PerfectScrollbar options={{ suppressScrollX: true }}>
         <Box p={2}>
           <Box display="flex" justifyContent="center">
-            <Avatar
-              className={classes.avatar}
-              src="/static/images/panda.png"
-            ></Avatar>
+            <Avatar className={classes.avatar} src={imageURL}></Avatar>
           </Box>
         </Box>
         <Box
