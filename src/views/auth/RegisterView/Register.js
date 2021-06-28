@@ -16,6 +16,7 @@ import {
 import useAuth from 'src/hooks/useAuth';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
 import { registerUser } from '../../../service/node.service';
+import TermsAndConditions from './TermsAndConditions';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -127,12 +128,7 @@ const Register = ({ className, ...rest }) => {
               name="policy"
               onChange={handleChange}
             />
-            <Typography variant="body2" color="textSecondary">
-              I have read the{' '}
-              <Link component="a" href="#" color="secondary">
-                Terms and Conditions
-              </Link>
-            </Typography>
+            <TermsAndConditions />
           </Box>
           {Boolean(touched.policy && errors.policy) && (
             <FormHelperText error>{errors.policy}</FormHelperText>

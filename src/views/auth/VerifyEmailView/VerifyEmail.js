@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { verifyEmailService } from '../../../service/node.service.js';
+import wait from '../../../utils/wait';
+import LoadingScreen from 'src/components/LoadingScreen';
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -14,6 +16,7 @@ const VerifyEmail = () => {
 
   const verifyToken = async () => {
     try {
+      await wait(3000); // wait 3 seconds
       const { data } = await verifyEmailService({ token });
       if (data.success === true) {
         history.push('/login');
@@ -36,9 +39,12 @@ const VerifyEmail = () => {
   }, [token]);
 
   return (
+    <Box alignItems="center" justifyItems="center" maxWidth>
     <Typography color="textPrimary" gutterBottom variant="h2">
       Please Wait, Redirecting...
     </Typography>
+    <LoadingScreen width={200} />
+    </Box>
   );
 };
 
