@@ -9,7 +9,8 @@ import {
   useMediaQuery,
   useTheme
 } from '@material-ui/core';
-import { SuperCryptoKartLink } from '../../../config/constants';
+import { SuperCryptoKartLink, ChainOPageLink } from '../../../config/constants';
+import CHAINO_Image from '../../../assets/img/chaino.png';
 
 const items = [
   {
@@ -38,6 +39,13 @@ const items = [
     Name: 'Super Crypto Kart',
     Image: '/static/images/sck.jpg',
     link: SuperCryptoKartLink,
+    openInNewTab: true
+  },
+  {
+    id: 4,
+    Name: 'Chaino',
+    Image: CHAINO_Image,
+    link: ChainOPageLink,
     openInNewTab: true
   }
 ];

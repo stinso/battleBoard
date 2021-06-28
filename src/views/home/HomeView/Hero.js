@@ -50,16 +50,9 @@ import NBA_Image from '../../../assets/img/nba.jpg';
 import COD_Image from '../../../assets/img/cod.jpg';
 import MADDEN_Image from '../../../assets/img/madden.png';
 import { Star as StarIcon } from 'react-feather';
-
 import { SupportedGamesWithID } from '../../../config/constants';
 
 const font = "'Saira', sans-serif";
-
-/* const events = [
-    image: "/static/images/gameIcons/cod.jpg"
-    image: "/static/images/gameIcons/apex.jpg"
-    image: "/static/images/gameIcons/fifa.jpg"
-] */
 
 const useStyles = makeStyles((theme) => ({
   root: {
