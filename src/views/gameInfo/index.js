@@ -983,7 +983,7 @@ const BattleView = () => {
                             Open Now
                           </Typography>
                         </Box>
-                        <Box ml={1} className={classes.borderedBox} border={1}>
+                        <Box ml={1} className={classes.borderedBox} border={1} mr={1}>
                           <Typography color="secondary" variant="body2">
                             START TIME
                           </Typography>

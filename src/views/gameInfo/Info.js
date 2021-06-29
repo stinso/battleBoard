@@ -230,7 +230,7 @@ const Info = ({ eventData }) => {
   return (
     <Grid container spacing={2}>
       {winners.length > 0 && (
-        <Grid item align="center" xs={3}>
+        <Grid item align="center" xs={12} md={6} lg={3}>
           <Paper className={classes.price}>
             <Box display="flex" justifyContent="center">
               <Typography className={classes.place} variant="h6">
@@ -272,7 +272,7 @@ const Info = ({ eventData }) => {
         </Grid>
       )}
       {winners.length > 1 && (
-        <Grid item align="center" xs={3}>
+        <Grid item align="center" xs={12} md={6} lg={3}>
           <Paper className={classes.price}>
             <Typography className={classes.place} variant="h6">
               2nd
@@ -312,7 +312,7 @@ const Info = ({ eventData }) => {
         </Grid>
       )}
       {winners.length > 2 && (
-        <Grid item align="center" item xs={3}>
+        <Grid item align="center" item xs={12} md={6} lg={3}>
           <Paper className={classes.price}>
             <Typography className={classes.place} variant="h6">
               3rd
@@ -354,7 +354,7 @@ const Info = ({ eventData }) => {
       {eventData &&
         eventData.maxWinners &&
         eventData.rewardsDistribution?.length >= 4 && (
-          <Grid item align="center" xs={3}>
+          <Grid item align="center" xs={12} md={6} lg={3}>
             <Paper className={classes.price}>
               <Typography className={classes.place} variant="h6">
                 Additional Prizes{' '}
