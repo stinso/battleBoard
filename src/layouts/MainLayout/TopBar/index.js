@@ -191,14 +191,6 @@ const TopBar = ({ className, onNavOpen, ...rest }) => {
     <AppBar className={clsx(classes.root, className)} color="default" {...rest}>
       <Toolbar className={classes.toolbar}>
         <Hidden lgUp>
-          <IconButton
-            id="logo"
-            //onClick={onMobileNavOpen}
-          >
-            <SvgIcon fontSize="small">
-              <MenuIcon />
-            </SvgIcon>
-          </IconButton>
           <Box ml={2} flexGrow={1} />
           <Box display="flex">
             <IconButton aria-label="search" color="inherit">

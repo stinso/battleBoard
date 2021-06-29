@@ -10,6 +10,7 @@ import {
   Button,
   Divider,
   Drawer,
+  Hidden,
   List,
   ListSubheader,
   Paper,
@@ -30,7 +31,6 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import NavItem from './NavItem';
 import NumberFormat from 'react-number-format';
-import { useSelector } from 'src/store';
 import Logout from './Logout';
 import * as Sentry from '@sentry/react';
 import { AuthContext } from '../../../context/AuthContext';
@@ -55,6 +55,46 @@ const WizardEnums = {
   Deposit: 3,
   ConsoleLink: 4
 };
+
+const gamesNavigation = [
+  {
+    items: [
+      {
+        title: 'Games',
+        icon: CalendarIcon,
+        href: '/actionGamePage/cod',
+        isExternal: false,
+        items: [
+          {
+            title: 'Call of Duty',
+            href: '/actionGamePage/cod',
+            isExternal: false
+          },
+          {
+            title: 'Fifa',
+            href: '/actionGamePage/fifa',
+            isExternal: false
+          },
+          {
+            title: 'Madden',
+            href: '/actionGamePage/madden2021',
+            isExternal: false
+          },
+          {
+            title: 'Chaino',
+            href: 'https://chaino.chaingames.io/',
+            isExternal: true
+          },
+          {
+            title: 'Super Crypto Kart',
+            href: 'https://chaingames.io/#sck',
+            isExternal: true
+          }
+        ]
+      }
+    ]
+  }
+]
 
 const mySections = [
   {
@@ -409,6 +449,25 @@ const NavBar = ({ onOpen }) => {
           ))}
         </Box>
         <Divider />
+        <Hidden lgUp>
+        <Box p={2}>
+          {gamesNavigation.map((section) => (
+            <List key={'games'}
+            subheader={
+              <ListSubheader disableGutters disableSticky>
+                {section.subheader}
+              </ListSubheader>
+            }
+            >
+              {renderNavItems({
+                items: section.items,
+                pathname: location.pathname
+              })}
+            </List>
+          ))}
+        </Box>
+        <Divider />
+        </Hidden>
         <Box p={2}>
           {renderNavItems({
             items: profileNavItem,

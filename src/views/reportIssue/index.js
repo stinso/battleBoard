@@ -181,17 +181,15 @@ export default function ValidatedForm() {
                   {({
                     handleSubmit,
                     handleChange,
-                    handleBlur,
                     values,
-                    touched,
                     isValid,
                     errors,
                     setFieldValue
                   }) => (
-                    <Form
+                    <form
                       noValidate
                       onSubmit={handleSubmit}
-                      enctype="multipart/form-data"
+                      encType="multipart/form-data"
                     >
                       <Box>
                         <FormControl
@@ -298,7 +296,7 @@ export default function ValidatedForm() {
                           )}
                         </Box>
                       )}
-                    </Form>
+                    </form>
                   )}
                 </Formik>
               </Box>
