@@ -288,10 +288,7 @@ const AddEvent = ({
         success = response.data.success;
       }
       if (success === true) {
-        console.log('############## success! ##############');
         showAddEvent(false);
-      } else {
-        console.log('############## fail! ##############');
       }
     } catch (error) {
       console.log(

@@ -120,8 +120,7 @@ const CompletedChallenges = ({ data, isLoading, user }) => {
     page,
     limit
   );
-
-  console.log(paginatedChallenges)
+  
   return (
     <Card>
       <Box minWidth={300}>

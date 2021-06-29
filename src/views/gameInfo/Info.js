@@ -150,7 +150,6 @@ const Info = ({ eventData }) => {
     }
   }, [eventData]);
 
-  console.log(eventData);
   const generateAdditionalPrizes = (additionalPrize = false) => {
     let winners = [];
     if (eventData.winners?.length > 0) {
@@ -227,8 +226,6 @@ const Info = ({ eventData }) => {
       </PerfectScrollbar>
     );
   };
-
-  console.log(winners);
 
   return (
     <Grid container spacing={2}>
