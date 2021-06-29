@@ -1,25 +1,18 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Avatar,
   Box,
   Button,
-  Card,
-  CardMedia,
-  Container,
   Dialog,
   DialogActions,
   DialogTitle,
   DialogContent,
   DialogContentText,
-  Divider,
-  Grid,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   Link,
   Table,
@@ -29,18 +22,15 @@ import {
   TableRow,
   TextField,
   Typography,
-  Paper,
-  useTheme,
-  useMediaQuery,
   makeStyles
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {
-  getOAuthURL,
+  addPSNTagService,
   deleteLinkedNetworkService,
-  getLinkedNetworkService,
-  addPSNTagService
-} from '../../service/node.service';
+  getOAuthURL,
+  getLinkedNetworkService
+} from '../../service/battleServerService';
 import { SupportedGameNetworks } from '../../config/constants';
 import * as Sentry from '@sentry/react';
 import { Formik } from 'formik';

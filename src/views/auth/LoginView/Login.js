@@ -16,7 +16,7 @@ import useIsMountedRef from 'src/hooks/useIsMountedRef';
 
 // new
 import { useEffect, useState, useContext } from 'react';
-import { loginService } from '../../../service/node.service.js';
+import { loginService } from '../../../service/centralServerService';
 import {
   SignUpRedirectURL,
   ForgotPasswordRedirectURL,

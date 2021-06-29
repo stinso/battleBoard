@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { getLinkedNetworkService } from '../../service/node.service.js';
+import { getLinkedNetworkService } from '../../service/battleServerService';
 import { AuthContext } from '../../context/AuthContext';
 import {
   SupportedGameNetworks,

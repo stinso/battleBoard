@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Box, Button, Container, makeStyles } from '@material-ui/core';
 import * as Sentry from '@sentry/react';
-import { getEventsService } from '../../service/node.service';
+import { getEventsService } from '../../service/battleServerService';
 import { getTournamentsService } from '../../service/tournaments.service.js';
 import {
   getTimeFromEpoch,

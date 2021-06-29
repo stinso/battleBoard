@@ -3,40 +3,28 @@ import { useLocation, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
-  Avatar,
   Box,
   Button,
-  Card,
   Container,
   Divider,
   Grid,
-  Link,
   SvgIcon,
   Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
   Tabs,
   Typography,
   makeStyles,
   Dialog
 } from '@material-ui/core';
 import { PlusCircle as PlusCircleIcon } from 'react-feather';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-
 import { AuthContext } from '../../context/AuthContext';
 import { SET_CHALLENGE_TAB } from '../../actions/actions.js';
-import classnames from 'classnames';
 import ChallengeModal from './ChallengeModal';
 import {
+  acceptChallengeService,
   cancelChallengeService,
   getChallengeService,
-  acceptChallengeService,
   rejectChallengeService
-} from '../../service/node.service';
+} from '../../service/battleServerService';
 import SentChallenges from './SentChallenges';
 import CompletedChallenges from './CompletedChallenges';
 import AcceptedChallenges from './AcceptedChallenges';

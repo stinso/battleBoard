@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { useLocation, useHistory, useParams } from 'react-router-dom';
@@ -6,40 +6,28 @@ import {
   Avatar,
   Box,
   Button,
-  Card,
   Container,
   Divider,
-  Grid,
-  List,
-  ListItem,
-  SvgIcon,
   Tab,
   Tabs,
   Typography,
   makeStyles
 } from '@material-ui/core';
-import { Monitor as MatchesIcon } from 'react-feather';
-import { Link2 as NetworkIcon } from 'react-feather';
-import { Users as FollowersIcon } from 'react-feather';
-import { UserCheck as FollowingIcon } from 'react-feather';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import MatchHistory from './MatchHistory';
 import Followers from './Followers';
 import Following from './Following';
 import GamingNetworks from './GamingNetworks';
-import TournamentHistory from './TournamentHistory';
-import defaultAvatar from '../../assets/img/placeholder.jpg';
+import { getBalanceFromCS } from '../../service/centralServerService';
 import {
-  userInfoService,
   followService,
   unFollowService,
-  checkIsFollowingService,
-  getBalanceFromCS
-} from '../../service/node.service';
+  userInfoService,
+  checkIsFollowingService
+} from '../../service/battleServerService';
 import { AuthContext } from '../../context/AuthContext';
 import ChallengeModal from '../challenges/ChallengeModal';
-//import ImageTagWithErrorImage from '../ImageConponentWithDefaultAvatar/index';
 import { getFormattedUserName, formatInCHAIN } from '../../utils/helpers.js';
 import * as Sentry from '@sentry/react';
 import background from '../../assets/img/COD_Background.jpg';

@@ -10,7 +10,7 @@ import { LOGOUT_REQUEST } from '../../../actions/actions.js';
 import {
   verifyForgotPasswordTokenService,
   resetForgottenPasswordService
-} from '../../../service/node.service';
+} from '../../../service/centralServerService';
 import { passwordRegex } from '../../../config/constants';
 
 const useStyles = makeStyles(() => ({

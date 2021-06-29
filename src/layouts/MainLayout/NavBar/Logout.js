@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Button, ListItem, makeStyles } from '@material-ui/core';
 import { AuthContext } from '../../../context/AuthContext';
 import { LOGOUT_REQUEST } from '../../../actions/actions.js';
-import { logoutService } from '../../../service/node.service';
+import { logoutService } from '../../../service/centralServerService';
 import { useLocation, useHistory } from 'react-router-dom';
 import { LogOut as LogoutIcon } from 'react-feather';
 import * as Sentry from '@sentry/react';

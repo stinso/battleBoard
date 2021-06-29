@@ -120,6 +120,8 @@ const CompletedChallenges = ({ data, isLoading, user }) => {
     page,
     limit
   );
+
+  console.log(paginatedChallenges)
   return (
     <Card>
       <Box minWidth={300}>
@@ -194,7 +196,7 @@ const CompletedChallenges = ({ data, isLoading, user }) => {
                       <TableCell>
                         <Typography
                           color="secondary"
-                          to={`/gameInformationPage/${entry.eventID}`}
+                          to={`/gameInformationPage/${entry.id}`}
                           underline="always"
                           component={RouterLink}
                         >

@@ -22,7 +22,7 @@ import {
   AllSupportedGamesNames,
   AllSupportedGamesWithOtherAttributes
 } from '../../config/constants.js';
-import { getHistoricalEventsService } from '../../service/node.service';
+import { getHistoricalEventsService } from '../../service/centralServerService';
 import {
   getTimeFromEpoch,
   getDateFromEpoch,

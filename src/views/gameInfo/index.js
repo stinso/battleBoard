@@ -51,7 +51,7 @@ import {
   disenrollFromEventService,
   enrollInASponsoredEventService,
   submitEventResultService
-} from '../../service/node.service';
+} from '../../service/battleServerService';
 import {
   SupportedGamesWithID,
   FacebookAppID,

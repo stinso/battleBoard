@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import useAuth from 'src/hooks/useAuth';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
-import { registerUser } from '../../../service/node.service';
+import { registerUser } from '../../../service/centralServerService';
 import TermsAndConditions from './TermsAndConditions';
 
 const useStyles = makeStyles(() => ({

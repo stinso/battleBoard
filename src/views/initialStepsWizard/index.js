@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   ApproveRedirectLink,
   DepositRedirectLink,
@@ -9,17 +9,11 @@ import { AuthContext } from '../../context/AuthContext';
 import { DO_NOT_SHOW_WIZARD } from '../../actions/actions.js';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import {
-  Box,
   Button,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  Divider,
-  Grid,
-  Modal,
   Paper,
   Stepper,
   Step,
@@ -30,9 +24,9 @@ import {
 } from '@material-ui/core';
 import * as Sentry from '@sentry/react';
 import {
-  getMyInfoService,
-  getLinkedNetworkService
-} from '../../service/node.service.js';
+  getLinkedNetworkService,
+  getMyInfoService
+} from '../../service/battleServerService';
 import { getBalance } from '../../utils/helpers.js';
 
 const useStyles = makeStyles((theme) => ({

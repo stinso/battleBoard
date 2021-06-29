@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { Formik } from 'formik';
 import { Box, Button, TextField, makeStyles } from '@material-ui/core';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
-import { recoverPassword } from '../../../service/node.service';
+import { recoverPassword } from '../../../service/centralServerService';
 
 const useStyles = makeStyles(() => ({
   root: {}

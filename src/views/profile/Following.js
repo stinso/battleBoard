@@ -14,7 +14,7 @@ import {
 import {
   getFollowingService,
   unFollowService
-} from '../../service/node.service';
+} from '../../service/battleServerService';
 import { getFormattedUserName } from '../../utils/helpers.js';
 import * as Sentry from '@sentry/react';
 import LoadingScreen from 'src/components/LoadingScreen';

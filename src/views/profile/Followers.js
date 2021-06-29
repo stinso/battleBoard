@@ -10,7 +10,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
-import { getFollowersService } from '../../service/node.service';
+import { getFollowersService } from '../../service/battleServerService';
 import { generateImageURL, getFormattedUserName } from '../../utils/helpers.js';
 import * as Sentry from '@sentry/react';
 import LoadingScreen from 'src/components/LoadingScreen';

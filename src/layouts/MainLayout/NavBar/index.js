@@ -44,9 +44,9 @@ import { getBalance, formatInCHAIN } from '../../../utils/helpers.js';
 import {
   userInfoService,
   getTotalEventsService,
-  getTotalWinningsService,
-  getBalanceFromCS
-} from '../../../service/node.service';
+  getTotalWinningsService
+} from '../../../service/battleServerService';
+import { getBalanceFromCS } from '../../../service/centralServerService';
 import { MAX_APPROVED_BALANCE } from '../../../config/constants';
 
 const WizardEnums = {
@@ -94,7 +94,7 @@ const gamesNavigation = [
       }
     ]
   }
-]
+];
 
 const mySections = [
   {
@@ -450,23 +450,24 @@ const NavBar = ({ onOpen }) => {
         </Box>
         <Divider />
         <Hidden lgUp>
-        <Box p={2}>
-          {gamesNavigation.map((section) => (
-            <List key={'games'}
-            subheader={
-              <ListSubheader disableGutters disableSticky>
-                {section.subheader}
-              </ListSubheader>
-            }
-            >
-              {renderNavItems({
-                items: section.items,
-                pathname: location.pathname
-              })}
-            </List>
-          ))}
-        </Box>
-        <Divider />
+          <Box p={2}>
+            {gamesNavigation.map((section) => (
+              <List
+                key={'games'}
+                subheader={
+                  <ListSubheader disableGutters disableSticky>
+                    {section.subheader}
+                  </ListSubheader>
+                }
+              >
+                {renderNavItems({
+                  items: section.items,
+                  pathname: location.pathname
+                })}
+              </List>
+            ))}
+          </Box>
+          <Divider />
         </Hidden>
         <Box p={2}>
           {renderNavItems({

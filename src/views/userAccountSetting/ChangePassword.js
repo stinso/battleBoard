@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import useIsMountedRef from 'src/hooks/useIsMountedRef';
-import { changeUserPassword } from '../../service/node.service';
+import { changeUserPassword } from '../../service/centralServerService';
 import * as Sentry from '@sentry/react';
 import { AuthContext } from '../../context/AuthContext';
 import { LOGOUT_REQUEST } from '../../actions/actions';

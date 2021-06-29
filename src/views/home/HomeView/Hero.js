@@ -30,10 +30,8 @@ import {
 import GamesCarousel from './Carousel';
 import { Carousel } from 'react-responsive-carousel';
 import { AuthContext } from '../../../context/AuthContext';
-import {
-  getEventsService,
-  getBalanceFromCS
-} from '../../../service/node.service';
+import { getBalanceFromCS } from '../../../service/centralServerService';
+import { getEventsService } from '../../../service/battleServerService';
 import * as Sentry from '@sentry/react';
 import {
   getTimeFromEpoch,
@@ -585,7 +583,7 @@ const Hero = ({ className, ...rest }) => {
           <Carousel infiniteLoop showStatus={false}>
             {communityEvents.map((tournament) => {
               return (
-                <Paper className={classes.paper}>
+                <Paper className={classes.paper} key={tournament.id}>
                   <Box className={classes.tournamentBox}>
                     <Card raised className={classes.cardLeft}>
                       <Typography

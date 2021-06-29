@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Card,
-  Divider,
   FormControl,
   MenuItem,
   Select,
@@ -23,7 +22,7 @@ import {
   AllSupportedGamesNames,
   AllSupportedGamesWithOtherAttributes
 } from '../../config/constants.js';
-import { getHistoricalEventsService } from '../../service/node.service';
+import { getHistoricalEventsService } from '../../service/battleServerService';
 import {
   getTimeFromEpoch,
   getDateFromEpoch,

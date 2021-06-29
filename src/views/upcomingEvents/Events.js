@@ -13,7 +13,7 @@ import {
 import Countdown from 'react-countdown';
 //import path4 from "../../assets/img/path4.png";
 import { AuthContext } from '../../context/AuthContext';
-import { getMyEventsService } from '../../service/node.service';
+import { getMyEventsService } from '../../service/battleServerService';
 //import { AfterCounterEndsComponent } from '../gameComponents/GameLobby';
 import { AllSupportedGamesWithOtherAttributes } from '../../config/constants';
 import { getMyTournamentsService } from '../../service/tournaments.service.js';
