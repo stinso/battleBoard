@@ -10,7 +10,7 @@ import {
   useTheme
 } from '@material-ui/core';
 import { SuperCryptoKartLink, ChainOPageLink } from '../../../config/constants';
-import CHAINO_Image from '../../../assets/img/chaino.png';
+import CHAINO_Image from '../../../assets/img/chaino-splash.jpg';
 
 const items = [
   {
