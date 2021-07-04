@@ -533,7 +533,7 @@ const Linking = (props) => {
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
-          <Typography className={classes.heading}>
+          <Typography>
             Linking PSN or Activision Account for Call of Duty: MW
           </Typography>
         </AccordionSummary>

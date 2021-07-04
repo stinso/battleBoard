@@ -585,7 +585,11 @@ const Hero = ({ className, ...rest }) => {
               return (
                 <Paper className={classes.paper} key={tournament.id}>
                   <Box className={classes.tournamentBox}>
-                    <Card raised className={classes.cardLeft} key={tournament.id}>
+                    <Card
+                      raised
+                      className={classes.cardLeft}
+                      key={tournament.id}
+                    >
                       <Typography
                         variant="h6"
                         color="secondary"

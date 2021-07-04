@@ -1,14 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   ListItemIcon,
   List,
   ListItem,
   ListItemText,
   Paper,
+  Typography,
   makeStyles
 } from '@material-ui/core';
 import FiberManualRecordTwoToneIcon from '@material-ui/icons/FiberManualRecordTwoTone';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {
+  checkGameRequiresManualResult,
+  isEventBracket
+} from '../../utils/helpers.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -22,6 +31,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.main,
     height: 16,
     width: 16
+  },
+  accordion: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   }
 }));
 
@@ -29,11 +42,104 @@ const Rules = ({ questionAnswers, eventData }) => {
   const classes = useStyles();
 
   return (
-    <Paper className={classes.paper}>
-      {eventData &&
-        eventData.game &&
-        renderAppropriateRules(eventData.game, eventData.gameFormat, classes)}
-    </Paper>
+    <>
+      {isEventBracket(eventData.style) && (
+          <Accordion className={classes.accordion}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel2a-content"
+              id="panel2a-header"
+            >
+              <Typography>Tournament Rules</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <List dense={true}>
+                <ListItem>
+                  <ListItemIcon>
+                    <FiberManualRecordTwoToneIcon className={classes.bullet} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    The bracket structure above would be auto-filled once the
+                    tournament starts.
+                  </ListItemText>
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <FiberManualRecordTwoToneIcon className={classes.bullet} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    If player gets a bye in round one, they would not appear in
+                    round one of bracket structure, they would directly appear
+                    from round two in bracket structure.
+                  </ListItemText>
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <FiberManualRecordTwoToneIcon className={classes.bullet} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    Click on the specific match in bracket structure, if you
+                    want more information about that match or want to submit
+                    result for that match.
+                  </ListItemText>
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <FiberManualRecordTwoToneIcon className={classes.bullet} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    Each tournament match has a window of{' '}
+                    {eventData.childEventDuration / 60} minutes to be played.
+                  </ListItemText>
+                </ListItem>
+              </List>
+            </AccordionDetails>
+          </Accordion>
+      )}
+      <Accordion className={classes.accordion}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel2a-content"
+              id="panel2a-header"
+            >
+              <Typography>Rules</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+        {eventData &&
+          eventData.game &&
+          renderAppropriateRules(eventData.game, eventData.gameFormat, classes)}
+      </AccordionDetails>
+          </Accordion>
+          <Accordion className={classes.accordion}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel2a-content"
+              id="panel2a-header"
+            >
+              <Typography>Reporting Results</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+            <List dense={true}>
+                <ListItem>
+                  <ListItemIcon>
+                    <FiberManualRecordTwoToneIcon className={classes.bullet} />
+                  </ListItemIcon>
+                  <ListItemText>
+                  We encourage both parties to report the results of the match afterwards on the events page.
+                  </ListItemText>
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <FiberManualRecordTwoToneIcon className={classes.bullet} />
+                  </ListItemIcon>
+                  <ListItemText>
+                  <b>Note: </b> We recommend screen recording all of your matches on your console when competing in Chain Games matches. Be sure to take pictures/screenshots of the match final score in case of a dispute about the match results.
+                  </ListItemText>
+                </ListItem>
+                
+                </List>
+              </AccordionDetails></Accordion>
+    </>
   );
 };
 
