@@ -136,16 +136,8 @@ const Profile = ({ className, ...rest }) => {
   const location = useLocation();
   const history = useHistory();
   const [currentTab, setCurrentTab] = useState('matches');
-
-  const handleTabsChange = (event, value) => {
-    setCurrentTab(value);
-  };
-
-  // new
   const { user } = useContext(AuthContext);
-  //const router = useRouter()
   const { username } = useParams();
-  //const [profileTabs, setProfileTabs] = useState(TabsEnum.MatchHistory);
   const [imageURL, setImageURL] = useState();
   const [name, setName] = useState('');
   const [isFollowing, setIsFollowing] = useState(false);
@@ -153,6 +145,10 @@ const Profile = ({ className, ...rest }) => {
   const [isOwnProfile, setIsOwnProfile] = useState(true);
   const [showChallengeModal, setShowChallengeModal] = useState(false);
   const [chainNetworkBalance, setChainNetworkBalance] = useState(0);
+
+  const handleTabsChange = (event, value) => {
+    setCurrentTab(value);
+  };
 
   useEffect(() => {
     setIsOwnProfile(user.user?.session?.username === username);
@@ -270,6 +266,15 @@ const Profile = ({ className, ...rest }) => {
             >
               {getFormattedUserName(name?.toUpperCase(), 9)}
             </Typography>
+            <Box ml={2}>
+              <Typography
+                className={classes.userName}
+                variant="body2"
+                color="primary"
+              >
+                {chainNetworkBalance}
+              </Typography>
+            </Box>
           </Box>
           <Box flexGrow={1} />
           {isOwnProfile === false && (
