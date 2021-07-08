@@ -32,6 +32,7 @@ import { Carousel } from 'react-responsive-carousel';
 import { AuthContext } from '../../../context/AuthContext';
 import { getBalanceFromCS } from '../../../service/centralServerService';
 import { getEventsService } from '../../../service/battleServerService';
+import { getTournamentsService } from '../../../service/tournaments.service';
 import * as Sentry from '@sentry/react';
 import {
   getTimeFromEpoch,
@@ -49,6 +50,8 @@ import COD_Image from '../../../assets/img/cod.jpg';
 import MADDEN_Image from '../../../assets/img/madden.png';
 import { Star as StarIcon } from 'react-feather';
 import { SupportedGamesWithID } from '../../../config/constants';
+import Events from './Events'
+import Tournaments from './Tournaments'
 
 const font = "'Saira', sans-serif";
 
@@ -214,36 +217,10 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: font,
     fontSize: 40
   },
-  priceCell: {
-    color: theme.palette.success.main,
-    fontFamily: font,
-    fontSize: 16
-  },
-  rowImage: {
-    height: '60px',
-    width: '60px',
-    margin: 0,
-    padding: 0,
-    verticalAlign: 'top',
-    objectFit: 'cover'
-  },
   imageCell: {
     height: '60px',
     width: '60px',
     padding: 0
-  },
-  tableRow: {
-    height: '60px',
-    padding: 0
-  },
-  entry: {
-    fontFamily: font,
-    fontSize: 16
-  },
-  entryFree: {
-    fontFamily: font,
-    fontSize: 16,
-    color: theme.palette.secondary.main
   },
   hiddenText: {
     overflow: 'hidden'
@@ -255,10 +232,6 @@ const useStyles = makeStyles((theme) => ({
     '100%': {
       color: '#30913C'
     }
-  },
-  icon: {
-    marginRight: theme.spacing(1),
-    animation: '$fadeIn 1s alternate infinite'
   }
 }));
 
@@ -275,10 +248,8 @@ const applyPagination = (list, page, limit) => {
 
 const Hero = ({ className, ...rest }) => {
   const classes = useStyles();
-  const [currentTab, setCurrentTab] = useState('all');
-  const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(10);
   const [events, setEvents] = useState([]);
+  const [tournaments, setTournaments] = useState([]);
   const location = useLocation();
   const theme = useTheme();
   const mediumDevice = useMediaQuery(theme.breakpoints.down('md'));
@@ -336,42 +307,7 @@ const Hero = ({ className, ...rest }) => {
       });
     }
   };
-
-  const tabs = [
-    { value: 'all', label: 'All' },
-    { value: 'free', label: 'Free' },
-    { value: 'paid', label: 'Paid' }
-  ];
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleLimitChange = (event) => {
-    setLimit(parseInt(event.target.value));
-  };
-
-  const handleTabsChange = (event, value) => {
-    setCurrentTab(value);
-  };
-
-  const filterEvents = () => {
-    const result = events.filter((event) => {
-      if (currentTab === 'free') {
-        if (event.betAmount === 'Free') {
-          return true;
-        }
-      } else if (currentTab === 'paid') {
-        if (event.betAmount !== 'Free') {
-          return true;
-        }
-      } else {
-        return true;
-      }
-    });
-
-    return result;
-  };
+  
 
   const filterCommunityEvents = () => {
     const result = events.filter((event) => event.betAmount === 'Free');
@@ -379,8 +315,7 @@ const Hero = ({ className, ...rest }) => {
   };
 
   const communityEvents = filterCommunityEvents();
-  const filteredEvents = filterEvents();
-  const paginatedEvents = applyPagination(filteredEvents, page, limit);
+  
 
   const getEvents = async () => {
     try {
@@ -410,7 +345,7 @@ const Hero = ({ className, ...rest }) => {
         );
       }
     } catch (error) {
-      console.log('🚀 ~ file: Hero.js ~ line 432 ~ getEvents ~ error', error);
+      console.log('🚀 ~ file: Hero.js ~ line 320 ~ getEvents ~ error', error);
       Sentry.captureException(error, {
         tags: {
           page: location.pathname
@@ -419,8 +354,49 @@ const Hero = ({ className, ...rest }) => {
     }
   };
 
+  const getTournaments = async () => {
+    try {
+      const { data } = await getTournamentsService({ allGames: true });
+      console.log(data)
+      if (data.success === true && data.events?.length > 0) {
+        setTournaments(
+          data.events.map((row) => {
+            return {
+              ...row,
+              date: getDateFromEpoch(row.startTime),
+              time: getTimeFromEpoch(row.startTime),
+              duration: getDuration(row.startTime, row.endTime),
+              gameFormat: getGameFormatFromIndex(row.game, row.gameFormat),
+              noOfUsersEnrolled:
+                row.noOfUsersEnrolled > row.maxUsers
+                  ? row.maxUsers
+                  : row.noOfUsersEnrolled,
+              betAmount: row.sponsored
+                ? 'Free'
+                : `$${row.betAmount.toFixed(2)}`,
+              prizePool: `$${calculateTotalPrizePool(
+                row.betAmount,
+                row.maxUsers
+              )}`
+            };
+          })
+        );
+      }
+    } catch (error) {
+      console.log('🚀 ~ file: Hero.js ~ line 357 ~ getTournaments ~ error', error);
+      Sentry.captureException(error, {
+        tags: {
+          page: location.pathname
+        }
+      });
+    }
+  };
+
+  console.log(tournaments)
+
   useEffect(() => {
     getEvents();
+    getTournaments();
     getInfoFromAPI();
   }, []);
 
@@ -681,126 +657,9 @@ const Hero = ({ className, ...rest }) => {
           </Box>
           <GamesCarousel />
         </Container>
-        <Container maxWidth="lg">
-          <Box ml={2} mt={10} mb={3}>
-            <Typography
-              display="inline"
-              variant="h2"
-              color="textPrimary"
-              className={classes.gamesTitle}
-            >
-              Tournaments
-            </Typography>
-            <Typography
-              className={classes.title}
-              variant="h4"
-              color="textPrimary"
-            >
-              Here you can find all upcoming tournaments.
-            </Typography>
-          </Box>
-          <Box mt={1} mb={3}>
-            <Tabs
-              onChange={handleTabsChange}
-              scrollButtons="auto"
-              textColor="secondary"
-              value={currentTab}
-              variant="scrollable"
-            >
-              {tabs.map((tab) => (
-                <Tab key={tab.value} label={tab.label} value={tab.value} />
-              ))}
-            </Tabs>
-            <Divider />
-          </Box>
-          <Card>
-            <Box minWidth={300}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Game</TableCell>
-                    <TableCell>Game Format</TableCell>
-                    <TableCell>Participants</TableCell>
-                    <TableCell>Start Time</TableCell>
-                    <TableCell>Entry</TableCell>
-                    <TableCell>Duration</TableCell>
-                    <TableCell>Prize Pool</TableCell>
-                    <TableCell align="center">Join</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {paginatedEvents.map((entry) => {
-                    return (
-                      <TableRow spacing={0} hover key={entry.id}>
-                        <TableCell
-                          className={classes.imageCell}
-                          align="center"
-                          padding="none"
-                        >
-                          <img
-                            className={classes.rowImage}
-                            src={getImage(entry.game)}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          {entry.betAmount === 'Free' && (
-                            <Tooltip title="Sponsored Event!">
-                              <SvgIcon
-                                className={classes.icon}
-                                fontSize="small"
-                              >
-                                <StarIcon />
-                              </SvgIcon>
-                            </Tooltip>
-                          )}
-                          {entry.gameFormat}
-                        </TableCell>
-                        <TableCell>
-                          {`${entry.noOfUsersEnrolled} of ${entry.maxUsers}`}
-                        </TableCell>
-                        <TableCell>{`${entry.date} ${entry.time}`}</TableCell>
-                        <TableCell
-                          className={
-                            entry.betAmount !== 'Free'
-                              ? classes.entry
-                              : classes.entryFree
-                          }
-                        >
-                          {entry.betAmount}
-                        </TableCell>
-                        <TableCell>{`${entry.duration} min`}</TableCell>
-                        <TableCell className={classes.priceCell}>
-                          {entry.prizePool}
-                        </TableCell>
-                        <TableCell className={classes.priceCell} align="center">
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            color="secondary"
-                            component={RouterLink}
-                            to={`/gameInformationPage/${entry.id}`}
-                          >
-                            JOIN
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-              <TablePagination
-                component="div"
-                count={filteredEvents.length}
-                labelRowsPerPage={'Rows per page'}
-                onChangePage={handlePageChange}
-                onChangeRowsPerPage={handleLimitChange}
-                page={page}
-                rowsPerPage={limit}
-                rowsPerPageOptions={[5, 10, 25]}
-              />
-            </Box>
-          </Card>
-        </Container>
+
+        <Events events={events} />
+        <Tournaments tournaments={tournaments} />
       </div>
     </>
   );

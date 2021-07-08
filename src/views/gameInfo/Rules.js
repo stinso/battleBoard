@@ -8,7 +8,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  Paper,
   Typography,
   makeStyles
 } from '@material-ui/core';
@@ -110,6 +109,7 @@ const Rules = ({ questionAnswers, eventData }) => {
           renderAppropriateRules(eventData.game, eventData.gameFormat, classes)}
       </AccordionDetails>
           </Accordion>
+          {checkGameRequiresManualResult(eventData.game) &&
           <Accordion className={classes.accordion}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -138,7 +138,7 @@ const Rules = ({ questionAnswers, eventData }) => {
                 </ListItem>
                 
                 </List>
-              </AccordionDetails></Accordion>
+              </AccordionDetails></Accordion>}
     </>
   );
 };
