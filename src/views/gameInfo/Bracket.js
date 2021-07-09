@@ -4,7 +4,6 @@ import { Paper } from '@material-ui/core';
 import BracketStructure from './BracketStructure';
 
 const Bracket = ({ eventData }) => {
-
   return (
     <Paper>
       <BracketStructure eventData={eventData} />

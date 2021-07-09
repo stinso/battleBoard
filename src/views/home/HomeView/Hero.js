@@ -50,8 +50,8 @@ import COD_Image from '../../../assets/img/cod.jpg';
 import MADDEN_Image from '../../../assets/img/madden.png';
 import { Star as StarIcon } from 'react-feather';
 import { SupportedGamesWithID } from '../../../config/constants';
-import Events from './Events'
-import Tournaments from './Tournaments'
+import Events from './Events';
+import Tournaments from './Tournaments';
 
 const font = "'Saira', sans-serif";
 
@@ -307,7 +307,6 @@ const Hero = ({ className, ...rest }) => {
       });
     }
   };
-  
 
   const filterCommunityEvents = () => {
     const result = events.filter((event) => event.betAmount === 'Free');
@@ -315,7 +314,6 @@ const Hero = ({ className, ...rest }) => {
   };
 
   const communityEvents = filterCommunityEvents();
-  
 
   const getEvents = async () => {
     try {
@@ -357,7 +355,7 @@ const Hero = ({ className, ...rest }) => {
   const getTournaments = async () => {
     try {
       const { data } = await getTournamentsService({ allGames: true });
-      console.log(data)
+      console.log(data);
       if (data.success === true && data.events?.length > 0) {
         setTournaments(
           data.events.map((row) => {
@@ -383,7 +381,10 @@ const Hero = ({ className, ...rest }) => {
         );
       }
     } catch (error) {
-      console.log('🚀 ~ file: Hero.js ~ line 357 ~ getTournaments ~ error', error);
+      console.log(
+        '🚀 ~ file: Hero.js ~ line 357 ~ getTournaments ~ error',
+        error
+      );
       Sentry.captureException(error, {
         tags: {
           page: location.pathname
@@ -392,7 +393,7 @@ const Hero = ({ className, ...rest }) => {
     }
   };
 
-  console.log(tournaments)
+  console.log(tournaments);
 
   useEffect(() => {
     getEvents();

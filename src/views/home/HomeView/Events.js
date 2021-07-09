@@ -156,125 +156,118 @@ const Events = ({ events }) => {
 
   return (
     <Container maxWidth="lg">
-          <Box ml={2} mt={10} mb={3}>
-            <Typography
-              display="inline"
-              variant="h2"
-              color="textPrimary"
-              className={classes.gamesTitle}
-            >
-              Events
-            </Typography>
-            <Typography
-              className={classes.title}
-              variant="h4"
-              color="textPrimary"
-            >
-              Here you can find all upcoming events.
-            </Typography>
-          </Box>
-          <Box mt={1} mb={3}>
-            <Tabs
-              onChange={handleTabsChange}
-              scrollButtons="auto"
-              textColor="secondary"
-              value={currentTab}
-              variant="scrollable"
-            >
-              {tabs.map((tab) => (
-                <Tab key={tab.value} label={tab.label} value={tab.value} />
-              ))}
-            </Tabs>
-            <Divider />
-          </Box>
-          <Card>
-            <Box minWidth={300}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Game</TableCell>
-                    <TableCell>Game Format</TableCell>
-                    <TableCell>Participants</TableCell>
-                    <TableCell>Start Time</TableCell>
-                    <TableCell>Entry</TableCell>
-                    <TableCell>Duration</TableCell>
-                    <TableCell>Prize Pool</TableCell>
-                    <TableCell align="center">Join</TableCell>
+      <Box ml={2} mt={10} mb={3}>
+        <Typography
+          display="inline"
+          variant="h2"
+          color="textPrimary"
+          className={classes.gamesTitle}
+        >
+          Events
+        </Typography>
+        <Typography className={classes.title} variant="h4" color="textPrimary">
+          Here you can find all upcoming events.
+        </Typography>
+      </Box>
+      <Box mt={1} mb={3}>
+        <Tabs
+          onChange={handleTabsChange}
+          scrollButtons="auto"
+          textColor="secondary"
+          value={currentTab}
+          variant="scrollable"
+        >
+          {tabs.map((tab) => (
+            <Tab key={tab.value} label={tab.label} value={tab.value} />
+          ))}
+        </Tabs>
+        <Divider />
+      </Box>
+      <Card>
+        <Box minWidth={300}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Game</TableCell>
+                <TableCell>Game Format</TableCell>
+                <TableCell>Participants</TableCell>
+                <TableCell>Start Time</TableCell>
+                <TableCell>Entry</TableCell>
+                <TableCell>Duration</TableCell>
+                <TableCell>Prize Pool</TableCell>
+                <TableCell align="center">Join</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {paginatedEvents.map((entry) => {
+                return (
+                  <TableRow spacing={0} hover key={entry.id}>
+                    <TableCell
+                      className={classes.imageCell}
+                      align="center"
+                      padding="none"
+                    >
+                      <img
+                        className={classes.rowImage}
+                        src={getImage(entry.game)}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {entry.betAmount === 'Free' && (
+                        <Tooltip title="Sponsored Event!">
+                          <SvgIcon className={classes.icon} fontSize="small">
+                            <StarIcon />
+                          </SvgIcon>
+                        </Tooltip>
+                      )}
+                      {entry.gameFormat}
+                    </TableCell>
+                    <TableCell>
+                      {`${entry.noOfUsersEnrolled} of ${entry.maxUsers}`}
+                    </TableCell>
+                    <TableCell>{`${entry.date} ${entry.time}`}</TableCell>
+                    <TableCell
+                      className={
+                        entry.betAmount !== 'Free'
+                          ? classes.entry
+                          : classes.entryFree
+                      }
+                    >
+                      {entry.betAmount}
+                    </TableCell>
+                    <TableCell>{`${entry.duration} min`}</TableCell>
+                    <TableCell className={classes.priceCell}>
+                      {entry.prizePool}
+                    </TableCell>
+                    <TableCell className={classes.priceCell} align="center">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="secondary"
+                        component={RouterLink}
+                        to={`/gameInformationPage/${entry.id}`}
+                      >
+                        JOIN
+                      </Button>
+                    </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {paginatedEvents.map((entry) => {
-                    return (
-                      <TableRow spacing={0} hover key={entry.id}>
-                        <TableCell
-                          className={classes.imageCell}
-                          align="center"
-                          padding="none"
-                        >
-                          <img
-                            className={classes.rowImage}
-                            src={getImage(entry.game)}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          {entry.betAmount === 'Free' && (
-                            <Tooltip title="Sponsored Event!">
-                              <SvgIcon
-                                className={classes.icon}
-                                fontSize="small"
-                              >
-                                <StarIcon />
-                              </SvgIcon>
-                            </Tooltip>
-                          )}
-                          {entry.gameFormat}
-                        </TableCell>
-                        <TableCell>
-                          {`${entry.noOfUsersEnrolled} of ${entry.maxUsers}`}
-                        </TableCell>
-                        <TableCell>{`${entry.date} ${entry.time}`}</TableCell>
-                        <TableCell
-                          className={
-                            entry.betAmount !== 'Free'
-                              ? classes.entry
-                              : classes.entryFree
-                          }
-                        >
-                          {entry.betAmount}
-                        </TableCell>
-                        <TableCell>{`${entry.duration} min`}</TableCell>
-                        <TableCell className={classes.priceCell}>
-                          {entry.prizePool}
-                        </TableCell>
-                        <TableCell className={classes.priceCell} align="center">
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            color="secondary"
-                            component={RouterLink}
-                            to={`/gameInformationPage/${entry.id}`}
-                          >
-                            JOIN
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-              <TablePagination
-                component="div"
-                count={filteredEvents.length}
-                labelRowsPerPage={'Rows per page'}
-                onChangePage={handlePageChange}
-                onChangeRowsPerPage={handleLimitChange}
-                page={page}
-                rowsPerPage={limit}
-                rowsPerPageOptions={[5, 10, 25]}
-              />
-            </Box>
-          </Card>
-        </Container>
+                );
+              })}
+            </TableBody>
+          </Table>
+          <TablePagination
+            component="div"
+            count={filteredEvents.length}
+            labelRowsPerPage={'Rows per page'}
+            onChangePage={handlePageChange}
+            onChangeRowsPerPage={handleLimitChange}
+            page={page}
+            rowsPerPage={limit}
+            rowsPerPageOptions={[5, 10, 25]}
+          />
+        </Box>
+      </Card>
+    </Container>
   );
 };
 
